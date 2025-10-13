@@ -19,7 +19,7 @@ const Input: React.FC<InputProps> = ({
   optional = false,
 }) => {
   return (
-    <fieldset className="fieldset">
+    <fieldset className="fieldset ">
       <legend className="fieldset-legend">{label}</legend>
       <input
         type={type}
