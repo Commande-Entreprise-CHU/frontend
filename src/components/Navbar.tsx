@@ -6,6 +6,9 @@ const Navbar: React.FC = () => {
       <div className="flex-1">
         <a className="btn btn-ghost text-xl">CHU </a>
       </div>
+      <div className="absolute left-1/2 transform -translate-x-1/2">
+        <img src="/CHU.png" className="h-16 w-auto" alt="CHU Logo" />
+      </div>
       <div className="flex-none">
         <ThemeController />
       </div>
