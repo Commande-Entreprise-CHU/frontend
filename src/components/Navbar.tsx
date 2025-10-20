@@ -13,6 +13,9 @@ const Navbar: React.FC = () => {
       <Link to="/PremConsult" className="btn btn-ghost">
         1ère Consultation
       </Link>
+      <div className="absolute left-1/2 transform -translate-x-1/2">
+        <img src="/CHU.png" className="h-16 w-auto" alt="CHU Logo" />
+      </div>
       <div className="flex-none">
         <ThemeController />
       </div>
