@@ -17,10 +17,10 @@ const PremConsult = () => {
             Informations Personnelles{" "}
           </legend>
 
-          <Input label="Nom" placeholder="Nom" className="m-4" />
-          <Input label="Prénom" placeholder="Prénom" className="m-4" />
-          <Input label="Date de naissance" type="date" className="m-4" />
-          <Input label="IPP" placeholder="IPP" className="m-4" />
+          <Input label="Nom" placeholder="Nom" />
+          <Input label="Prénom" placeholder="Prénom" />
+          <Input label="Date de naissance" type="date" />
+          <Input label="IPP" placeholder="IPP" />
           <Radio
             label="Sexe"
             options={[
@@ -28,6 +28,7 @@ const PremConsult = () => {
               { value: "femme", label: "Femme" },
             ]}
           />
+          <Input label="Profession" placeholder="Profession" />
         </fieldset>
         <RevealCheckBox
           categoryLabel="Medecin Orthodontiste"
