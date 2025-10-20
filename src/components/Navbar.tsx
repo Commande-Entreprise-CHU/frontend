@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import ThemeController from "./ThemeController";
 
 const Navbar: React.FC = () => {
@@ -6,6 +7,12 @@ const Navbar: React.FC = () => {
       <div className="flex-1">
         <a className="btn btn-ghost text-xl">CHU </a>
       </div>
+      <Link to="/" className="btn btn-ghost">
+        Accueil
+      </Link>
+      <Link to="/PremConsult" className="btn btn-ghost">
+        1ère Consultation
+      </Link>
       <div className="flex-none">
         <ThemeController />
       </div>
