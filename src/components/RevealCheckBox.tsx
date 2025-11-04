@@ -2,7 +2,6 @@ import React, { useRef, useState } from "react";
 
 interface RevealCheckBoxProps {
   label?: string;
-  categoryLabel?: string;
   children?: React.ReactNode;
   className?: string;
   name?: string;
@@ -11,7 +10,6 @@ interface RevealCheckBoxProps {
 
 const RevealCheckBox: React.FC<RevealCheckBoxProps> = ({
   label,
-  categoryLabel,
   children,
   className,
   name,
@@ -28,29 +26,24 @@ const RevealCheckBox: React.FC<RevealCheckBoxProps> = ({
     }
   };
 
-  const hasCategoryLabel = categoryLabel && categoryLabel.trim() !== "";
-  console.log(hasCategoryLabel, "hasCategoryLabel", categoryLabel);
   return (
-    <fieldset
-      className={`fieldset bg-base-100 h-fit border-base-300${
-        hasCategoryLabel && "border p-4"
-      } rounded-box   ${className}`}
-    >
-      {hasCategoryLabel && (
-        <legend className="fieldset-legend">{categoryLabel}</legend>
-      )}
-      <label className="flex items-center">
+    <div className={`w-full space-y-2 ${className || ""}`}>
+      <label className="flex items-center cursor-pointer hover:opacity-80 transition-opacity">
         <input
           type="checkbox"
           onChange={handleCheckboxChange}
-          className="checkbox"
+          className="checkbox checkbox-primary checkbox-sm"
           ref={checkboxRef}
           name={name}
         />
-        <span className="label-text ml-2">{label}</span>
+        <span className="label-text text-sm ml-2">{label}</span>
       </label>
-      {isChecked && children}
-    </fieldset>
+      {isChecked && (
+        <div className="pl-3 border-l-2 border-primary/40 space-y-2">
+          {children}
+        </div>
+      )}
+    </div>
   );
 };
 

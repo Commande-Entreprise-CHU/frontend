@@ -79,11 +79,10 @@ const DynamicForm = ({ config }: DynamicFormProps) => {
           <div key={field.name} className="col-span-full">
             <RevealCheckBox
               label={field.label}
-              categoryLabel={field.categoryLabel}
               name={field.name}
               setFormData={handleInputChange}
             >
-              <div className="flex flex-col gap-2 ml-4 ">
+              <div className="space-y-2">
                 {field.fields?.map((subField: AnyFormField) =>
                   renderField(subField)
                 )}
@@ -110,7 +109,6 @@ const DynamicForm = ({ config }: DynamicFormProps) => {
           <div key={field.name} className={gridClass}>
             <RevealRadio
               name={field.name}
-              categoryLabel={field.categoryLabel || ""}
               label={field.label}
               options={field.options || []}
               setFormData={handleInputChange}
@@ -126,34 +124,42 @@ const DynamicForm = ({ config }: DynamicFormProps) => {
   };
 
   return (
-    <div className="w-full h-full p-4 flex flex-col items-center">
-      <h1 className=" text-primary w-full text-center">
-        {config.metadata.description}
-      </h1>
+    <div className="w-full min-h-screen bg-base-100 px-3 py-4 sm:px-4 lg:px-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-4 text-center">
+          <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-1.5">
+            {config.metadata.description}
+          </h1>
+        </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="w-full flex flex-col items-center"
-      >
-        {config.sections.map((section, sectionIndex) => (
-          <fieldset
-            key={sectionIndex}
-            className={`fieldset w-full border-base-300 rounded-box border p-4`}
-          >
-            <legend className="fieldset-legend  text-primary">
-              {section.title}
-            </legend>
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {config.sections.map((section, sectionIndex) => (
+            <div
+              key={sectionIndex}
+              className="card bg-base-100 shadow border border-base-300"
+            >
+              <div className="card-body p-4">
+                <h2 className="card-title text-xl text-primary mt-0 mb-3">
+                  {section.title}
+                </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-min">
-              {section.fields.map((field) => renderField(field))}
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {section.fields.map((field) => renderField(field))}
+                </div>
+              </div>
             </div>
-          </fieldset>
-        ))}
+          ))}
 
-        <Button className="m-4" type="submit">
-          Créer le PDF
-        </Button>
-      </form>
+          {/* Submit Button */}
+          <div className="flex justify-center pt-2 pb-4">
+            <Button className="btn-md min-w-40" type="submit">
+              Créer le PDF
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

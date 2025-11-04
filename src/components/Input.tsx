@@ -9,7 +9,7 @@ interface InputProps {
   className?: string;
   optional?: boolean;
   name: string;
-  setFormData: (data: any) => void;
+  setFormData: (data: { name: string; value: string }) => void;
   required?: boolean;
 }
 const Input: React.FC<InputProps> = ({
@@ -31,24 +31,24 @@ const Input: React.FC<InputProps> = ({
   const hasLabel = label && label.trim() !== "";
 
   return (
-    <fieldset className="fieldset ">
+    <div className="w-full space-y-2">
       {hasLabel && (
-        <legend className="fieldset-legend">
+        <div className="text-sm font-semibold text-primary opacity-80">
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
-        </legend>
+          {required && <span className="text-error ml-1">*</span>}
+        </div>
       )}
       <input
         name={name}
         type={type}
-        className={`input ${className}`}
+        className={`input input-bordered input-sm w-full ${className || ""}`}
         placeholder={placeholder}
         value={value}
         onChange={handleInputChange}
         required={required}
       />
-      {optional && <p className="label">Optional</p>}
-    </fieldset>
+      {optional && <p className="text-xs opacity-70">Optionnel</p>}
+    </div>
   );
 };
 

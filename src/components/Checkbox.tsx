@@ -19,18 +19,18 @@ const Checkbox: React.FC<CheckboxProps> = ({
   };
 
   return (
-    <label className="flex items-center">
+    <label className="flex items-center cursor-pointer py-0.5">
       <input
         type="checkbox"
         name={name}
-        className="checkbox"
+        className="checkbox checkbox-primary checkbox-sm"
         defaultChecked={checked}
         onChange={handleCheckboxChange}
         required={required}
       />
-      <span className="label-text ml-2">
+      <span className="label-text text-sm ml-2">
         {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
+        {required && <span className="text-error ml-1">*</span>}
       </span>
     </label>
   );

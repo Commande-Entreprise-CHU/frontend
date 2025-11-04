@@ -117,10 +117,19 @@
                           "pdfName": "Fracture Lefort"
                         },
                         {
-                          "type": "Checkbox",
+                          "type": "RevealCheckBox",
                           "label": "Autre",
                           "name": "trauma_autre",
-                          "pdfName": "Autre"
+                          "pdfName": "Autre",
+                          "fields": [
+                            {
+                              "type": "Input",
+                              "name": "trauma_autre_details",
+                              "pdfName": "Autre Détails",
+                              "placeholder": "Préciser",
+                              "required": false
+                            }
+                          ]
                         }
                       ]
                     },

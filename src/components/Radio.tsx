@@ -24,26 +24,31 @@ const Radio: React.FC<RadioProps> = ({
     setFormData({ name, value });
   };
   return (
-    <fieldset className="fieldset flex  flex-row  flex-wrap">
-      <legend className="fieldset-legend">
+    <div className="w-full space-y-2">
+      <div className="text-sm font-semibold text-primary opacity-80">
         {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
-      </legend>
-      {options.map((option) => (
-        <label key={String(option.value)} className="flex items-center mr-4">
-          <input
-            type="radio"
-            name={name}
-            value={String(option.value)}
-            className="radio"
-            defaultChecked={option.default}
-            onChange={handleInputChange}
-            required={required}
-          />
-          <span className="label-text ml-2">{option.label}</span>
-        </label>
-      ))}
-    </fieldset>
+        {required && <span className="text-error ml-1">*</span>}
+      </div>
+      <div className="flex flex-row flex-wrap gap-3">
+        {options.map((option) => (
+          <label
+            key={String(option.value)}
+            className="flex items-center cursor-pointer hover:opacity-80 transition-opacity"
+          >
+            <input
+              type="radio"
+              name={name}
+              value={String(option.value)}
+              className="radio radio-primary radio-sm"
+              defaultChecked={option.default}
+              onChange={handleInputChange}
+              required={required}
+            />
+            <span className="label-text text-sm ml-2">{option.label}</span>
+          </label>
+        ))}
+      </div>
+    </div>
   );
 };
 

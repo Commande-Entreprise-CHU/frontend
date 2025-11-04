@@ -3,7 +3,6 @@ import type { FormOption, AnyFormField } from "../types";
 
 interface RevealRadioProps {
   label?: string;
-  categoryLabel?: string;
   className?: string;
   name: string;
   options: FormOption[];
@@ -17,7 +16,6 @@ interface RevealRadioProps {
 
 const RevealRadio: React.FC<RevealRadioProps> = ({
   label,
-  categoryLabel,
   className,
   name,
   options,
@@ -48,40 +46,40 @@ const RevealRadio: React.FC<RevealRadioProps> = ({
       : [];
 
   return (
-    <fieldset
-      className={`fieldset flex  flex-row  flex-wrap bg-base-100 border-base-300 rounded-box w-64 border p-4 ${className}`}
-    >
-      <legend className="fieldset-legend">
-        {categoryLabel}
-        {required && <span className="text-red-500 ml-1">*</span>}
-      </legend>
-      {label && <div className="mb-2 font-medium">{label}</div>}
-      <div className="flex gap-4">
+    <div className={`w-full space-y-2 ${className || ""}`}>
+      <div className="text-sm font-semibold text-primary opacity-80">
+        {label}
+        {required && <span className="text-error ml-1">*</span>}
+      </div>
+      <div className="flex flex-wrap gap-3">
         {options.map((option) => (
-          <label key={String(option.value)} className="flex items-center mr-4">
+          <label
+            key={String(option.value)}
+            className="flex items-center cursor-pointer hover:opacity-80 transition-opacity"
+          >
             <input
               type="radio"
               name={name}
               value={String(option.value)}
               onChange={handleRadioChange}
-              className="radio"
+              className="radio radio-primary radio-sm"
               defaultChecked={
                 String(option.value) === String(defaultOption?.value)
               }
               required={required}
             />
-            <span className="label-text ml-2">{option.label}</span>
+            <span className="label-text text-sm ml-2">{option.label}</span>
           </label>
         ))}
       </div>
       {nestedFields.length > 0 && renderField && (
-        <div>
+        <div className="pl-3 border-l-2 border-primary/40 space-y-2">
           {nestedFields.map((nestedField) =>
             renderField(nestedField as AnyFormField)
           )}
         </div>
       )}
-    </fieldset>
+    </div>
   );
 };
 

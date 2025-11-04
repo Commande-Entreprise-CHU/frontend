@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 
 interface RangeProps {
   steps: string[];
-  setFormData: (data: any) => void;
+  setFormData: (data: { name: string; value: string }) => void;
   name: string;
   label?: string;
   required?: boolean;
@@ -39,38 +39,34 @@ const Range: React.FC<RangeProps> = ({
   };
 
   return (
-    <fieldset className="fieldset w-full max-w-xs">
-      <legend className="fieldset-legend">
+    <fieldset className="fieldset w-full">
+      <legend className="fieldset-legend text-sm font-medium mb-2">
         {label || "Sévérité de la douleur"}
-        {required && <span className="text-red-500 ml-1">*</span>}
+        {required && <span className="text-error ml-1">*</span>}
       </legend>
-      <input
-        type="range"
-        name={name}
-        min={0}
-        max={100}
-        value={value}
-        onChange={(e) => {
-          handleChange(e);
-        }}
-        className="range range-primary"
-        step={stepSize}
-        required={required}
-      />
-      <div className="flex justify-between px-2.5 mt-2 ">
-        {steps.map((step, index) => (
-          <span className="relative" key={step + index + "|"}>
-            |
-            <span
-              key={step + index}
-              className="absolute -left-5 top-5 text-center "
-            >
-              {step}
-            </span>
-          </span>
-        ))}
+      <div className="w-full max-w-md">
+        <input
+          type="range"
+          name={name}
+          min={0}
+          max={100}
+          value={value}
+          onChange={(e) => {
+            handleChange(e);
+          }}
+          className="range range-primary range-sm w-full"
+          step={stepSize}
+          required={required}
+        />
+        <div className="flex justify-between px-1 mt-2">
+          {steps.map((step, index) => (
+            <div className="flex flex-col items-center" key={step + index}>
+              <span className="text-xs opacity-60">|</span>
+              <span className="text-xs mt-0.5 text-center w-14">{step}</span>
+            </div>
+          ))}
+        </div>
       </div>
-      <div className="flex justify-center mt-2  h-7"></div>
     </fieldset>
   );
 };
