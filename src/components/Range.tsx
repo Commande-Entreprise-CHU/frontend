@@ -18,13 +18,15 @@ const Range: React.FC<RangeProps> = ({
   const [value, setValue] = React.useState(0);
 
   const stepSize = useMemo(() => {
-    return Math.round(steps.length > 1 ? 100 / (steps.length - 1) : 100);
+    return steps.length > 1
+      ? Math.floor((100 / (steps.length - 1)) * 1000) / 1000
+      : 100;
   }, [steps.length]);
 
   const valueToStep = useMemo(() => {
     const valuetostep: Record<number, string> = {};
     for (let i = 0; i < steps.length; i++) {
-      valuetostep[Math.round(i * stepSize)] = steps[i];
+      valuetostep[i * stepSize] = steps[i];
     }
     return valuetostep;
   }, [steps, stepSize]);
@@ -39,11 +41,11 @@ const Range: React.FC<RangeProps> = ({
   };
 
   return (
-    <fieldset className="fieldset w-full">
-      <legend className="fieldset-legend text-sm font-medium mb-2">
+    <div className=" space-y-2">
+      <div className="text-sm font-semibold text-primary opacity-80">
         {label || "Sévérité de la douleur"}
         {required && <span className="text-error ml-1">*</span>}
-      </legend>
+      </div>
       <div className="w-full max-w-md">
         <input
           type="range"
@@ -54,20 +56,27 @@ const Range: React.FC<RangeProps> = ({
           onChange={(e) => {
             handleChange(e);
           }}
-          className="range range-primary range-sm w-full"
+          className="range range-primary range-sm"
+          style={{
+            transform: `translateX(${50 / steps.length}%)`,
+            width: `${100 - 100 / (steps.length + 1)}%`,
+          }}
           step={stepSize}
           required={required}
         />
-        <div className="flex justify-between px-1 mt-2">
+        <div className="flex justify-between text-xs opacity-70 mt-3 px-0.5">
           {steps.map((step, index) => (
-            <div className="flex flex-col items-center" key={step + index}>
-              <span className="text-xs opacity-60">|</span>
-              <span className="text-xs mt-0.5 text-center w-14">{step}</span>
+            <div
+              key={step + index}
+              className="flex flex-col items-center flex-1"
+            >
+              <span className="text-xs">|</span>
+              <span className="text-xs mt-1 text-center">{step}</span>
             </div>
           ))}
         </div>
       </div>
-    </fieldset>
+    </div>
   );
 };
 

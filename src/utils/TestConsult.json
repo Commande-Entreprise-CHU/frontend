@@ -74,7 +74,6 @@
           "type": "RevealRadio",
           "name": "antecedentsRadio",
           "pdfName": "Antécédents Médicaux",
-          "categoryLabel": "Antécédents Médicaux",
           "label": "A t'il des antécédents médicaux ?",
           "options": [
             {
@@ -195,24 +194,23 @@
           "pdfName": "Sport",
           "options": [
             {
-              "value": "non",
-              "label": "Non",
-              "default": true
-            },
-            {
               "value": "loisirs",
               "label": "Pratique en loisirs"
             },
             {
               "value": "competition",
               "label": "Pratique en compétition/pro"
+            },
+            {
+              "value": "non",
+              "label": "Non",
+              "default": true
             }
           ],
           "required": true
         },
         {
           "type": "RevealRadio",
-          "categoryLabel": "Activité",
           "label": "Quelle est son activité principale ?",
           "name": "activite",
           "pdfName": "Activité",
@@ -317,13 +315,13 @@
           "pdfName": "Ancrages osseux",
           "options": [
             {
+              "value": true,
+              "label": "Oui"
+            },
+            {
               "value": false,
               "label": "Non",
               "default": true
-            },
-            {
-              "value": true,
-              "label": "Oui"
             }
           ],
           "required": false
@@ -335,13 +333,13 @@
           "pdfName": "Toxine botulique",
           "options": [
             {
+              "value": true,
+              "label": "Oui"
+            },
+            {
               "value": false,
               "label": "Non",
               "default": true
-            },
-            {
-              "value": true,
-              "label": "Oui"
             }
           ],
           "required": false
@@ -350,7 +348,6 @@
           "type": "RevealRadio",
           "name": "claquementsRadio",
           "pdfName": "Claquements",
-          "categoryLabel": "Claquements",
           "label": "A t'il des claquements ?",
           "options": [
             {
@@ -387,7 +384,6 @@
           "type": "RevealRadio",
           "name": "douleurs_atm_Radio",
           "pdfName": "Douleurs ATM",
-          "categoryLabel": "Douleurs ATM",
           "label": "Douleurs ATM ?",
           "options": [
             {
@@ -424,7 +420,7 @@
           "type": "RevealRadio",
           "name": "douleurs_musculaires_Radio",
           "pdfName": "Douleurs musculaires",
-          "categoryLabel": "Douleurs musculaires",
+
           "label": "Douleurs musculaires ?",
           "options": [
             {
@@ -446,6 +442,19 @@
                       "label": "Droite"
                     }
                   ]
+                },
+                {
+                  "type": "Range",
+                  "label": "Douleur",
+                  "name": "douleurRange",
+                  "pdfName": "Niveau de douleur",
+                  "steps": [
+                    "pas de douleur",
+                    "douleur légère",
+                    "douleur",
+                    "douleur extreme"
+                  ],
+                  "required": true
                 }
               ]
             },
@@ -461,7 +470,6 @@
           "type": "RevealRadio",
           "name": "bruxisme_Radio",
           "pdfName": "Bruxisme",
-          "categoryLabel": "Bruxisme",
           "label": "Bruxisme ?",
           "options": [
             {
@@ -503,13 +511,13 @@
           "pdfName": "SAOS / Apnées",
           "options": [
             {
+              "value": true,
+              "label": "Oui"
+            },
+            {
               "value": false,
               "label": "Non",
               "default": true
-            },
-            {
-              "value": true,
-              "label": "Oui"
             }
           ],
           "required": true
@@ -521,13 +529,13 @@
           "pdfName": "Décalage aux réveils",
           "options": [
             {
+              "value": true,
+              "label": "Oui"
+            },
+            {
               "value": false,
               "label": "Non",
               "default": true
-            },
-            {
-              "value": true,
-              "label": "Oui"
             }
           ],
           "required": true
@@ -584,7 +592,6 @@
           "type": "RevealRadio",
           "name": "symetrie_faciale_Radio",
           "pdfName": "Symétrie faciale",
-          "categoryLabel": "Symétrie faciale",
           "label": "Symétrie faciale",
           "options": [
             {
