@@ -1,6 +1,7 @@
 import Navbar from "./components/Navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import PremConsultDyn from "./page/PremConsultDyn";
+import PremConsult from "./page/PremConsult";
+import Home from "./page/home";
 
 function App() {
   return (
@@ -8,7 +9,8 @@ function App() {
       <div className="bg-base-100 ">
         <Navbar />
         <Routes>
-          <Route path="/PremConsult" element={<PremConsultDyn />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/PremConsult" element={<PremConsult />} />
         </Routes>
       </div>
     </Router>
