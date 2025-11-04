@@ -3,9 +3,9 @@ import ThemeController from "./ThemeController";
 
 const Navbar: React.FC = () => {
   return (
-    <div className="navbar shadow-sm">
+    <div className="navbar min-h-0 shadow-sm ">
       <div className="flex-1">
-        <img src="/CHU.png" className="h-16 w-auto" alt="CHU Logo" />
+        <img src="/CHU.png" className="m-0 h-12" alt="CHU Logo" />
       </div>
       <Link to="/" className="btn btn-ghost">
         Accueil
