@@ -8,25 +8,40 @@ interface InputProps {
   placeholder?: string;
   className?: string;
   optional?: boolean;
+  name: string;
+  setFormData: (data: any) => void;
+  required?: boolean;
 }
 const Input: React.FC<InputProps> = ({
   label,
   value,
-  onChange,
   type = "text",
   placeholder,
   className,
   optional = false,
+  name,
+  setFormData,
+  required = false,
 }) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ name, value });
+  };
+
   return (
     <fieldset className="fieldset ">
-      <legend className="fieldset-legend">{label}</legend>
+      <legend className="fieldset-legend">
+        {label}
+        {required && <span className="text-red-500 ml-1">*</span>}
+      </legend>
       <input
+        name={name}
         type={type}
         className={`input ${className}`}
         placeholder={placeholder}
         value={value}
-        onChange={onChange}
+        onChange={handleInputChange}
+        required={required}
       />
       {optional && <p className="label">Optional</p>}
     </fieldset>
