@@ -88,35 +88,62 @@
                   "pdfName": "ATCD chir orthognathique"
                 },
                 {
-                  "type": "RevealRadio",
+                  "type": "RevealCheckBox",
                   "label": "ATCD traumatique / septique",
                   "name": "atcd_trauma_septique",
-                  "options": [
+                  "fields": [
                     {
-                      "value": "yes",
-                      "label": "Oui",
+                      "type": "RevealCheckBox",
+                      "label": "Traumatique",
+                      "name": "atcd_traumatique",
+                      "pdfName": "Traumatique",
                       "fields": [
                         {
                           "type": "Checkbox",
-                          "label": "Traumatique",
-                          "name": "atcd_traumatique"
+                          "label": "Fracture condyle",
+                          "name": "trauma_fracture_condyle",
+                          "pdfName": "Fracture condyle"
                         },
                         {
                           "type": "Checkbox",
-                          "label": "Sceptique",
-                          "name": "atcd_sceptique"
+                          "label": "Fracture mandibule",
+                          "name": "trauma_fracture_mandibule",
+                          "pdfName": "Fracture mandibule"
+                        },
+                        {
+                          "type": "Checkbox",
+                          "label": "Fracture Lefort",
+                          "name": "trauma_fracture_lefort",
+                          "pdfName": "Fracture Lefort"
                         },
                         {
                           "type": "Checkbox",
                           "label": "Autre",
-                          "name": "atcd_trauma_autre"
+                          "name": "trauma_autre",
+                          "pdfName": "Autre"
                         }
                       ]
                     },
                     {
-                      "value": "no",
-                      "label": "Non",
-                      "default": true
+                      "type": "Checkbox",
+                      "label": "Septique",
+                      "name": "atcd_septique",
+                      "pdfName": "Septique"
+                    },
+                    {
+                      "type": "RevealCheckBox",
+                      "label": "Autre",
+                      "name": "atcd_septique_autre",
+                      "pdfName": "Autre",
+                      "fields": [
+                        {
+                          "type": "Input",
+                          "name": "atcd_septique_autre_details",
+                          "pdfName": "Autre Détails",
+                          "placeholder": "Préciser",
+                          "required": false
+                        }
+                      ]
                     }
                   ]
                 },
@@ -176,7 +203,8 @@
         },
         {
           "type": "RevealRadio",
-          "label": "Activité",
+          "categoryLabel": "Activité",
+          "label": "Quelle est son activité principale ?",
           "name": "activite",
           "pdfName": "Activité",
           "options": [
