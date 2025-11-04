@@ -57,7 +57,7 @@ const Range: React.FC<RangeProps> = ({
         step={stepSize}
         required={required}
       />
-      <div className="flex justify-between px-2.5 mt-2 text-xs">
+      <div className="flex justify-between px-2.5 mt-2 ">
         {steps.map((step, index) => (
           <span className="relative" key={step + index + "|"}>
             |
@@ -70,7 +70,7 @@ const Range: React.FC<RangeProps> = ({
           </span>
         ))}
       </div>
-      <div className="flex justify-center mt-2 text-xs h-7"></div>
+      <div className="flex justify-center mt-2  h-7"></div>
     </fieldset>
   );
 };

@@ -127,7 +127,7 @@ const DynamicForm = ({ config }: DynamicFormProps) => {
 
   return (
     <div className="w-full h-full p-4 flex flex-col items-center">
-      <h1 className="text-4xl font-bold text-primary w-full text-center">
+      <h1 className=" text-primary w-full text-center">
         {config.metadata.description}
       </h1>
 
@@ -140,7 +140,7 @@ const DynamicForm = ({ config }: DynamicFormProps) => {
             key={sectionIndex}
             className={`fieldset w-full border-base-300 rounded-box border p-4`}
           >
-            <legend className="fieldset-legend text-xl text-primary">
+            <legend className="fieldset-legend  text-primary">
               {section.title}
             </legend>
 

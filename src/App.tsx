@@ -6,7 +6,7 @@ import Home from "./page/home";
 function App() {
   return (
     <Router>
-      <div className="bg-base-100 ">
+      <div className="bg-base-100 prose max-w-full w-full min-h-screen">
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
