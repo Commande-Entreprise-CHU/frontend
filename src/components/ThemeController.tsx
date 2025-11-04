@@ -1,10 +1,26 @@
 //from https://daisyui.com/components/theme-controller/
 
 const ThemeController: React.FC = () => {
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const storedTheme = localStorage.getItem("theme");
+  const isDarkMode = storedTheme ? storedTheme === "chu-dark" : prefersDark;
+
+  const handleThemeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const theme = e.target.checked ? "chu-dark" : "chu-light";
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  };
+
   return (
     <label className="swap swap-rotate">
       {/* this hidden checkbox controls the state */}
-      <input type="checkbox" className="theme-controller" value="synthwave" />
+      <input
+        type="checkbox"
+        className="theme-controller"
+        value="chu-dark"
+        defaultChecked={isDarkMode}
+        onChange={handleThemeChange}
+      />
 
       {/* sun icon */}
       <svg

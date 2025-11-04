@@ -5,18 +5,20 @@ import TeethSelector from "../components/TeethSelector";
 const Home: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-start min-h-screen py-2">
-      <h1 className="text-primary">
+      <h1 className="text-primary text-center">
         Outil de consultation pour la chirurgie maxillo-faciale
       </h1>
-      <h2 className="text-secondary">Outil en cours de développement...</h2>
+      <h2 className="text-secondary text-center">
+        Outil en cours de développement...
+      </h2>
       <h3 className="text-center mt-4 max-w-2xl">
         Consultations disponibles :
       </h3>
-      <ul className="list-disc list-inside text-left mt-2">
+      <div className=" text-center mt-2">
         <Link to="/PremConsult">
           <li className="btn ">1 er consultation</li>
         </Link>
-      </ul>
+      </div>
       <TeethSelector />
     </div>
   );
