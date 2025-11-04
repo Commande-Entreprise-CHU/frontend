@@ -17,8 +17,8 @@ import B8 from "./teeth/B8";
 import B7 from "./teeth/B7";
 const TeethSelector: React.FC = () => {
   return (
-    <div className="flex flex-col w-1/2 h-fit">
-      <div className="flex gap-0.5 flex-row ">
+    <div className="flex flex-col w-1/2 gap-4 h-fit">
+      <div className="flex gap-0.5 flex-row items-end ">
         <H8 className="fill-base-300 h-fit hover:fill-primary transition-all duration-100" />
         <H7 className="fill-base-300 h-fit hover:fill-primary transition-all duration-100" />
         <H6 className="fill-base-300 h-fit hover:fill-primary transition-all duration-100" />
@@ -45,14 +45,8 @@ const TeethSelector: React.FC = () => {
         <B4 className="fill-base-300 h-fit hover:fill-primary transition-all duration-100" />
         <B3 className="fill-base-300 h-fit hover:fill-primary transition-all duration-100" />
         <B2 className="fill-base-300 h-fit hover:fill-primary transition-all duration-100" />
-        <B1
-          number={41}
-          className="fill-base-300 h-fit hover:fill-primary transition-all duration-100"
-        />
-        <B1
-          number={31}
-          className="fill-base-300 h-fit hover:fill-primary transition-all duration-100 scale-x-[-1]"
-        />
+        <B1 className="fill-base-300 h-fit hover:fill-primary transition-all duration-100" />
+        <B1 className="fill-base-300 h-fit hover:fill-primary transition-all duration-100 scale-x-[-1]" />
         <B2 className="fill-base-300 h-fit hover:fill-primary transition-all duration-100 scale-x-[-1]" />
         <B3 className="fill-base-300 h-fit hover:fill-primary transition-all duration-100 scale-x-[-1]" />
         <B4 className="fill-base-300 h-fit hover:fill-primary transition-all duration-100 scale-x-[-1]" />

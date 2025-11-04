@@ -1,4 +1,4 @@
-const B1 = ({ className }: { className?: string; number: number }) => {
+const B1 = ({ className }: { className?: string }) => {
   return (
     <svg
       width="13.698413mm"
