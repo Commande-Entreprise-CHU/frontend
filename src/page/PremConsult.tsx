@@ -1,5 +1,5 @@
 import DynamicForm from "../components/DynamicForm";
-import PremConsultConfig from "../utils/PremConsult.json" assert { type: "json" };
+import PremConsultConfig from "../utils/PremConsult.json" with { type: "json" };
 import type { FormConfig } from "../types/formTypes";
 
 const PremConsult = () => {
