@@ -4,6 +4,8 @@ import Button from "./Button";
 import Input from "./Input";
 import Range from "./Range";
 import RevealRadio from "./RevealRadio";
+import RevealCheckBox from "./RevealCheckBox";
+import Checkbox from "./Checkbox";
 import { useState } from "react";
 import type { AnyFormField, DynamicFormProps } from "../types";
 
@@ -60,6 +62,36 @@ const DynamicForm = ({ config }: DynamicFormProps) => {
           </div>
         );
 
+      case "Checkbox":
+        return (
+          <div key={field.name}>
+            <Checkbox
+              label={field.label}
+              name={field.name}
+              setFormData={handleInputChange}
+              required={field.required}
+            />
+          </div>
+        );
+
+      case "RevealCheckBox":
+        return (
+          <div key={field.name} className="col-span-full">
+            <RevealCheckBox
+              label={field.label}
+              categoryLabel={field.categoryLabel}
+              name={field.name}
+              setFormData={handleInputChange}
+            >
+              <div className="flex flex-col gap-2 ml-4 ">
+                {field.fields?.map((subField: AnyFormField) =>
+                  renderField(subField)
+                )}
+              </div>
+            </RevealCheckBox>
+          </div>
+        );
+
       case "Range":
         return (
           <div key={field.name} className={gridClass}>
@@ -83,11 +115,8 @@ const DynamicForm = ({ config }: DynamicFormProps) => {
               options={field.options || []}
               setFormData={handleInputChange}
               required={field.required}
-            >
-              {field.options
-                ?.flatMap((option) => option.fields || [])
-                .map((nestedField) => renderField(nestedField as AnyFormField))}
-            </RevealRadio>
+              renderField={renderField}
+            />
           </div>
         );
 

@@ -6,7 +6,14 @@ export interface FormOption {
 }
 
 export interface FormField {
-  type: "Input" | "Radio" | "Range" | "RevealRadio" | "Select" | "Checkbox";
+  type:
+    | "Input"
+    | "Radio"
+    | "Range"
+    | "RevealRadio"
+    | "Select"
+    | "Checkbox"
+    | "RevealCheckBox";
   label: string;
   name: string;
   pdfName: string;
@@ -43,7 +50,12 @@ export interface SelectField extends FormField {
 
 export interface CheckboxField extends FormField {
   type: "Checkbox";
-  options: FormOption[];
+}
+
+export interface RevealCheckBoxField extends FormField {
+  type: "RevealCheckBox";
+  categoryLabel?: string;
+  fields?: AnyFormField[];
 }
 
 export type AnyFormField =
@@ -52,7 +64,8 @@ export type AnyFormField =
   | RangeField
   | RevealRadioField
   | SelectField
-  | CheckboxField;
+  | CheckboxField
+  | RevealCheckBoxField;
 
 export interface FormSection {
   title: string;

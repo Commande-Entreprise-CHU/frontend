@@ -28,12 +28,16 @@ const Input: React.FC<InputProps> = ({
     setFormData({ name, value });
   };
 
+  const hasLabel = label && label.trim() !== "";
+
   return (
     <fieldset className="fieldset ">
-      <legend className="fieldset-legend">
-        {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
-      </legend>
+      {hasLabel && (
+        <legend className="fieldset-legend">
+          {label}
+          {required && <span className="text-red-500 ml-1">*</span>}
+        </legend>
+      )}
       <input
         name={name}
         type={type}

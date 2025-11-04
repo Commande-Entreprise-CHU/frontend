@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import type { FormOption } from "../types";
+import type { FormOption, AnyFormField } from "../types";
 
 interface RevealRadioProps {
   label?: string;
   categoryLabel?: string;
-  children?: React.ReactNode;
   className?: string;
   name: string;
   options: FormOption[];
@@ -13,17 +12,18 @@ interface RevealRadioProps {
     value: string | number | boolean;
   }) => void;
   required?: boolean;
+  renderField?: (field: AnyFormField) => React.ReactNode;
 }
 
 const RevealRadio: React.FC<RevealRadioProps> = ({
   label,
   categoryLabel,
-  children,
   className,
   name,
   options,
   setFormData,
   required = false,
+  renderField,
 }) => {
   const defaultOption = options.find((opt) => opt.default) || options[0];
   const [selectedValue, setSelectedValue] = useState<string | number>(
@@ -42,12 +42,14 @@ const RevealRadio: React.FC<RevealRadioProps> = ({
   const selectedOption = options.find(
     (opt) => String(opt.value) === String(selectedValue)
   );
-  const hasNestedFields =
-    selectedOption?.fields && selectedOption.fields.length > 0;
+  const nestedFields =
+    selectedOption?.fields && selectedOption.fields.length > 0
+      ? selectedOption.fields
+      : [];
 
   return (
     <fieldset
-      className={`fieldset bg-base-100 border-base-300 rounded-box w-64 border p-4 ${className}`}
+      className={`fieldset flex  flex-row  flex-wrap bg-base-100 border-base-300 rounded-box w-64 border p-4 ${className}`}
     >
       <legend className="fieldset-legend">
         {categoryLabel}
@@ -56,21 +58,29 @@ const RevealRadio: React.FC<RevealRadioProps> = ({
       {label && <div className="mb-2 font-medium">{label}</div>}
       <div className="flex gap-4">
         {options.map((option) => (
-          <label key={String(option.value)} className="label cursor-pointer">
+          <label key={String(option.value)} className="flex items-center mr-4">
             <input
               type="radio"
               name={name}
               value={String(option.value)}
               onChange={handleRadioChange}
               className="radio"
-              checked={String(selectedValue) === String(option.value)}
+              defaultChecked={
+                String(option.value) === String(defaultOption?.value)
+              }
               required={required}
             />
             <span className="label-text ml-2">{option.label}</span>
           </label>
         ))}
       </div>
-      {hasNestedFields && children}
+      {nestedFields.length > 0 && renderField && (
+        <div>
+          {nestedFields.map((nestedField) =>
+            renderField(nestedField as AnyFormField)
+          )}
+        </div>
+      )}
     </fieldset>
   );
 };

@@ -1,7 +1,14 @@
 interface RadioProps {
   label: string;
-  options: { value: any; label: string; default?: boolean }[];
-  setFormData: (data: any) => void;
+  options: {
+    value: string | number | boolean;
+    label: string;
+    default?: boolean;
+  }[];
+  setFormData: (data: {
+    name: string;
+    value: string | number | boolean;
+  }) => void;
   name: string;
   required?: boolean;
 }
@@ -23,17 +30,17 @@ const Radio: React.FC<RadioProps> = ({
         {required && <span className="text-red-500 ml-1">*</span>}
       </legend>
       {options.map((option) => (
-        <label key={option.value} className="flex items-center mr-4">
+        <label key={String(option.value)} className="flex items-center mr-4">
           <input
             type="radio"
             name={name}
-            value={option.value}
+            value={String(option.value)}
             className="radio"
             defaultChecked={option.default}
             onChange={handleInputChange}
             required={required}
           />
-          <span className="ml-2">{option.label}</span>
+          <span className="label-text ml-2">{option.label}</span>
         </label>
       ))}
     </fieldset>
