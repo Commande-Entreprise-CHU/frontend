@@ -154,19 +154,28 @@ export async function createPdf(params: CreatePdfParams) {
 
         case "RevealRadio": {
           // Check if the reveal radio is activated
-          const isRevealed = formData[field.name];
-          if (isRevealed) {
-            displayValue = "Oui";
-            if (field.revealedField && field.revealedField.length > 0) {
-              field.revealedField.forEach((revealedField) => {
-                const revealedValue = formData[revealedField.name];
-                if (revealedValue) {
-                  displayValue += ` - ${revealedField.label}: ${revealedValue}`;
-                }
-              });
+          const optionSelected = formData[field.name];
+          console.log(
+            "RevealRadio field:",
+            field.name,
+            "Value:",
+            optionSelected
+          );
+          displayValue = optionSelected?.toString() || "Non renseigné";
+
+          if (optionSelected) {
+            if (field.options) {
+              const selectedOption = field.options.find(
+                (opt) => opt.value === optionSelected
+              );
+              if (selectedOption && selectedOption.fields)
+                selectedOption.fields.forEach((revealedField) => {
+                  const revealedValue = formData[revealedField.name];
+                  if (revealedValue) {
+                    displayValue += ` - ${revealedField.label}: ${revealedValue}`;
+                  }
+                });
             }
-          } else {
-            displayValue = "Non";
           }
           break;
         }
