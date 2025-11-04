@@ -405,6 +405,14 @@
                       "label": "Droite"
                     }
                   ]
+                },
+                {
+                  "type": "Range",
+                  "label": "Douleur (1-10)",
+                  "name": "douleur_atm_Range",
+                  "pdfName": "Niveau de douleur",
+                  "steps": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                  "required": true
                 }
               ]
             },
@@ -445,15 +453,10 @@
                 },
                 {
                   "type": "Range",
-                  "label": "Douleur",
-                  "name": "douleurRange",
+                  "label": "Douleur (1-10)",
+                  "name": "douleur_musculaire_Range",
                   "pdfName": "Niveau de douleur",
-                  "steps": [
-                    "pas de douleur",
-                    "douleur légère",
-                    "douleur",
-                    "douleur extreme"
-                  ],
+                  "steps": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
                   "required": true
                 }
               ]

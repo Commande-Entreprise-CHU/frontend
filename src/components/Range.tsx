@@ -40,6 +40,21 @@ const Range: React.FC<RangeProps> = ({
     });
   };
 
+  const inputTransform = useMemo(() => {
+    return `translateX(${50 / steps.length}%)`;
+  }, [steps.length]);
+
+  const inputWidth = useMemo(() => {
+    return `${100 - 100 / (steps.length + 1)}%`;
+  }, [steps.length]);
+
+  const inputStyle = useMemo(() => {
+    return {
+      transform: inputTransform,
+      width: inputWidth,
+    };
+  }, [inputTransform, inputWidth]);
+
   return (
     <div className=" space-y-2">
       <div className="text-sm font-semibold text-primary opacity-80">
@@ -57,10 +72,7 @@ const Range: React.FC<RangeProps> = ({
             handleChange(e);
           }}
           className="range range-primary range-sm"
-          style={{
-            transform: `translateX(${50 / steps.length}%)`,
-            width: `${100 - 100 / (steps.length + 1)}%`,
-          }}
+          style={inputStyle}
           step={stepSize}
           required={required}
         />
