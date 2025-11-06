@@ -13,6 +13,9 @@ const Navbar: React.FC = () => {
       <Link to="/PremConsult" className="btn btn-ghost">
         1ère Consultation
       </Link>
+      <Link to="/Pré-op" className="btn btn-ghost">
+        Consultation pré-op
+      </Link>
       <div className="flex-none">
         <ThemeController />
       </div>

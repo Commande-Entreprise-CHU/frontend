@@ -2,6 +2,7 @@ import Navbar from "./components/Navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PremConsult from "./page/PremConsult";
 import Home from "./page/home";
+import Préop from "./page/Pré-op";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/PremConsult" element={<PremConsult />} />
+          <Route path="/Pré-op" element={<Préop />}/>
         </Routes>
       </div>
     </Router>
