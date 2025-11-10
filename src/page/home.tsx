@@ -18,6 +18,9 @@ const Home: React.FC = () => {
         <Link to="/PremConsult">
           <li className="btn ">1 er consultation</li>
         </Link>
+        <Link to="/Pré-op">
+          <li className="btn "> consultation pré-op</li>
+        </Link>
       </div>
       <TeethSelector />
     </div>
