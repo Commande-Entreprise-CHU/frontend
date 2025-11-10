@@ -22,7 +22,13 @@ const Home: React.FC = () => {
           <li className="btn "> consultation pré-op</li>
         </Link>
       </div>
-      <TeethSelector />
+      <TeethSelector
+        name="teeth"
+        label="Sélection des dents"
+        required={true}
+        setFormData={() => {}}
+        onTeethChange={() => {}}
+      />
     </div>
   );
 };

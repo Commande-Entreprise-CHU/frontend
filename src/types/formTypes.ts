@@ -86,8 +86,10 @@ export interface FormConfig {
 }
 
 export interface FormData {
-  [key: string]: string | number | boolean | undefined;
+  [key: string]: string | number | boolean | undefined | TeethData;
 }
+
+import type { TeethData } from "./teethTypes";
 
 export interface InputChangeData {
   name: string;
