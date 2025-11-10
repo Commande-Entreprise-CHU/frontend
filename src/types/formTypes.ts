@@ -13,7 +13,8 @@ export interface FormField {
     | "RevealRadio"
     | "Select"
     | "Checkbox"
-    | "RevealCheckBox";
+    | "RevealCheckBox"
+    | "TeethSelector";
   label: string;
   name: string;
   pdfName: string;
@@ -58,6 +59,10 @@ export interface RevealCheckBoxField extends FormField {
   fields?: AnyFormField[];
 }
 
+export interface TeethSelectorField extends FormField {
+  type: "TeethSelector";
+}
+
 export type AnyFormField =
   | InputField
   | RadioField
@@ -65,7 +70,8 @@ export type AnyFormField =
   | RevealRadioField
   | SelectField
   | CheckboxField
-  | RevealCheckBoxField;
+  | RevealCheckBoxField
+  | TeethSelectorField;
 
 export interface FormSection {
   title: string;

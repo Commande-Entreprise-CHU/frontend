@@ -63,6 +63,7 @@ const ToothDropdown: React.FC<ToothDropdownProps> = ({
           </p>
           <div className="space-y-1">
             <button
+              type="button"
               onClick={() => handleStateSelect("Normal")}
               className={`btn btn-sm w-full justify-start ${
                 currentState === "Normal" ? "btn-primary" : "btn-ghost"
@@ -72,6 +73,7 @@ const ToothDropdown: React.FC<ToothDropdownProps> = ({
               Normal
             </button>
             <button
+              type="button"
               onClick={() => handleStateSelect("Missing")}
               className={`btn btn-sm w-full justify-start ${
                 currentState === "Missing" ? "btn-error" : "btn-ghost"
@@ -81,6 +83,7 @@ const ToothDropdown: React.FC<ToothDropdownProps> = ({
               Absente
             </button>
             <button
+              type="button"
               onClick={() => handleStateSelect("Implant")}
               className={`btn btn-sm w-full justify-start ${
                 currentState === "Implant" ? "btn-warning" : "btn-ghost"

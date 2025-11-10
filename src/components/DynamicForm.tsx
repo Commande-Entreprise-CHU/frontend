@@ -6,6 +6,7 @@ import Range from "./Range";
 import RevealRadio from "./RevealRadio";
 import RevealCheckBox from "./RevealCheckBox";
 import Checkbox from "./Checkbox";
+import TeethSelector from "./TeethSelector";
 import { useState } from "react";
 import type { AnyFormField, DynamicFormProps } from "../types";
 
@@ -114,6 +115,18 @@ const DynamicForm = ({ config }: DynamicFormProps) => {
               setFormData={handleInputChange}
               required={field.required}
               renderField={renderField}
+            />
+          </div>
+        );
+
+      case "TeethSelector":
+        return (
+          <div key={field.name} className="col-span-full">
+            <TeethSelector
+              name={field.name}
+              label={field.label}
+              setFormData={handleInputChange}
+              required={field.required}
             />
           </div>
         );

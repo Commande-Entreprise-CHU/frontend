@@ -57,7 +57,7 @@ const TeethSelector: React.FC<TeethSelectorProps> = ({
   );
 
   return (
-    <div className="flex flex-col items-center w-1/2 gap-4 h-fit">
+    <div className="flex flex-col items-center gap-4 h-fit">
       {label && (
         <label className="mb-2 font-semibold text-primary">
           {label}
