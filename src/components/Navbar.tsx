@@ -42,6 +42,28 @@ const Navbar: React.FC = () => {
         >
           Consultation pré-op
         </NavLink>
+
+        <NavLink
+          to="/Post-op3mois"
+          className={({ isActive }) =>
+            `btn btn-ghost relative ${
+              isActive ? "after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-primary" : ""
+            }`
+          }
+        >
+          Consultation post opératoire 3 mois
+        </NavLink>
+
+        <NavLink
+          to="/Post-op6mois"
+          className={({ isActive }) =>
+            `btn btn-ghost relative ${
+              isActive ? "after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-primary" : ""
+            }`
+          }
+        >
+          Consultation post opératoire 6 mois
+        </NavLink>
       </div>
 
       <div className="flex-none">

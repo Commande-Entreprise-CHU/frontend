@@ -1,8 +1,7 @@
 {
   "metadata": {
     "name": "PreOperatoire",
-    "description": "Formulaire de consultation pré-opératoire",
-    "version": "1.0.0"
+    "description": "Formulaire de consultation pré-opératoire"
   },
   "sections": [
     {
