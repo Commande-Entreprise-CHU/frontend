@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import TeethSelector from "../components/TeethSelector";
 
 const Home: React.FC = () => {
   return (
@@ -22,13 +21,6 @@ const Home: React.FC = () => {
           <li className="btn "> consultation pré-op</li>
         </Link>
       </div>
-      <TeethSelector
-        name="teeth"
-        label="Sélection des dents"
-        required={true}
-        setFormData={() => {}}
-        onTeethChange={() => {}}
-      />
     </div>
   );
 };
