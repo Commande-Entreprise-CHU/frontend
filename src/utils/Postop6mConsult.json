@@ -1,0 +1,89 @@
+{
+  "metadata": {
+    "name": "PostOp6Mois",
+    "description": "Formulaire de suivi post-opératoire à 6 mois"
+  },
+  "sections": [
+    {
+      "title": "Divers - 6 mois",
+      "fields": [
+        {
+          "type": "Input",
+          "label": "Date de consultation",
+          "name": "date_consultation_6mois",
+          "pdfName": "Date consultation 6 mois",
+          "inputType": "date",
+          "required": true
+        },
+        {
+          "type": "Checkbox",
+          "label": "Fuite air",
+          "name": "fuite_air_6mois",
+          "pdfName": "Fuite air 6 mois"
+        },
+        {
+          "type": "Checkbox",
+          "label": "Fuite liquide",
+          "name": "fuite_liquide_6mois",
+          "pdfName": "Fuite liquide 6 mois"
+        },
+        {
+          "type": "Checkbox",
+          "label": "Sifflement nez",
+          "name": "sifflement_nez_6mois",
+          "pdfName": "Sifflement nez 6 mois"
+        },
+        {
+          "type": "Checkbox",
+          "label": "Rééducation orthophonique",
+          "name": "reeducation_orthophonique_6mois",
+          "pdfName": "Rééducation orthophonique 6 mois"
+        },
+        {
+          "type": "Checkbox",
+          "label": "Test Parole",
+          "name": "test_parole_6mois",
+          "pdfName": "Test Parole 6 mois"
+        },
+        {
+          "type": "Checkbox",
+          "label": "Gêne lecture parole/intensité vocal",
+          "name": "gene_parole_vocal_6mois",
+          "pdfName": "Gêne parole vocal 6 mois"
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Gênes",
+          "name": "genes_6mois",
+          "pdfName": "Gênes 6 mois",
+          "options": [
+            {
+              "value": "yes",
+              "label": "Présentes",
+              "fields": [
+                {
+                  "type": "Input",
+                  "label": "Quand",
+                  "name": "quand_genes_6mois",
+                  "pdfName": "Quand gênes 6 mois",
+                  "placeholder": "Préciser quand surviennent les gênes"
+                }
+              ]
+            },
+            {
+              "value": "no",
+              "label": "Absentes",
+              "default": true
+            }
+          ]
+        },
+        {
+          "type": "Checkbox",
+          "label": "Esthétisme",
+          "name": "esthetisme_6mois",
+          "pdfName": "Esthétisme 6 mois"
+        }
+      ]
+    }
+  ]
+}
