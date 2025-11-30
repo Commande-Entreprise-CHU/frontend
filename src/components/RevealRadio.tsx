@@ -23,7 +23,7 @@ const RevealRadio: React.FC<RevealRadioProps> = ({
   required = false,
   renderField,
 }) => {
-  const defaultOption = options.find((opt) => opt.default) || options[0];
+  const defaultOption = options.find((opt) => opt.default);
   const [selectedValue, setSelectedValue] = useState<string | number>(
     defaultOption?.value || ""
   );

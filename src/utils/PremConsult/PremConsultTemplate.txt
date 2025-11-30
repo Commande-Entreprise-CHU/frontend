@@ -1,89 +1,180 @@
 Chers confrères,
-Je vois ce jour en consultation {{#ifEgal sexe "femme"}}Mme{{else}}M.{{/ifEgal}}
-{{maj nom}} {{prenom}} né.e le {{date_naissance}}, IPP : {{IPP}}. Pour avis, concernant les prises en charge d'une dismorphose faciale C'est la première fois que le patient consulte dans le service.
 
+Je vois ce jour en consultation {{#ifEgal sexe "F"}}Mme{{else}}M.{{/ifEgal}} {{maj nom}} {{prenom}}, {{#ifEgal sexe "F"}}née{{else}}né{{/ifEgal}} le {{formatDate dateNaissance}} (IPP : {{ipp}}).
+Date de la consultation : {{formatDate dateConsultation}}
 
-Antécédent medical: troubles de coagulation (hémophilie suivi par le docteur), maladie de crohn
-Antécédent chirurgical : fracture du poignet (2024)
-Antécédents bucco-dentaires : traitement orthodontique dans l'enfance par multi attache entre 13 et 15 ans, avulsion des 4 prémolaires 2014, avulsion dents de sagesse 2018. Contention en place mandibulaire. Implant sur 26.
+MOTIF DE LA CONSULTATION
+{{#ifEgal motifConsultation "adresseOrtho"}}Le patient est adressé par son orthodontiste.{{/ifEgal}}
+{{#ifEgal motifConsultation "esthetique"}}Le patient consulte pour une demande esthétique concernant le visage, le sourire ou le profil.{{/ifEgal}}
+{{#ifEgal motifConsultation "fonctionAtm"}}Le patient consulte pour des troubles de la fonction ATM.{{/ifEgal}}
+{{#ifEgal motifConsultation "fonctionOcclusion"}}Le motif principal est un trouble de l'occlusion.{{/ifEgal}}
+{{#ifEgal motifConsultation "pasPlainte"}}Pas de plainte spécifique rapportée.{{/ifEgal}}
+{{#ifEgal motifConsultation "asymetrie"}}Consultation pour asymétrie faciale.{{/ifEgal}}
+{{#ifEgal motifConsultation "menton"}}Consultation concernant le menton.{{/ifEgal}}
+{{#ifEgal motifConsultation "respiration"}}Gêne respiratoire signalée.{{/ifEgal}}
+{{#ifEgal motifConsultation "sommeil"}}Troubles du sommeil rapportés.{{/ifEgal}}
+{{#ifEgal motifConsultation "malformatif"}}Cadre syndromique ou malformatif.{{/ifEgal}}
 
-{{#if traitements}}
-Traitement : {{traitements}}
+{{#if esthetisme}}
+Attentes ou craintes particulières exprimées : {{esthetisme}}
 {{/if}}
 
-Situation professionnelle :
+CONTEXTE ET ANTECEDENTS
+{{#ifEgal premiereConsultation "non"}}Il s'agit d'une consultation de suivi ({{nbConsultationsAvant}} consultations préalables).{{else}}Il s'agit d'une première consultation.{{/ifEgal}}
+
+Situation socioprofessionnelle :
 {{#ifEgal activite "active"}}
+Vie active. Statut : {{#ifEgal statutVieActive "sansEmploi"}}Sans emploi{{/ifEgal}}{{#ifEgal statutVieActive "retraite"}}Retraité(e){{/ifEgal}}{{#ifEgal statutVieActive "emploi"}}En emploi{{/ifEgal}}.
 Profession : {{profession}}
 {{/ifEgal}}
-{{#ifEgal activite "etudiant"}}
-Etudes : {{etudes}}
-{{/ifEgal}}
-{{#ifEgal activite "sans_emploi"}}
-Sans activité professionnelle
-{{/ifEgal}}
-{{#ifEgal activite "retraite"}}
-Retraité.e
+{{#ifEgal activite "etudiant"}}Etudiant(e) ({{etudes}}).{{/ifEgal}}
+{{#ifEgal activite "ecole"}}Scolarisé(e) en classe de {{classe}}.{{/ifEgal}}
+
+Habitudes de vie :
+Sport : {{#ifEgal sport "non"}}Non{{/ifEgal}}{{#ifEgal sport "loisirs"}}Pratique loisirs{{/ifEgal}}{{#ifEgal sport "competition"}}Pratique compétition{{/ifEgal}}.
+Tabac : {{#if tabac}}Oui{{else}}Non{{/if}}.
+
+Antécédents médicaux et chirurgicaux :
+{{#ifEgal atcdMedicaux "non"}}
+Aucun antécédent médical général notable.
+{{else}}
+{{#if atcdChirOrtho}}- Antécédent de chirurgie orthognathique.{{/if}}
+{{#if atcdInflammatoire}}- Terrain inflammatoire connu.{{/if}}
+{{#if atcdTraumaSeptique}}
+- Antécédents traumatiques ou septiques :
+{{#if atcdTraumatique}}
+  Traumatisme : {{#if fracCondyle}}Fracture condyle. {{/if}}{{#if fracMandibule}}Fracture mandibule. {{/if}}{{#if fracLefort}}Fracture Lefort. {{/if}}{{#if fracAutre}}{{fracAutreTexte}}{{/if}}
+{{/if}}
+{{#if atcdSeptique}}
+  Septique : {{atcdSeptiqueAutreTexte}}
+{{/if}}
+{{/if}}
 {{/ifEgal}}
 
-Allergies : Pénicillines, graminées
-Interrogatoire
-#informations récupérées sur les questions au patient
-Le patient est adressé par son orthodontiste le docteur [] qu'il a consulté il y a 8 mois pour avis concernant l'esthétique de son sourire, ainsi qu'une plante fonctionnelle sur la qualité de son occlusion.
-Il rapporte une récidive de son encombrement dentaire et du décalage sagittal de ces mâchoires, trouve son sourire, trop gingival et son menton en retrait.
-Au niveau fonctionnel sur le plan de son articulation temporo-mandibulaire, le patient se plaint de claquement et de craquement bilatéraux, associe à quelques crises douloureuses plus forte le matin, exacerbé lors d'une période de stress professionnel. Il n'y a pas de notion de traumatisme, du menton ou de la mâchoire. Il écoute ses douleurs articulaires à 6 sur 10. Il rapporte un deuxième nocturne. En moyenne. Il réalise en ce sens des séances de kinésithérapie depuis environ un an, associé au port d'une gouttière de désengrènement nocturne prescrit de personnes dentiste. Un chirurgien maxillo facial en ville réalise tous les 6 mois des injections de 50 unités de toxines botulique dans les muscles massétera et temporaux.
-Le patient ne verbalise pas de plainte au niveau de son sommeil. Il n'y a de notion d'apnée ou de roncopathie.
-Examen clinique :
-#informations récupérées à l'examen du patient
-Examen clinique de face
-Tiers du visage non équilibrés, avec un excès de hauteur du tiers moyen et un défaut de hauteur du tiers inférieur.
-Ligne bicomissurale parallèle a la ligne bipupillaire
-Pointe du nez centrée.
-Decouvrement dentaire au repos de 3mm
-Respirateur buccal
-Incompétence labiale de repos.
-Examen de profil :
-Profil hypodivergent
-Angle nasofrontal normal
-Angle nasolabial ouvert
-Rétro genie retromandibulie
-Crispation mentonnière et sillon labiomentonnier marqué
-Pas de déviation du septum nasal
-Angles mandibulaires haut situés
-Sourire:
-Gingival (découvrement gingival au sourire de 2 mm)
-Point interincisif maxillaire centre
-Point interincisif mandibulaire centre
-Examen endobuccal
-Hygiène satisfaisante
-Traitement multi attache en place
-Parodonte non inflammatoire
-Pas de carie ou poche parodontale au sondage
-Classe II canine et molaire bilatérale
-Beance antérieure de 4 a 4
-Endomaxillie bilatérale
-Pas de mobilité dentaire anormale
-Panoramique :
-Avulsion de 14 24 34 44 et des 4 dents de sagesse
-Pas d'infection dentaire en cours
-Implant 26, pas de signe de péri implantite.
-Teleradiographie de profil :
-Pas d'anomalie de la filière craniorachidienne
-Filière aérienne étroite
-Rétro mandibule retrogenie
-Excès vertical maxillaire anterieur
-Insuffisance verticale postérieure bilatérale
-Pas de dédoublement des bords basilaires
-Cbct
-Pas d'asymétrie osseuse majeure
-Condyles fins avec début d'arthropathie bilatérale
-Nerf alvéolaire inférieur situé bas et lingual
-Conclusion :
-Le patient présente une dysmorphose dentofaciale de classe II avec beance antérieure et endomaxillie, excès vertical antérieur maxillaire avec sourire gingival sans bascule du plan d'occlusion, associé à une insuffisance verticale postérieure.
-Nous expliquons au patient qu'il peut être indiqué une prise en charge orthodontico-chirurgicale, consistant idéalement en une préparation orthontique premièr avec une expansion maxillaire chirurgicalement aidée par disjonction intermaxillaire, puis a terme une chirurgie bimaxillaire avec allongement vertical postérieur bilatéral pour correction de l'insuffisance verticale postérieure ainsi que de la beance.
-Nous expliquons au patient les différents tenants et aboutissants de cette prise en charge, les risques chirurgicaux (hémorragie, infection, expansion insuffisante, récidive, déficit neurologique sensitif définitif...).
-Nous restons donc à la disposition de son orthodontiste pour réaliser ces deux interventions une fois le patient décidé et restons bien entendu à leur disposition pour toute information complémentaire.
-Nous posons de principe une date opératoire pour la disjonction intermaxillaire le 14 décembre 2025 et pouvons évoquer la chirurgie bimaxillaire a l'été 2027.
+Hémostase :
+{{#ifEgal tbHemostase "non"}}
+Pas de trouble de l'hémostase connu.
+{{else}}
+Troubles de l'hémostase signalés : {{#if anticoagulants}}Traitement anticoagulant. {{/if}}{{#if hemophilie}}Hémophilie. {{/if}}{{#if antiaggregation}}Traitement antiagrégant.{{/if}}
+{{/ifEgal}}
+
+Allergies :
+{{#ifEgal allergies "non"}}Pas d'allergie connue.{{else}}
+Allergies signalées : {{#if allergiePenicilline}}Pénicilline. {{/if}}{{#if allergieAlimentaire}}Alimentaire. {{/if}}{{#if allergieAutre}}{{allergieAutreTexte}}{{/if}}
+{{/ifEgal}}
+
+Histoire orthodontique :
+{{#ifEgal orthodontiste "oui"}}Suivi par l'orthodontiste : Dr {{nomOrthodontiste}}.{{/ifEgal}}
+{{#ifEgal dejaEuTttOrtho "oui"}}
+Un traitement orthodontique a déjà été réalisé à l'âge de {{ageTttOrtho}} ans pendant {{dureeTttOrtho}} mois (Type : {{#ifEgal typeTttOrtho "multiattache"}}Multiattache{{else}}Aligneurs{{/ifEgal}}).
+{{else}}
+Aucun traitement orthodontique préalable.
+{{/ifEgal}}
+
+Contexte fonctionnel ATM :
+{{#ifEgal claquements "oui"}}Claquements rapportés (Côté : {{claquementsCote}}). {{/ifEgal}}
+{{#ifEgal douleursAtm "oui"}}Douleurs ATM rapportées (Côté : {{douleursAtmCote}}). {{/ifEgal}}
+{{#ifEgal claquements "non"}}{{#ifEgal douleursAtm "non"}}Pas de plainte articulaire subjective.{{/ifEgal}}{{/ifEgal}}
+{{#if bruxisme}}Bruxisme signalé. {{/if}}
+{{#if kineAtm}}Séances de kinésithérapie ATM en cours ou réalisées. {{/if}}
+{{#if gouttiere}}Port d'une gouttière occlusale. {{/if}}
+{{#if toxineBotulique}}Injections de toxine botulique réalisées par le passé.{{/if}}
+
+Ventilation et Sommeil :
+{{#ifEgal deviationSeptale "oui"}}Déviation septale rapportée (Intervention : {{operationSeptale}}).{{else}}Pas de déviation septale rapportée.{{/ifEgal}}
+{{#ifEgal saosApnees "fait"}}
+Exploration du sommeil réalisée. {{#if resPolygraphie}}Polygraphie positive. {{/if}}{{#if iahTraitement}}IAH traité.{{/if}}
+{{else}}
+Pas d'exploration du sommeil à ce jour.
+{{/ifEgal}}
+
+EXAMEN CLINIQUE
+
+Examen de la face :
+La symétrie faciale est {{#ifEgal symetrieFaciale "symetrique"}}conservée{{else}}altérée{{/ifEgal}}.
+
+Analyse des tiers du visage (Face) :
+- Tiers Supérieur : {{#ifEgal faceTiersSup "equilibre"}}Equilibré{{/ifEgal}}.
+- Tiers Moyen : {{#ifEgal faceTiersMoyen "equilibre"}}Equilibré{{/ifEgal}}{{#ifEgal faceTiersMoyen "hypomaxillie"}}Hypomaxillie{{/ifEgal}}{{#ifEgal faceTiersMoyen "excesVertical"}}Excès vertical{{/ifEgal}}.
+- Tiers Inférieur : {{#ifEgal faceTiersInf "equilibre"}}Equilibré{{/ifEgal}}{{#ifEgal faceTiersInf "retromandibulie"}}Rétromandibulie{{/ifEgal}}{{#ifEgal faceTiersInf "promandibulie"}}Promandibulie{{/ifEgal}}.
+
+Analyse du profil :
+- Divergence : {{#ifEgal divergence "normal"}}Normale{{/ifEgal}}{{#ifEgal divergence "hypodivergent"}}Hypodivergente{{/ifEgal}}{{#ifEgal divergence "hyperdivergent"}}Hyperdivergente{{/ifEgal}}.
+- Profil frontal : {{#ifEgal profilFrontal "cisfrontal"}}Cisfrontal{{else}}Transfrontal{{/ifEgal}}.
+- Tiers Moyen : {{#ifEgal profilTiersMoyen "equilibre"}}Equilibré{{/ifEgal}}{{#ifEgal profilTiersMoyen "hypomaxillie"}}En retrait (Hypomaxillie){{/ifEgal}}{{#ifEgal profilTiersMoyen "excesVertical"}}Excès vertical{{/ifEgal}}.
+- Tiers Inférieur : {{#ifEgal profilTiersInf "equilibre"}}Equilibré{{/ifEgal}}{{#ifEgal profilTiersInf "retromandibulie"}}Rétromandibulie{{/ifEgal}}{{#ifEgal profilTiersInf "promandibulie"}}Promandibulie{{/ifEgal}}.
+
+Tissus mous et angles :
+- Angle Naso-frontal : {{#ifEgal angleNasofrontal "normal"}}Normal{{/ifEgal}}{{#ifEgal angleNasofrontal "ouvert"}}Ouvert{{/ifEgal}}{{#ifEgal angleNasofrontal "ferme"}}Fermé{{/ifEgal}}.
+- Angle Naso-labial : {{#ifEgal angleNasolabial "normal"}}Normal{{/ifEgal}}{{#ifEgal angleNasolabial "ouvert"}}Ouvert{{/ifEgal}}{{#ifEgal angleNasolabial "ferme"}}Fermé{{/ifEgal}}.
+- Symphyse : {{#ifEgal symphyse "normal"}}Normale{{/ifEgal}}{{#ifEgal symphyse "excesVerticalAnt"}}Excès vertical antérieur{{/ifEgal}}{{#ifEgal symphyse "insuffisanceVertAnt"}}Insuffisance verticale antérieure{{/ifEgal}}.
+- Compétence labiale : {{#ifEgal competenceLabiale "normale"}}Normale{{else}}Incompétence labiale au repos{{/ifEgal}}.
+
+Examen du sourire :
+- Découvrement dentaire au repos : {{decouvrementDentaire}} mm.
+- Type de sourire : {{#ifEgal decouvrementGingival "papillaire"}}Papillaire{{/ifEgal}}{{#ifEgal decouvrementGingival "gingival"}}Gingival{{/ifEgal}}{{#ifEgal decouvrementGingival "dentaire"}}Dentaire{{/ifEgal}}.
+- Point inter-incisif Maxillaire : {{#ifEgal pointInterMax "centre"}}Centré{{else}}Décalé de {{pointInterMaxMm}} mm vers la {{#ifEgal pointInterMaxCote "D"}}Droite{{else}}Gauche{{/ifEgal}}{{/ifEgal}}.
+- Point inter-incisif Mandibulaire : {{#ifEgal pointInterMand "centre"}}Centré{{else}}Décalé de {{pointInterMandMm}} mm vers la {{#ifEgal pointInterMandCote "D"}}Droite{{else}}Gauche{{/ifEgal}}{{/ifEgal}}.
+
+Examen Endo-buccal :
+- Hygiène et Parodonte : {{#if parodontopathie}}Signes de parodontopathie (Stade : {{stadeParodontopathie}}).{{else}}Parodonte cliniquement sain.{{/if}}
+- Mobilités dentaires : {{#if mobiliteDentaire}}Présentes{{else}}Absentes{{/if}}.
+- Anomalies dentaires (agénésies/implants) : {{#if anomaliesDentaires}}{{formatTeeth anomaliesDentairesSelector}}{{else}}Aucune signalée{{/if}}.
+- Avulsions dentaires : {{#if avulsionDentaire}}Sagesse : {{formatTeeth avulsionSagesse}}. {{#if avulsionAutre}}Autres : {{avulsionAutreTexte}}{{/if}}{{else}}Non{{/if}}.
+
+Occlusion statique :
+- Classe d'occlusion : {{classeOcclusion}}.
+- Sens transversal : {{#ifEgal sensTransversal "normal"}}Normal{{/ifEgal}}{{#ifEgal sensTransversal "endomaxillie"}}Endomaxillie{{/ifEgal}}{{#ifEgal sensTransversal "exocclusion"}}Exocclusion{{/ifEgal}}.
+- Latéro-mandibulie : {{#ifEgal lateroMandibulie "oui"}}Oui (Côté : {{lateroMandibulieCote}}){{else}}Non{{/ifEgal}}.
+- Plan d'occlusion : {{#ifEgal planOcclusion "horizontal"}}Horizontal{{/ifEgal}}{{#ifEgal planOcclusion "obliqueBasD"}}Oblique bas à droite{{/ifEgal}}{{#ifEgal planOcclusion "obliqueHautD"}}Oblique haut à droite{{/ifEgal}}.
+- Surplomb horizontal : {{surplombHorizontal}} mm. {{#if proalveolie}}Avec proalvéolie.{{/if}}
+- Béance :
+{{#ifEgal beance "non"}}Absente.{{/ifEgal}}
+{{#ifEgal beance "ant"}}Antérieure (Dents concernées : {{formatTeeth beanceDentsAnt}}).{{/ifEgal}}
+{{#ifEgal beance "post"}}Postérieure (Dents concernées : {{formatTeeth beanceDentsPost}}).{{/ifEgal}}
+
+Fonction ATM (Examen clinique) :
+- Ouverture buccale : {{ouvertureBuccale}} mm.
+- Diduction : {{diduction}} mm.
+- Point de contact prématuré : {{default pointContact "Aucun"}}.
+
+IMAGERIE
+
+Bilan dentaire radiographique :
+{{formatTeeth bilanRadioDentaire}}
+{{#if kyste}}Présence de lésion kystique visible.{{/if}}
+
+Panoramique et Téléradiographie :
+{{#if panoPoches}}Images évoquant des poches parodontales sur la panoramique. {{/if}}
+{{#if panoAsymetrie}}Asymétrie osseuse visible sur la panoramique. {{/if}}
+{{#if teleradiographie}}Téléradiographie de profil analysée. {{/if}}
+
+CBCT (Cone Beam) :
+- Condyles : {{#ifEgal cbctCondyles "normaux"}}Aspect normal{{/ifEgal}}{{#ifEgal cbctCondyles "hypertrophiques"}}Hypertrophiques{{/ifEgal}}{{#ifEgal cbctCondyles "hypocondylie"}}Hypocondylie{{/ifEgal}}{{#ifEgal cbctCondyles "arthrose"}}Signes d'arthrose/dégénérescence{{/ifEgal}}.
+- Procès Coronés : {{#ifEgal cbctCorones "normaux"}}Normaux{{/ifEgal}}{{#ifEgal cbctCorones "hypertrophiques"}}Hypertrophiques{{/ifEgal}}.
+- Sinus maxillaires : {{#ifEgal cbctSinus "libres"}}Libres{{else}}Signes de sinusite{{/ifEgal}}.
+- Nerf alvéolaire inférieur : {{#ifEgal cbctNerf "standard"}}Position standard (plutôt haut et lingual){{else}}Position atypique{{/ifEgal}}.
+- Asymétrie basilaire : {{#ifEgal cbctAsymetrie "oui"}}Oui (Côté : {{cbctAsymetrieCote}}){{else}}Non{{/ifEgal}}.
+- Matériel : {{#if cbctImplants}}Implants visibles. {{/if}}{{#if cbctMateriel}}Matériel d'ostéosynthèse visible. {{/if}}
+
+IRM ATM :
+{{#ifEgal irmEffectuee "non"}}
+Non réalisée ou non disponible ce jour.
+{{else}}
+Examen réalisé.
+{{#ifEgal irmLuxation "oui"}}Luxation discale retrouvée (Grade : {{irmLuxationGrade}}). {{/ifEgal}}
+{{#ifEgal irmLuxation "non"}}Pas de luxation discale significative. {{/ifEgal}}
+{{#if irmInflammation}}Signes d'inflammation condylienne (oedème).{{/if}}
+{{/ifEgal}}
+
+CONCLUSION ET PROJET THERAPEUTIQUE
+
+Utilisation d'ancrages osseux envisagée : {{#if ancragesOsseux}}Oui{{else}}Non{{/if}}.
+{{#if RdvFutur}}
+Date prévisionnelle opératoire ou prochain RDV : {{formatDate RdvFutur}}
+{{/if}}
+
 Bien confraternellement,
-Nom du docteur
+
+Docteur [Nom du Docteur]
 Service de chirurgie maxillo-faciale
-CHU de []

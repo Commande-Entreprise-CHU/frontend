@@ -1,7 +1,7 @@
 import React from "react";
 import ToothDropdown from "./ToothDropdown";
 import type { ToothState } from "../types/teethTypes";
-import { TOOTH_STATE_COLORS } from "../types/teethTypes";
+import type { ToothOption } from "./TeethSelector";
 
 interface ToothProps {
   toothId: string;
@@ -9,6 +9,8 @@ interface ToothProps {
   currentState: ToothState;
   onStateChange: (toothId: string, state: ToothState) => void;
   mirrored?: boolean;
+  options: ToothOption[];
+  colorMap: Record<string, string>;
 }
 
 const Tooth: React.FC<ToothProps> = ({
@@ -17,8 +19,11 @@ const Tooth: React.FC<ToothProps> = ({
   currentState,
   onStateChange,
   mirrored = false,
+  options,
+  colorMap,
 }) => {
-  const className = `${TOOTH_STATE_COLORS[currentState]} ${
+  const colorClass = colorMap[currentState] || "fill-base-300";
+  const className = `${colorClass} ${
     mirrored ? "scale-x-[-1]" : ""
   } w-fit h-20 transition-all duration-100`;
 
@@ -28,6 +33,7 @@ const Tooth: React.FC<ToothProps> = ({
       currentState={currentState}
       onStateChange={onStateChange}
       trigger={<ToothComponent className={className} />}
+      options={options}
     />
   );
 };

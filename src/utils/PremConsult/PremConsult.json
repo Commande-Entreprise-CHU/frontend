@@ -1,41 +1,39 @@
 {
   "metadata": {
-    "name": "PremConsult",
-    "description": "Première consultation"
+    "name": "ConsultationOrthodontieFinal",
+    "description": "Première consultation",
+    "version": "5.0.0"
   },
   "sections": [
     {
-      "title": "Données Administratives",
+      "title": "DONNEES ADMINISTRATIVES",
       "fields": [
         {
           "type": "Input",
-          "label": "Date de consultation",
-          "name": "date_consultation",
-          "pdfName": "Date de consultation",
+          "label": "Date du jour",
+          "name": "dateConsultation",
           "inputType": "date",
-          "required": true
+          "required": true,
+          "default": "now"
         },
         {
           "type": "Input",
           "label": "Nom",
-          "name": "name",
-          "pdfName": "Nom",
-          "placeholder": "Nom",
+          "name": "nom",
+          "inputType": "text",
           "required": true
         },
         {
           "type": "Input",
           "label": "Prénom",
           "name": "prenom",
-          "pdfName": "Prénom",
-          "placeholder": "Prénom",
+          "inputType": "text",
           "required": true
         },
         {
           "type": "Input",
           "label": "Date de naissance",
-          "name": "dob",
-          "pdfName": "Date de naissance",
+          "name": "dateNaissance",
           "inputType": "date",
           "required": true
         },
@@ -43,24 +41,21 @@
           "type": "Input",
           "label": "IPP",
           "name": "ipp",
-          "pdfName": "IPP",
-          "placeholder": "IPP",
-          "required": false
+          "inputType": "text",
+          "required": true
         },
         {
           "type": "Radio",
           "label": "Sexe",
           "name": "sexe",
-          "pdfName": "Sexe",
           "options": [
             {
-              "value": "femme",
+              "value": "F",
               "label": "Femme"
             },
             {
-              "value": "homme",
-              "label": "Homme",
-              "default": true
+              "value": "H",
+              "label": "Homme"
             }
           ],
           "required": true
@@ -68,88 +63,81 @@
       ]
     },
     {
-      "title": "Antécédents (ATCD)",
+      "title": "ANTÉCÉDENTS (ATCD)",
       "fields": [
         {
           "type": "RevealRadio",
-          "name": "antecedentsRadio",
-          "pdfName": "Antécédents Médicaux",
-          "label": "A t'il des antécédents médicaux ?",
+          "label": "Antécédents médicaux",
+          "name": "atcdMedicaux",
           "options": [
             {
-              "value": "yes",
+              "value": "oui",
               "label": "Oui",
               "fields": [
                 {
                   "type": "Checkbox",
                   "label": "ATCD chir orthognathique",
-                  "name": "atcd_chir_ortho",
-                  "pdfName": "ATCD chir orthognathique"
+                  "name": "atcdChirOrtho"
                 },
                 {
                   "type": "RevealCheckBox",
                   "label": "ATCD traumatique / septique",
-                  "name": "atcd_trauma_septique",
+                  "name": "atcdTraumaSeptique",
                   "fields": [
                     {
                       "type": "RevealCheckBox",
                       "label": "Traumatique",
-                      "name": "atcd_traumatique",
-                      "pdfName": "Traumatique",
+                      "name": "atcdTraumatique",
                       "fields": [
                         {
                           "type": "Checkbox",
                           "label": "Fracture condyle",
-                          "name": "trauma_fracture_condyle",
-                          "pdfName": "Fracture condyle"
+                          "name": "fracCondyle"
                         },
                         {
                           "type": "Checkbox",
                           "label": "Fracture mandibule",
-                          "name": "trauma_fracture_mandibule",
-                          "pdfName": "Fracture mandibule"
+                          "name": "fracMandibule"
                         },
                         {
                           "type": "Checkbox",
                           "label": "Fracture Lefort",
-                          "name": "trauma_fracture_lefort",
-                          "pdfName": "Fracture Lefort"
+                          "name": "fracLefort"
                         },
                         {
                           "type": "RevealCheckBox",
                           "label": "Autre",
-                          "name": "trauma_autre",
-                          "pdfName": "Autre",
+                          "name": "fracAutre",
                           "fields": [
                             {
                               "type": "Input",
-                              "name": "trauma_autre_details",
-                              "pdfName": "Autre Détails",
-                              "placeholder": "Préciser",
-                              "required": false
+                              "label": "Préciser traumatisme",
+                              "name": "fracAutreTexte",
+                              "inputType": "text",
+                              "required": true
                             }
                           ]
                         }
                       ]
                     },
                     {
-                      "type": "Checkbox",
-                      "label": "Septique",
-                      "name": "atcd_septique",
-                      "pdfName": "Septique"
-                    },
-                    {
                       "type": "RevealCheckBox",
-                      "label": "Autre",
-                      "name": "atcd_septique_autre",
-                      "pdfName": "Autre",
+                      "label": "Septique",
+                      "name": "atcdSeptique",
                       "fields": [
                         {
-                          "type": "Input",
-                          "name": "atcd_septique_autre_details",
-                          "pdfName": "Autre Détails",
-                          "placeholder": "Préciser",
-                          "required": false
+                          "type": "RevealCheckBox",
+                          "label": "Autre",
+                          "name": "atcdSeptiqueAutre",
+                          "fields": [
+                            {
+                              "type": "Input",
+                              "label": "Préciser septique",
+                              "name": "atcdSeptiqueAutreTexte",
+                              "inputType": "text",
+                              "required": true
+                            }
+                          ]
                         }
                       ]
                     }
@@ -158,48 +146,9 @@
                 {
                   "type": "Checkbox",
                   "label": "ATCD inflammatoire",
-                  "name": "atcd_inflammatoire",
-                  "pdfName": "ATCD inflammatoire"
-                },
-                {
-                  "type": "Input",
-                  "label": "Autres Antécédents",
-                  "name": "antecedents_details",
-                  "pdfName": "Antécédents Détails",
-                  "placeholder": "Préciser les antécédents",
-                  "required": false
-                },
-                {
-                  "type": "Input",
-                  "label": "Traitements",
-                  "name": "traitements",
-                  "pdfName": "Traitements",
-                  "placeholder": "Lister les traitements en cours",
-                  "required": false
+                  "name": "atcdInflammatoire"
                 }
               ]
-            },
-            {
-              "value": "no",
-              "label": "Non",
-              "default": true
-            }
-          ],
-          "required": true
-        },
-        {
-          "type": "Radio",
-          "label": "Sport",
-          "name": "sport",
-          "pdfName": "Sport",
-          "options": [
-            {
-              "value": "loisirs",
-              "label": "Pratique en loisirs"
-            },
-            {
-              "value": "competition",
-              "label": "Pratique en compétition/pro"
             },
             {
               "value": "non",
@@ -210,22 +159,52 @@
           "required": true
         },
         {
+          "type": "Radio",
+          "label": "Sport",
+          "name": "sport",
+          "options": [
+            {
+              "value": "non",
+              "label": "Non",
+              "default": true
+            },
+            {
+              "value": "loisirs",
+              "label": "Pratique en loisirs"
+            },
+            {
+              "value": "competition",
+              "label": "Pratique en compétition/pro"
+            }
+          ],
+          "required": true
+        },
+        {
           "type": "RevealRadio",
-          "label": "Quelle est son activité principale ?",
+          "label": "Activité",
           "name": "activite",
-          "pdfName": "Activité",
           "options": [
             {
               "value": "active",
               "label": "Vie active",
               "fields": [
                 {
+                  "type": "Radio",
+                  "label": "Statut",
+                  "name": "statutVieActive",
+                  "options": [
+                    { "value": "sansEmploi", "label": "Sans emploi" },
+                    { "value": "retraite", "label": "Retraité" },
+                    { "value": "emploi", "label": "En emploi" }
+                  ],
+                  "required": true
+                },
+                {
                   "type": "Input",
                   "label": "Profession",
                   "name": "profession",
-                  "pdfName": "Profession",
-                  "placeholder": "Profession",
-                  "required": false
+                  "inputType": "text",
+                  "required": true
                 }
               ]
             },
@@ -237,53 +216,245 @@
                   "type": "Input",
                   "label": "Etudes",
                   "name": "etudes",
-                  "pdfName": "Etudes",
-                  "placeholder": "Etudes",
-                  "required": false
+                  "inputType": "text",
+                  "required": true
                 }
               ]
             },
             {
-              "value": "sans_emploi",
-              "label": "Sans emploi"
-            },
-            {
-              "value": "retraite",
-              "label": "Retraité"
+              "value": "ecole",
+              "label": "Ecole",
+              "fields": [
+                {
+                  "type": "Input",
+                  "label": "Classe",
+                  "name": "classe",
+                  "inputType": "text",
+                  "required": true
+                }
+              ]
             }
           ],
           "required": true
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Allergies",
+          "name": "allergies",
+          "options": [
+            {
+              "value": "oui",
+              "label": "Oui",
+              "fields": [
+                {
+                  "type": "Checkbox",
+                  "label": "Pénicilline",
+                  "name": "allergiePenicilline"
+                },
+                {
+                  "type": "Checkbox",
+                  "label": "Alimentaire",
+                  "name": "allergieAlimentaire"
+                },
+                {
+                  "type": "RevealCheckBox",
+                  "label": "Autre",
+                  "name": "allergieAutre",
+                  "fields": [
+                    {
+                      "type": "Input",
+                      "label": "Préciser allergie",
+                      "name": "allergieAutreTexte",
+                      "inputType": "text",
+                      "required": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "value": "non",
+              "label": "Non",
+              "default": true
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Orthodontiste",
+          "name": "orthodontiste",
+          "options": [
+            {
+              "value": "oui",
+              "label": "Oui",
+              "fields": [
+                {
+                  "type": "Input",
+                  "label": "Nom de l'orthodontiste",
+                  "name": "nomOrthodontiste",
+                  "inputType": "text"
+                }
+              ]
+            },
+            {
+              "value": "non",
+              "label": "Non",
+              "default": true
+            }
+          ]
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Première consultation",
+          "name": "premiereConsultation",
+          "options": [
+            {
+              "value": "oui",
+              "label": "Oui",
+              "default": true
+            },
+            {
+              "value": "non",
+              "label": "Non",
+              "fields": [
+                {
+                  "type": "Input",
+                  "label": "Combien d'autres avant ?",
+                  "name": "nbConsultationsAvant",
+                  "inputType": "number"
+                }
+              ]
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Troubles d'hémostase",
+          "name": "tbHemostase",
+          "options": [
+            {
+              "value": "oui",
+              "label": "Oui",
+              "fields": [
+                {
+                  "type": "Checkbox",
+                  "label": "Anticoagulants",
+                  "name": "anticoagulants"
+                },
+                {
+                  "type": "Checkbox",
+                  "label": "Hémophilie",
+                  "name": "hemophilie"
+                },
+                {
+                  "type": "Checkbox",
+                  "label": "Antiaggrégation",
+                  "name": "antiaggregation"
+                }
+              ]
+            },
+            {
+              "value": "non",
+              "label": "Non",
+              "default": true
+            }
+          ]
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Déjà eu ttt ortho",
+          "name": "dejaEuTttOrtho",
+          "options": [
+            {
+              "value": "oui",
+              "label": "Oui",
+              "fields": [
+                {
+                  "type": "Input",
+                  "label": "A quel âge",
+                  "name": "ageTttOrtho",
+                  "inputType": "number",
+                  "required": true
+                },
+                {
+                  "type": "Input",
+                  "label": "Durée (mois)",
+                  "name": "dureeTttOrtho",
+                  "inputType": "number",
+                  "required": true
+                },
+                {
+                  "type": "Radio",
+                  "label": "Type de traitement",
+                  "name": "typeTttOrtho",
+                  "options": [
+                    {
+                      "value": "multiattache",
+                      "label": "Multiattache"
+                    },
+                    {
+                      "value": "aligneurs",
+                      "label": "Aligneurs"
+                    }
+                  ],
+                  "required": true
+                }
+              ]
+            },
+            {
+              "value": "non",
+              "label": "Non",
+              "default": true
+            }
+          ]
+        },
+        {
+          "type": "Checkbox",
+          "label": "Agénésies (Remplir schéma dentaire final)",
+          "name": "agenesiesFlag"
+        },
+        {
+          "type": "Checkbox",
+          "label": "Implants existants (Remplir schéma dentaire final)",
+          "name": "implantsFlag"
+        },
+        {
+          "type": "Checkbox",
+          "label": "Tabac",
+          "name": "tabac"
         }
       ]
     },
     {
-      "title": "Informations Patient & Motif",
+      "title": "INFOS SUR LE PATIENT",
       "fields": [
         {
-          "type": "Radio",
-          "label": "Motif de la consultation",
+          "type": "Select",
+          "label": "Motif consultation",
           "name": "motifConsultation",
           "required": true,
-          "pdfName": "Motif de la consultation",
           "options": [
             {
-              "value": "adresse_orthodontiste",
-              "label": "Adressé par Orthodontiste"
+              "value": "adresseOrtho",
+              "label": "Adressé par Orthodontiste (Default)",
+              "default": true
             },
             {
-              "value": "esthetique_visage",
+              "value": "esthetique",
               "label": "Esthétique du visage / sourire / profil"
             },
             {
-              "value": "fonction_atm",
+              "value": "fonctionAtm",
               "label": "Fonction ATM"
             },
             {
-              "value": "fonction_occlusion",
+              "value": "fonctionOcclusion",
               "label": "Fonction occlusion"
             },
             {
-              "value": "pas_plainte",
+              "value": "pasPlainte",
               "label": "Pas de plainte"
             },
             {
@@ -311,8 +482,7 @@
         {
           "type": "Radio",
           "label": "Ancrages osseux",
-          "name": "ancrages_osseux",
-          "pdfName": "Ancrages osseux",
+          "name": "ancragesOsseux",
           "options": [
             {
               "value": true,
@@ -324,13 +494,12 @@
               "default": true
             }
           ],
-          "required": false
+          "required": true
         },
         {
           "type": "Radio",
-          "label": "Toxine botulique utilisée ?",
-          "name": "toxine_botulique",
-          "pdfName": "Toxine botulique",
+          "label": "Toxine botulique utilisée",
+          "name": "toxineBotulique",
           "options": [
             {
               "value": true,
@@ -342,82 +511,37 @@
               "default": true
             }
           ],
-          "required": false
-        },
-        {
-          "type": "RevealRadio",
-          "name": "claquementsRadio",
-          "pdfName": "Claquements",
-          "label": "A t'il des claquements ?",
-          "options": [
-            {
-              "value": "yes",
-              "label": "Oui",
-              "fields": [
-                {
-                  "type": "Radio",
-                  "label": "Coté des claquements",
-                  "name": "cote_claquements",
-                  "pdfName": "Côté des claquements",
-                  "options": [
-                    {
-                      "value": "gauche",
-                      "label": "Gauche"
-                    },
-                    {
-                      "value": "droite",
-                      "label": "Droite"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "value": "no",
-              "label": "Non",
-              "default": true
-            }
-          ],
           "required": true
         },
         {
           "type": "RevealRadio",
-          "name": "douleurs_atm_Radio",
-          "pdfName": "Douleurs ATM",
-          "label": "Douleurs ATM ?",
+          "label": "Claquements",
+          "name": "claquements",
           "options": [
             {
-              "value": "yes",
+              "value": "oui",
               "label": "Oui",
               "fields": [
                 {
                   "type": "Radio",
-                  "label": "Coté des douleurs ATM",
-                  "name": "cote_douleurs_atm",
-                  "pdfName": "Côté des douleurs ATM",
+                  "label": "Côté",
+                  "name": "claquementsCote",
                   "options": [
                     {
-                      "value": "gauche",
-                      "label": "Gauche"
+                      "value": "D",
+                      "label": "Droit"
                     },
                     {
-                      "value": "droite",
-                      "label": "Droite"
+                      "value": "G",
+                      "label": "Gauche"
                     }
-                  ]
-                },
-                {
-                  "type": "Range",
-                  "label": "Douleur (1-10)",
-                  "name": "douleur_atm_Range",
-                  "pdfName": "Niveau de douleur",
-                  "steps": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                  ],
                   "required": true
                 }
               ]
             },
             {
-              "value": "no",
+              "value": "non",
               "label": "Non",
               "default": true
             }
@@ -426,99 +550,105 @@
         },
         {
           "type": "RevealRadio",
-          "name": "douleurs_musculaires_Radio",
-          "pdfName": "Douleurs musculaires",
-
-          "label": "Douleurs musculaires ?",
+          "label": "Douleurs ATM",
+          "name": "douleursAtm",
           "options": [
             {
-              "value": "yes",
+              "value": "oui",
               "label": "Oui",
               "fields": [
                 {
                   "type": "Radio",
-                  "label": "Coté des douleurs musculaires",
-                  "name": "cote_douleurs_musculaires",
-                  "pdfName": "Côté des douleurs musculaires",
+                  "label": "Côté",
+                  "name": "douleursAtmCote",
                   "options": [
                     {
-                      "value": "gauche",
-                      "label": "Gauche"
+                      "value": "D",
+                      "label": "Droit"
                     },
                     {
-                      "value": "droite",
-                      "label": "Droite"
+                      "value": "G",
+                      "label": "Gauche"
                     }
-                  ]
-                },
-                {
-                  "type": "Range",
-                  "label": "Douleur (1-10)",
-                  "name": "douleur_musculaire_Range",
-                  "pdfName": "Niveau de douleur",
-                  "steps": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                  ],
                   "required": true
                 }
               ]
             },
             {
-              "value": "no",
+              "value": "non",
               "label": "Non",
               "default": true
             }
           ],
+          "required": true
+        },
+        {
+          "type": "Checkbox",
+          "label": "Bruxisme",
+          "name": "bruxisme",
+          "required": true
+        },
+        {
+          "type": "Checkbox",
+          "label": "Kinésithérapie ATM",
+          "name": "kineAtm",
+          "required": true
+        },
+        {
+          "type": "Checkbox",
+          "label": "Gouttière",
+          "name": "gouttiere",
           "required": true
         },
         {
           "type": "RevealRadio",
-          "name": "bruxisme_Radio",
-          "pdfName": "Bruxisme",
-          "label": "Bruxisme ?",
-          "options": [
-            {
-              "value": "yes",
-              "label": "Oui",
-              "fields": [
-                {
-                  "type": "Checkbox",
-                  "label": "Diurne",
-                  "name": "bruxisme_diurne",
-                  "pdfName": "Bruxisme Diurne"
-                },
-                {
-                  "type": "Checkbox",
-                  "label": "Nocturne",
-                  "name": "bruxisme_nocturne",
-                  "pdfName": "Bruxisme Nocturne"
-                },
-                {
-                  "type": "Checkbox",
-                  "label": "Gouttière",
-                  "name": "bruxisme_gouttiere",
-                  "pdfName": "Gouttière"
-                }
-              ]
-            },
-            {
-              "value": "no",
-              "label": "Non",
-              "default": true
-            }
-          ],
-          "required": true
-        },
-        {
-          "type": "Radio",
           "label": "SAOS / Apnées",
-          "name": "saos_apnees",
-          "pdfName": "SAOS / Apnées",
+          "name": "saosApnees",
           "options": [
             {
-              "value": true,
-              "label": "Oui"
+              "value": "fait",
+              "label": "Fait",
+              "fields": [
+                {
+                  "type": "Checkbox",
+                  "label": "Résultat polygraphie ventilatoire",
+                  "name": "resPolygraphie"
+                },
+                {
+                  "type": "Checkbox",
+                  "label": "IAH + traitement",
+                  "name": "iahTraitement"
+                }
+              ]
             },
             {
-              "value": false,
+              "value": "nonFait",
+              "label": "Non fait / Pas d'exploration",
+              "default": true
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Déviation septale",
+          "name": "deviationSeptale",
+          "options": [
+            {
+              "value": "oui",
+              "label": "Oui",
+              "fields": [
+                {
+                  "type": "Input",
+                  "label": "Opération réalisée",
+                  "name": "operationSeptale",
+                  "inputType": "text"
+                }
+              ]
+            },
+            {
+              "value": "non",
               "label": "Non",
               "default": true
             }
@@ -526,76 +656,20 @@
           "required": true
         },
         {
-          "type": "Radio",
-          "label": "Décalage aux réveils",
-          "name": "decalage_reveils",
-          "pdfName": "Décalage aux réveils",
-          "options": [
-            {
-              "value": true,
-              "label": "Oui"
-            },
-            {
-              "value": false,
-              "label": "Non",
-              "default": true
-            }
-          ],
-          "required": true
+          "type": "Input",
+          "label": "Esthétisme (attendus, craintes...)",
+          "name": "esthetisme",
+          "inputType": "text"
         }
       ]
     },
     {
-      "title": "Examen Clinique",
+      "title": "Données Cliniques - Examen exobuccal",
       "fields": [
         {
-          "type": "Input",
-          "label": "Poids (kg)",
-          "name": "poids",
-          "pdfName": "Poids",
-          "placeholder": "Poids en kg",
-          "inputType": "number",
-          "required": true
-        },
-        {
-          "type": "Input",
-          "label": "Taille (cm)",
-          "name": "taille",
-          "pdfName": "Taille",
-          "placeholder": "Taille en cm",
-          "inputType": "number",
-          "required": true
-        },
-        {
           "type": "Radio",
-          "label": "Forme du visage",
-          "name": "forme_visage",
-          "pdfName": "Forme du visage",
-          "options": [
-            {
-              "value": "ovoide",
-              "label": "Ovoide"
-            },
-            {
-              "value": "carre",
-              "label": "Carré"
-            },
-            {
-              "value": "allonge",
-              "label": "Allongé"
-            },
-            {
-              "value": "rond",
-              "label": "Rond"
-            }
-          ],
-          "required": true
-        },
-        {
-          "type": "RevealRadio",
-          "name": "symetrie_faciale_Radio",
-          "pdfName": "Symétrie faciale",
           "label": "Symétrie faciale",
+          "name": "symetrieFaciale",
           "options": [
             {
               "value": "symetrique",
@@ -604,60 +678,216 @@
             },
             {
               "value": "asymetrique",
-              "label": "Asymétrique",
-              "fields": [
-                {
-                  "type": "Checkbox",
-                  "label": "Déviation droite",
-                  "name": "sym_dev_droite"
-                },
-                {
-                  "type": "Checkbox",
-                  "label": "Déviation gauche",
-                  "name": "sym_dev_gauche"
-                },
-                {
-                  "type": "Checkbox",
-                  "label": "Etage moyen",
-                  "name": "sym_etage_moyen"
-                },
-                {
-                  "type": "Checkbox",
-                  "label": "Etage inférieur",
-                  "name": "sym_etage_inf"
-                },
-                {
-                  "type": "Checkbox",
-                  "label": "Agrandissement côté G",
-                  "name": "sym_aug_g"
-                },
-                {
-                  "type": "Checkbox",
-                  "label": "Agrandissement côté D",
-                  "name": "sym_aug_d"
-                }
-              ]
+              "label": "Asymétrique"
+            }
+          ]
+        },
+        {
+          "type": "Radio",
+          "label": "De face - Tiers du visage Supérieur",
+          "name": "faceTiersSup",
+          "options": [
+            {
+              "value": "equilibre",
+              "label": "Equilibré",
+              "default": true
             }
           ],
           "required": true
         },
         {
           "type": "Radio",
-          "label": "Profil",
-          "name": "profil",
-          "pdfName": "Profil",
+          "label": "De face - Tiers du visage Moyen",
+          "name": "faceTiersMoyen",
           "options": [
             {
-              "value": "droit",
-              "label": "Droit"
+              "value": "equilibre",
+              "label": "Equilibré",
+              "default": true
             },
             {
-              "value": "concave",
-              "label": "Concave"
+              "value": "hypomaxillie",
+              "label": "Hypomaxillie"
             },
             {
-              "value": "convexe",
-              "label": "Convexe"
+              "value": "excesVertical",
+              "label": "Excès vertical"
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "Radio",
+          "label": "De face - Tiers du visage Inférieur",
+          "name": "faceTiersInf",
+          "options": [
+            {
+              "value": "equilibre",
+              "label": "Equilibré",
+              "default": true
+            },
+            {
+              "value": "retromandibulie",
+              "label": "Rétromandibulie"
+            },
+            {
+              "value": "promandibulie",
+              "label": "Promandibulie"
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "Radio",
+          "label": "De profil - Tiers du visage Supérieur",
+          "name": "profilTiersSup",
+          "options": [
+            {
+              "value": "equilibre",
+              "label": "Equilibré",
+              "default": true
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "Radio",
+          "label": "De profil - Tiers du visage Moyen",
+          "name": "profilTiersMoyen",
+          "options": [
+            {
+              "value": "equilibre",
+              "label": "Equilibré",
+              "default": true
+            },
+            {
+              "value": "hypomaxillie",
+              "label": "Hypomaxillie"
+            },
+            {
+              "value": "excesVertical",
+              "label": "Excès vertical"
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "Radio",
+          "label": "De profil - Tiers du visage Inférieur",
+          "name": "profilTiersInf",
+          "options": [
+            {
+              "value": "equilibre",
+              "label": "Equilibré",
+              "default": true
+            },
+            {
+              "value": "retromandibulie",
+              "label": "Rétromandibulie"
+            },
+            {
+              "value": "promandibulie",
+              "label": "Promandibulie"
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "Radio",
+          "label": "Angle nasofrontal",
+          "name": "angleNasofrontal",
+          "options": [
+            {
+              "value": "normal",
+              "label": "Normal",
+              "default": true
+            },
+            {
+              "value": "ouvert",
+              "label": "Ouvert"
+            },
+            {
+              "value": "ferme",
+              "label": "Fermé"
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "Radio",
+          "label": "Angle nasolabial",
+          "name": "angleNasolabial",
+          "options": [
+            {
+              "value": "normal",
+              "label": "Normal",
+              "default": true
+            },
+            {
+              "value": "ouvert",
+              "label": "Ouvert"
+            },
+            {
+              "value": "ferme",
+              "label": "Fermé"
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "Radio",
+          "label": "Symphyse",
+          "name": "symphyse",
+          "options": [
+            {
+              "value": "normal",
+              "label": "Normal",
+              "default": true
+            },
+            {
+              "value": "excesVerticalAnt",
+              "label": "Excès vertical antérieur"
+            },
+            {
+              "value": "insuffisanceVertAnt",
+              "label": "Insuffisance verticale antérieure"
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "Radio",
+          "label": "Divergence",
+          "name": "divergence",
+          "options": [
+            {
+              "value": "normal",
+              "label": "Normal",
+              "default": true
+            },
+            {
+              "value": "hypodivergent",
+              "label": "Hypodivergent"
+            },
+            {
+              "value": "hyperdivergent",
+              "label": "Hyperdivergent"
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "Radio",
+          "label": "Profil frontal",
+          "name": "profilFrontal",
+          "options": [
+            {
+              "value": "cisfrontal",
+              "label": "Cisfrontal"
+            },
+            {
+              "value": "transfrontal",
+              "label": "Transfrontal"
             }
           ],
           "required": true
@@ -665,168 +895,461 @@
       ]
     },
     {
-      "title": "Imagerie",
+      "title": "Etat bucco dentaire",
       "fields": [
         {
-          "type": "RevealRadio",
-          "name": "pano_lesions_apicales",
-          "label": "Panoramique: Lésions apicales",
-          "pdfName": "Pano Lésions apicales",
+          "type": "Checkbox",
+          "label": "Parodontopathie",
+          "name": "parodontopathie"
+        },
+        {
+          "type": "Checkbox",
+          "label": "Mobilité dentaire",
+          "name": "mobiliteDentaire"
+        },
+        {
+          "type": "Radio",
+          "label": "Classe d'occlusion",
+          "name": "classeOcclusion",
           "options": [
             {
-              "value": "yes",
+              "value": "I",
+              "label": "Classe I",
+              "default": true
+            },
+            {
+              "value": "II",
+              "label": "Classe II"
+            },
+            {
+              "value": "III",
+              "label": "Classe III"
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Latéro-mandibulie",
+          "name": "lateroMandibulie",
+          "options": [
+            {
+              "value": "oui",
               "label": "Oui",
+              "fields": [
+                {
+                  "type": "Radio",
+                  "label": "Côté",
+                  "name": "lateroMandibulieCote",
+                  "options": [
+                    {
+                      "value": "D",
+                      "label": "Droit"
+                    },
+                    {
+                      "value": "G",
+                      "label": "Gauche"
+                    }
+                  ],
+                  "required": true
+                }
+              ]
+            },
+            {
+              "value": "non",
+              "label": "Non",
+              "default": true
+            }
+          ]
+        },
+        {
+          "type": "Radio",
+          "label": "Plan d'occlusion",
+          "name": "planOcclusion",
+          "options": [
+            {
+              "value": "horizontal",
+              "label": "Horizontal",
+              "default": true
+            },
+            {
+              "value": "obliqueBasD",
+              "label": "Oblique -> bas à droite"
+            },
+            {
+              "value": "obliqueHautD",
+              "label": "Oblique -> haute à droite"
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "Radio",
+          "label": "Sens transversal",
+          "name": "sensTransversal",
+          "options": [
+            {
+              "value": "normal",
+              "label": "Normal",
+              "default": true
+            },
+            {
+              "value": "endomaxillie",
+              "label": "Endomaxillie"
+            },
+            {
+              "value": "exocclusion",
+              "label": "Exocclusion"
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "Radio",
+          "label": "Béance (Détail sur schéma dentaire final)",
+          "name": "beanceType",
+          "options": [
+            { "value": "non", "label": "Non", "default": true },
+            { "value": "anterieure", "label": "Antérieure" },
+            { "value": "posterieure", "label": "Postérieure" }
+          ],
+          "required": true
+        },
+        {
+          "type": "Input",
+          "label": "Surplomb horizontal (mm)",
+          "name": "surplombHorizontal",
+          "inputType": "number",
+          "default": 1,
+          "placeholder": "chiffre neg = incisives mandibulaires en avant",
+          "required": true
+        },
+        {
+          "type": "Checkbox",
+          "label": "Proalvéolie",
+          "name": "proalveolie"
+        }
+      ]
+    },
+    {
+      "title": "Sourire",
+      "fields": [
+        {
+          "type": "Input",
+          "label": "Découvrement dentaire au repos (mm)",
+          "name": "decouvrementDentaire",
+          "inputType": "number",
+          "default": 3
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Point interincisif maxillaire",
+          "name": "pointInterMax",
+          "options": [
+            {
+              "value": "centre",
+              "label": "Centré",
+              "default": true
+            },
+            {
+              "value": "decale",
+              "label": "Décalé",
+              "fields": [
+                {
+                  "type": "Radio",
+                  "label": "Côté",
+                  "name": "pointInterMaxCote",
+                  "options": [
+                    {
+                      "value": "D",
+                      "label": "Droit"
+                    },
+                    {
+                      "value": "G",
+                      "label": "Gauche"
+                    }
+                  ],
+                  "required": true
+                },
+                {
+                  "type": "Input",
+                  "label": "Décalage en mm",
+                  "name": "pointInterMaxMm",
+                  "inputType": "number",
+                  "required": true
+                }
+              ]
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Point interincisif mandibulaire",
+          "name": "pointInterMand",
+          "options": [
+            {
+              "value": "centre",
+              "label": "Centré",
+              "default": true
+            },
+            {
+              "value": "decale",
+              "label": "Décalé",
+              "fields": [
+                {
+                  "type": "Radio",
+                  "label": "Côté",
+                  "name": "pointInterMandCote",
+                  "options": [
+                    {
+                      "value": "D",
+                      "label": "Droit"
+                    },
+                    {
+                      "value": "G",
+                      "label": "Gauche"
+                    }
+                  ],
+                  "required": true
+                },
+                {
+                  "type": "Input",
+                  "label": "Décalage en mm",
+                  "name": "pointInterMandMm",
+                  "inputType": "number",
+                  "required": true
+                }
+              ]
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "Radio",
+          "label": "Découvrement gingival",
+          "name": "decouvrementGingival",
+          "options": [
+            {
+              "value": "papillaire",
+              "label": "Papillaire",
+              "default": true
+            },
+            {
+              "value": "gingival",
+              "label": "Gingival"
+            },
+            {
+              "value": "dentaire",
+              "label": "Dentaire"
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "RevealCheckBox",
+          "label": "Avulsion dentaire (Remplir schéma dentaire final)",
+          "name": "avulsionDentaireFlag",
+          "fields": [
+            {
+              "type": "RevealCheckBox",
+              "label": "Autre avulsion (que sagesse)",
+              "name": "avulsionAutre",
               "fields": [
                 {
                   "type": "Input",
-                  "label": "Dents concernées",
-                  "name": "pano_lesions_dents",
-                  "placeholder": "Ex: 12, 14, 25"
+                  "label": "Préciser",
+                  "name": "avulsionAutreTexte",
+                  "inputType": "text"
                 }
               ]
-            },
-            {
-              "value": "no",
-              "label": "Non",
-              "default": true
             }
           ]
         },
         {
+          "type": "Input",
+          "label": "Stade Parodontopathie",
+          "name": "stadeParodontopathie",
+          "inputType": "text"
+        },
+        {
           "type": "Radio",
-          "label": "Panoramique: Dents de lait",
-          "name": "pano_dents_lait",
-          "pdfName": "Pano Dents de lait",
+          "label": "Compétence labiale",
+          "name": "competenceLabiale",
           "options": [
             {
-              "value": true,
-              "label": "Oui"
+              "value": "normale",
+              "label": "Normale",
+              "default": true
             },
             {
-              "value": false,
-              "label": "Non",
-              "default": true
+              "value": "incompetence",
+              "label": "Incompétence labiale au repos"
+            }
+          ],
+          "required": true
+        }
+      ]
+    },
+    {
+      "title": "Fonction ATM",
+      "fields": [
+        {
+          "type": "Input",
+          "label": "Ouverture buccale (> 35 mm)",
+          "name": "ouvertureBuccale",
+          "inputType": "number",
+          "default": 35
+        },
+        {
+          "type": "Input",
+          "label": "Diduction droite / gauche (> 10 mm)",
+          "name": "diduction",
+          "inputType": "number",
+          "default": 10
+        },
+        {
+          "type": "Input",
+          "label": "Point de contact entre dents haut/bas",
+          "name": "pointContact",
+          "inputType": "text"
+        }
+      ]
+    },
+    {
+      "title": "IMAGERIE",
+      "fields": [
+        {
+          "type": "TeethSelector",
+          "label": "Schéma Dentaire Global (Lésions, Béance, Agénésie, etc.)",
+          "name": "bilanRadioDentaire",
+          "options": [
+            {
+              "value": "saine",
+              "label": "Dents saines",
+              "color": "fill-white"
+            },
+            {
+              "value": "lesion",
+              "label": "Lésion apicale",
+              "color": "fill-red-500"
+            },
+            {
+              "value": "lait",
+              "label": "Dent de lait",
+              "color": "fill-blue-400"
+            },
+            {
+              "value": "agenesie",
+              "label": "Agénésie (Absente)",
+              "color": "fill-gray-500"
+            },
+            {
+              "value": "incluse",
+              "label": "Incluse",
+              "color": "fill-yellow-500"
+            },
+            {
+              "value": "implant",
+              "label": "Implant",
+              "color": "fill-purple-500"
+            },
+            {
+              "value": "beance",
+              "label": "Béance",
+              "color": "fill-orange-400"
+            },
+            {
+              "value": "avulsion",
+              "label": "Avulsion (Extraite)",
+              "color": "fill-gray-400"
+            },
+            {
+              "value": "surArcade",
+              "label": "Sur arcade",
+              "color": "fill-green-500"
             }
           ]
+        },
+        {
+          "type": "Checkbox",
+          "label": "Panoramique : Poches parodontales",
+          "name": "panoPoches"
+        },
+        {
+          "type": "Checkbox",
+          "label": "Panoramique : Asymétrie osseuse",
+          "name": "panoAsymetrie"
+        },
+        {
+          "type": "Checkbox",
+          "label": "Téléradiographie",
+          "name": "teleradiographie"
+        },
+        {
+          "type": "Checkbox",
+          "label": "Kyste",
+          "name": "kyste"
         },
         {
           "type": "RevealRadio",
-          "name": "pano_agenesie",
-          "label": "Panoramique: Agénésie",
-          "pdfName": "Pano Agénésie",
+          "label": "CBCT : Nerf alvéolaire",
+          "name": "cbctNerf",
           "options": [
             {
-              "value": "yes",
-              "label": "Oui",
+              "value": "standard",
+              "label": "Situé plutôt haut et lingual",
+              "default": true
+            },
+            {
+              "value": "different",
+              "label": "Différent",
               "fields": [
                 {
-                  "type": "Checkbox",
-                  "label": "Incluses",
-                  "name": "pano_agenesie_incluses"
+                  "type": "Radio",
+                  "label": "Nerf Droit : Hauteur",
+                  "name": "cbctNerfDroitHauteur",
+                  "options": [
+                    { "value": "haut", "label": "Haut" },
+                    { "value": "bas", "label": "Bas" }
+                  ]
                 },
                 {
-                  "type": "Checkbox",
-                  "label": "Sur arcade",
-                  "name": "pano_agenesie_arcade"
+                  "type": "Radio",
+                  "label": "Nerf Droit : Position",
+                  "name": "cbctNerfDroitPosition",
+                  "options": [
+                    { "value": "lingual", "label": "Lingual" },
+                    { "value": "vestibulaire", "label": "Vestibulaire" }
+                  ]
+                },
+                {
+                  "type": "Radio",
+                  "label": "Nerf Gauche : Hauteur",
+                  "name": "cbctNerfGaucheHauteur",
+                  "options": [
+                    { "value": "haut", "label": "Haut" },
+                    { "value": "bas", "label": "Bas" }
+                  ]
+                },
+                {
+                  "type": "Radio",
+                  "label": "Nerf Gauche : Position",
+                  "name": "cbctNerfGauchePosition",
+                  "options": [
+                    { "value": "lingual", "label": "Lingual" },
+                    { "value": "vestibulaire", "label": "Vestibulaire" }
+                  ]
                 }
               ]
-            },
-            {
-              "value": "no",
-              "label": "Non",
-              "default": true
             }
-          ]
+          ],
+          "required": true
         },
         {
           "type": "Radio",
-          "label": "Panoramique: Poches parodontales",
-          "name": "pano_poches",
-          "pdfName": "Pano Poches parodontales",
-          "options": [
-            {
-              "value": true,
-              "label": "Oui"
-            },
-            {
-              "value": false,
-              "label": "Non",
-              "default": true
-            }
-          ]
-        },
-        {
-          "type": "Radio",
-          "label": "Panoramique: Asymétrie osseuse",
-          "name": "pano_asymetrie_osseuse",
-          "pdfName": "Pano Asymétrie osseuse",
-          "options": [
-            {
-              "value": true,
-              "label": "Oui"
-            },
-            {
-              "value": false,
-              "label": "Non",
-              "default": true
-            }
-          ]
-        },
-        {
-          "type": "Radio",
-          "label": "Téléradigraphie",
-          "name": "tele",
-          "pdfName": "Téléradigraphie",
-          "options": [
-            {
-              "value": true,
-              "label": "Oui"
-            },
-            {
-              "value": false,
-              "label": "Non",
-              "default": true
-            }
-          ]
-        },
-        {
-          "type": "Radio",
-          "label": "CBCT: Kyste",
-          "name": "cbct_kyste",
-          "pdfName": "CBCT Kyste",
-          "options": [
-            {
-              "value": true,
-              "label": "Oui"
-            },
-            {
-              "value": false,
-              "label": "Non",
-              "default": true
-            }
-          ]
-        },
-        {
-          "type": "Radio",
-          "label": "CBCT: Nerf alvéolaire",
-          "name": "cbct_nerf",
-          "pdfName": "CBCT Nerf alvéolaire",
-          "options": [
-            {
-              "value": "default",
-              "label": "Situé plutôt haut et lingual"
-            },
-            {
-              "value": "diff",
-              "label": "Position différente (préciser)"
-            }
-          ]
-        },
-        {
-          "type": "Radio",
-          "label": "CBCT: Condyles",
-          "name": "cbct_condyles",
-          "pdfName": "CBCT Condyles",
+          "label": "CBCT : Condyles",
+          "name": "cbctCondyles",
           "options": [
             {
               "value": "normaux",
@@ -845,13 +1368,13 @@
               "value": "arthrose",
               "label": "Arthrose"
             }
-          ]
+          ],
+          "required": true
         },
         {
           "type": "Radio",
-          "label": "CBCT: Coronés",
-          "name": "cbct_corones",
-          "pdfName": "CBCT Coronés",
+          "label": "CBCT : Coronés",
+          "name": "cbctCorones",
           "options": [
             {
               "value": "normaux",
@@ -862,13 +1385,13 @@
               "value": "hypertrophiques",
               "label": "Hypertrophiques"
             }
-          ]
+          ],
+          "required": true
         },
         {
           "type": "Radio",
-          "label": "CBCT: Sinus",
-          "name": "cbct_sinus",
-          "pdfName": "CBCT Sinus",
+          "label": "CBCT : Sinus",
+          "name": "cbctSinus",
           "options": [
             {
               "value": "libres",
@@ -879,112 +1402,106 @@
               "value": "sinusites",
               "label": "Sinusites"
             }
-          ]
+          ],
+          "required": true
         },
         {
-          "type": "Radio",
-          "label": "CBCT: Implants",
-          "name": "cbct_implants",
-          "pdfName": "CBCT Implants",
-          "options": [
-            {
-              "value": true,
-              "label": "Oui"
-            },
-            {
-              "value": false,
-              "label": "Non",
-              "default": true
-            }
-          ]
+          "type": "Checkbox",
+          "label": "CBCT : Implants",
+          "name": "cbctImplants"
         },
         {
-          "type": "Radio",
-          "label": "CBCT: Matériel ostéosynthèse",
-          "name": "cbct_materiel",
-          "pdfName": "CBCT Matériel ostéosynthèse",
-          "options": [
-            {
-              "value": true,
-              "label": "Oui"
-            },
-            {
-              "value": false,
-              "label": "Non",
-              "default": true
-            }
-          ]
+          "type": "Checkbox",
+          "label": "CBCT : Matériel ostéosynthèse",
+          "name": "cbctMateriel"
         },
         {
           "type": "RevealRadio",
-          "name": "cbct_asymetrie_basilaire",
-          "label": "CBCT: Asymétrie basilaire",
-          "pdfName": "CBCT Asymétrie basilaire",
+          "label": "CBCT : Asymétrie basilaire",
+          "name": "cbctAsymetrie",
           "options": [
             {
-              "value": "yes",
+              "value": "oui",
               "label": "Oui",
               "fields": [
                 {
                   "type": "Radio",
                   "label": "Côté",
-                  "name": "cbct_asymetrie_cote",
+                  "name": "cbctAsymetrieCote",
                   "options": [
                     {
-                      "value": "gauche",
-                      "label": "Gauche"
+                      "value": "D",
+                      "label": "Droit"
                     },
                     {
-                      "value": "droite",
-                      "label": "Droite"
+                      "value": "G",
+                      "label": "Gauche"
                     }
-                  ]
+                  ],
+                  "required": true
                 }
               ]
             },
             {
-              "value": "no",
+              "value": "non",
               "label": "Non",
               "default": true
             }
-          ]
+          ],
+          "required": true
         },
         {
           "type": "RevealRadio",
-          "name": "irm_luxation",
-          "label": "IRM: Luxation discale",
-          "pdfName": "IRM Luxation discale",
+          "label": "IRM : Luxation discale",
+          "name": "irmLuxation",
           "options": [
             {
-              "value": "yes",
+              "value": "oui",
               "label": "Oui",
               "fields": [
                 {
                   "type": "Input",
                   "label": "Grade",
-                  "name": "irm_luxation_grade",
-                  "placeholder": "Grade"
+                  "name": "irmLuxationGrade",
+                  "inputType": "text",
+                  "required": true
                 }
               ]
             },
             {
-              "value": "no",
+              "value": "non",
               "label": "Non",
               "default": true
             }
-          ]
-        }
-      ]
-    },
-    {
-      "title": "Examen Dentaire",
-      "fields": [
+          ],
+          "required": true
+        },
         {
-          "type": "TeethSelector",
-          "label": "État des dents",
-          "name": "teeth_state",
-          "pdfName": "État des dents",
-          "required": false
+          "type": "Checkbox",
+          "label": "IRM : Inflammation condyle",
+          "name": "irmInflammation"
+        },
+        {
+          "type": "Radio",
+          "label": "IRM effectuée",
+          "name": "irmEffectuee",
+          "options": [
+            {
+              "value": "oui",
+              "label": "Oui"
+            },
+            {
+              "value": "non",
+              "label": "Non"
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "Input",
+          "label": "Rdv futur",
+          "name": "RdvFutur",
+          "inputType": "date"
         }
       ]
     }

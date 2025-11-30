@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { ToothState } from "../types/teethTypes";
+import type { ToothOption } from "./TeethSelector";
 
 interface ToothDropdownProps {
   position?: string;
@@ -11,6 +12,7 @@ interface ToothDropdownProps {
   toothId: string;
   currentState: ToothState;
   onStateChange: (toothId: string, state: ToothState) => void;
+  options: ToothOption[];
 }
 
 const ToothDropdown: React.FC<ToothDropdownProps> = ({
@@ -22,6 +24,7 @@ const ToothDropdown: React.FC<ToothDropdownProps> = ({
   toothId,
   currentState,
   onStateChange,
+  options,
 }) => {
   const detailsRef = useRef<HTMLDetailsElement>(null);
 
@@ -62,36 +65,24 @@ const ToothDropdown: React.FC<ToothDropdownProps> = ({
             Dent {toothId}
           </p>
           <div className="space-y-1">
-            <button
-              type="button"
-              onClick={() => handleStateSelect("Normal")}
-              className={`btn btn-sm w-full justify-start ${
-                currentState === "Normal" ? "btn-primary" : "btn-ghost"
-              }`}
-            >
-              <span className="w-3 h-3 rounded-full bg-base-300 mr-2"></span>
-              Normal
-            </button>
-            <button
-              type="button"
-              onClick={() => handleStateSelect("Missing")}
-              className={`btn btn-sm w-full justify-start ${
-                currentState === "Missing" ? "btn-error" : "btn-ghost"
-              }`}
-            >
-              <span className="w-3 h-3 rounded-full bg-error mr-2"></span>
-              Absente
-            </button>
-            <button
-              type="button"
-              onClick={() => handleStateSelect("Implant")}
-              className={`btn btn-sm w-full justify-start ${
-                currentState === "Implant" ? "btn-warning" : "btn-ghost"
-              }`}
-            >
-              <span className="w-3 h-3 rounded-full bg-warning mr-2"></span>
-              Implant
-            </button>
+            {options.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => handleStateSelect(option.value)}
+                className={`btn btn-sm w-full justify-start ${
+                  currentState === option.value ? "btn-active" : "btn-ghost"
+                }`}
+              >
+                <span
+                  className={`w-3 h-3 rounded-full mr-2 ${option.color.replace(
+                    "fill-",
+                    "bg-"
+                  )}`}
+                ></span>
+                {option.label}
+              </button>
+            ))}
           </div>
         </div>
       </div>
