@@ -17,6 +17,7 @@ import B8 from "./teeth/B8";
 import B7 from "./teeth/B7";
 
 import Tooth from "./Tooth";
+import TeethSummary from "./TeethSummary";
 import type { TeethData } from "../types/teethTypes";
 import { TOOTH_IDS } from "../types/teethTypes";
 
@@ -362,6 +363,8 @@ const TeethSelector: React.FC<TeethSelectorProps> = ({
           colorMap={colorMap}
         />
       </div>
+
+      <TeethSummary teethData={teethData} options={options} />
     </div>
   );
 };
