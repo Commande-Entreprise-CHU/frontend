@@ -1,5 +1,4 @@
 import Radio from "./Radio";
-import Button from "./Button";
 import Input from "./Input";
 import Range from "./Range";
 import RevealRadio from "./RevealRadio";
@@ -7,7 +6,7 @@ import RevealCheckBox from "./RevealCheckBox";
 import Checkbox from "./Checkbox";
 import TeethSelector from "./TeethSelector";
 import { useState, useMemo, useEffect } from "react";
-import type { AnyFormField, DynamicFormProps, FormConfig } from "../types";
+import type { AnyFormField, FormConfig } from "../types";
 import { createTxt } from "../utils/textLogic/createTxt";
 
 const DynamicForm = ({

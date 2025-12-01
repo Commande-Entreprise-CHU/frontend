@@ -3,7 +3,7 @@ import PréopConfig from "../utils/PréopConsult.json" with { type: "json" };
 import type { FormConfig } from "../types/formTypes";
 
 const Préop = () => {
-  return <DynamicForm config={PréopConfig as FormConfig} />;
+  return <DynamicForm config={PréopConfig as FormConfig} templateSrc="" />;
 };
 
 export default Préop;
