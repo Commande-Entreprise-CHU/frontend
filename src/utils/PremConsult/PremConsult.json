@@ -1147,26 +1147,6 @@
           "required": true
         },
         {
-          "type": "RevealCheckBox",
-          "label": "Avulsion dentaire (Remplir schéma dentaire final)",
-          "name": "avulsionDentaireFlag",
-          "fields": [
-            {
-              "type": "RevealCheckBox",
-              "label": "Autre avulsion (que sagesse)",
-              "name": "avulsionAutre",
-              "fields": [
-                {
-                  "type": "Input",
-                  "label": "Préciser",
-                  "name": "avulsionAutreTexte",
-                  "inputType": "text"
-                }
-              ]
-            }
-          ]
-        },
-        {
           "type": "Input",
           "label": "Stade Parodontopathie",
           "name": "stadeParodontopathie",

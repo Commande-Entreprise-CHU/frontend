@@ -60,8 +60,8 @@ const ToothDropdown: React.FC<ToothDropdownProps> = ({
         {trigger}
       </summary>
       <div className={`absolute dropdown-content z-[10] ${dropdownClassName}`}>
-        <div className="p-3 bg-base-200 rounded-lg shadow-lg min-w-[150px]">
-          <p className="text-sm font-semibold mb-2 text-base-content">
+        <div className="p-3 bg-base-200 rounded-lg shadow-lg min-w-[220px]">
+          <p className="text-sm font-semibold mb-2 text-base-content px-1">
             Dent {toothId}
           </p>
           <div className="space-y-1">
@@ -70,17 +70,20 @@ const ToothDropdown: React.FC<ToothDropdownProps> = ({
                 key={option.value}
                 type="button"
                 onClick={() => handleStateSelect(option.value)}
-                className={`btn btn-sm w-full justify-start ${
+                className={`btn btn-sm w-full justify-start flex-nowrap h-auto py-2 ${
                   currentState === option.value ? "btn-active" : "btn-ghost"
                 }`}
               >
-                <span
-                  className={`w-3 h-3 rounded-full mr-2 ${option.color.replace(
-                    "fill-",
-                    "bg-"
-                  )}`}
-                ></span>
-                {option.label}
+                <svg
+                  className={`w-4 h-4 mr-3 flex-shrink-0 ${option.color} stroke-base-content/20`}
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                </svg>
+                <span className="text-left whitespace-normal leading-tight">
+                  {option.label}
+                </span>
               </button>
             ))}
           </div>
