@@ -32,7 +32,7 @@ const Tooth: React.FC<ToothProps> = ({
       toothId={toothId}
       currentState={currentState}
       onStateChange={onStateChange}
-      trigger={<ToothComponent className={className} color={colorClass} />}
+      trigger={<ToothComponent className={className} />}
       options={options}
     />
   );
