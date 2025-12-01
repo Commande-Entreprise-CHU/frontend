@@ -1,65 +1,53 @@
-<<<<<<< HEAD
 import React from "react";
 import { Link } from "react-router-dom";
+import { UserPlus, Search, Edit3 } from "lucide-react"; // íconos elegantes
 
 const Home: React.FC = () => {
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen py-2">
-      <h1 className="text-primary text-center">
+    <div className="flex flex-col items-center justify-start min-h-screen py-10 space-y-6">
+
+      <h1 className="text-primary text-center text-3xl font-bold">
         Outil de consultation pour la chirurgie maxillo-faciale
       </h1>
-      <h2 className="text-secondary text-center">
+
+      <h2 className="text-secondary text-center text-lg font-medium opacity-80">
         Outil en cours de développement...
       </h2>
-      <h3 className="text-center mt-4 max-w-2xl">
-        Consultations disponibles :
+
+      <h3 className="text-center mt-4 font-semibold text-lg">
+        Actions disponibles :
       </h3>
-      <div className=" text-center mt-2">
-        <Link to="/PremConsult">
-          <li className="btn ">1 er consultation</li>
+
+      {/* BOTONES ELEGANTES */}
+      <div className="flex flex-col gap-4 mt-4 w-full max-w-md">
+
+        <Link
+          to="/patient/new/prem-consult"
+           className="btn btn-primary btn-lg shadow-md rounded-xl w-full text-lg font-semibold"
+        >
+          <UserPlus size={22} />
+          <span className="text-lg">Nouveau patient</span>
         </Link>
-        <Link to="/Pré-op">
-          <li className="btn "> consultation pré-op</li>
+
+        <Link
+          to="/Find"
+           className="btn btn-primary btn-lg shadow-md rounded-xl w-full text-lg font-semibold"
+        >
+          <Search size={22} />
+          <span className="text-lg">Continuer consultation</span>
         </Link>
+
+        <Link
+          to="/Find?edit=true"
+          className="btn btn-primary btn-lg shadow-md rounded-xl w-full text-lg font-semibold"
+        >
+          <Edit3 size={22} />
+          <span className="text-lg">Modifier un patient</span>
+        </Link>
+
       </div>
     </div>
   );
 };
 
 export default Home;
-=======
-import React from "react";
-import { Link } from "react-router-dom";
-
-const Home: React.FC = () => {
-  return (
-    <div className="flex flex-col items-center justify-start min-h-screen py-2">
-      <h1 className="text-primary text-center">
-        Outil de consultation pour la chirurgie maxillo-faciale
-      </h1>
-      <h2 className="text-secondary text-center">
-        Outil en cours de développement...
-      </h2>
-      <h3 className="text-center mt-4 max-w-2xl">
-        Consultations disponibles :
-      </h3>
-      <div className=" text-center mt-2">
-        <Link to="/PremConsult">
-          <li className="btn ">1 er consultation</li>
-        </Link>
-        <Link to="/Pré-op">
-          <li className="btn "> consultation pré-op</li>
-        </Link>
-        <Link to="/Post-op3mois">
-          <li className="btn "> consultation post opératoire 3 mois</li>
-        </Link>
-        <Link to="/Post-op6mois">
-          <li className="btn "> consultation post opératoire 6 mois</li>
-        </Link>
-      </div>
-    </div>
-  );
-};
-
-export default Home;
->>>>>>> cb63b7e4e3587e6e50384fa784672f07c571f104

@@ -11,7 +11,9 @@ interface InputProps {
   name: string;
   setFormData: (data: { name: string; value: string }) => void;
   required?: boolean;
+  disabled?: boolean;   // ✔️ AÑADIDO
 }
+
 const Input: React.FC<InputProps> = ({
   label,
   value,
@@ -22,8 +24,10 @@ const Input: React.FC<InputProps> = ({
   name,
   setFormData,
   required = false,
+  disabled = false,    // ✔️ DEFAULT
 }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (disabled) return; // ✔️ Si está deshabilitado, no cambia nada
     const { name, value } = e.target;
     setFormData({ name, value });
   };
@@ -33,20 +37,29 @@ const Input: React.FC<InputProps> = ({
   return (
     <div className="w-full space-y-2">
       {hasLabel && (
-        <div className="text-sm font-semibold text-primary opacity-80">
+        <div
+          className={`text-sm font-semibold ${
+            disabled ? "opacity-50" : "text-primary opacity-80"
+          }`}
+        >
           {label}
           {required && <span className="text-error ml-1">*</span>}
         </div>
       )}
+
       <input
         name={name}
         type={type}
-        className={`input input-bordered input-sm w-full ${className || ""}`}
+        className={`input input-bordered input-sm w-full ${
+          className || ""
+        } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`} // ✔️ estilizado
         placeholder={placeholder}
-        value={value}
+        value={value ?? ""} // ✔️ evita undefined
         onChange={handleInputChange}
         required={required}
+        disabled={disabled} // ✔️ AÑADIDO
       />
+
       {optional && <p className="text-xs opacity-70">Optionnel</p>}
     </div>
   );

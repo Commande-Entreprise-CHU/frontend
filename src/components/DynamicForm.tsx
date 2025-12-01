@@ -1,4 +1,4 @@
-import { createPdf } from "../utils/pdfLogic/createPdf";
+import { useState, useEffect } from "react";
 import Radio from "./Radio";
 import Button from "./Button";
 import Input from "./Input";
@@ -7,11 +7,55 @@ import RevealRadio from "./RevealRadio";
 import RevealCheckBox from "./RevealCheckBox";
 import Checkbox from "./Checkbox";
 import TeethSelector from "./TeethSelector";
-import { useState } from "react";
 import type { AnyFormField, DynamicFormProps } from "../types";
 
-const DynamicForm = ({ config }: DynamicFormProps) => {
-  const [formData, setFormData] = useState({});
+const DynamicForm = ({ 
+  config, 
+  initialData, 
+  readOnly = false,
+  onSubmit 
+}: DynamicFormProps) => {
+
+  const [formData, setFormData] = useState<Record<string, any>>({});
+
+  function collectFieldNames(fields: any[], initialData: any, output: any) {
+    fields.forEach((field) => {
+      if (initialData[field.name] !== undefined) {
+        output[field.name] = initialData[field.name];
+      }
+
+      if (field.type === "RevealRadio" && field.options) {
+        field.options.forEach((opt: any) => {
+          if (opt.fields) {
+            collectFieldNames(opt.fields, initialData, output);
+          }
+        });
+      }
+
+      if (field.type === "RevealCheckBox" && field.fields) {
+        collectFieldNames(field.fields, initialData, output);
+      }
+
+      if (field.type === "TeethSelector") {
+        if (initialData[field.name]) {
+          output[field.name] = initialData[field.name];
+        }
+      }
+    });
+  }
+
+  useEffect(() => {
+    if (initialData) {
+      const initialFormData: Record<string, any> = {};
+
+      config.sections.forEach((section) => {
+        collectFieldNames(section.fields, initialData, initialFormData);
+      });
+
+      setFormData(initialFormData);
+    }
+  }, [initialData, config.sections]);
+
 
   const handleInputChange = (data: {
     name: string;
@@ -21,9 +65,12 @@ const DynamicForm = ({ config }: DynamicFormProps) => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    createPdf({ config, formData });
+
+    if (onSubmit) {
+      onSubmit(formData);  // <-- ahora sí existe
+    }
   };
 
   const renderField = (field: AnyFormField) => {
@@ -46,6 +93,8 @@ const DynamicForm = ({ config }: DynamicFormProps) => {
               type={field.inputType}
               setFormData={handleInputChange}
               required={field.required}
+              value={formData[field.name] || ""}
+              disabled={readOnly}
             />
           </div>
         );
@@ -59,6 +108,8 @@ const DynamicForm = ({ config }: DynamicFormProps) => {
               options={field.options || []}
               setFormData={handleInputChange}
               required={field.required}
+              value={formData[field.name]}  
+              disabled={readOnly}
             />
           </div>
         );
@@ -71,6 +122,8 @@ const DynamicForm = ({ config }: DynamicFormProps) => {
               name={field.name}
               setFormData={handleInputChange}
               required={field.required}
+              checked={formData[field.name] || false}
+              disabled={readOnly}
             />
           </div>
         );
@@ -82,6 +135,7 @@ const DynamicForm = ({ config }: DynamicFormProps) => {
               label={field.label}
               name={field.name}
               setFormData={handleInputChange}
+              disabled={readOnly}
             >
               <div className="space-y-2">
                 {field.fields?.map((subField: AnyFormField) =>
@@ -93,33 +147,40 @@ const DynamicForm = ({ config }: DynamicFormProps) => {
         );
 
       case "Range":
-        return (
-          <div key={field.name} className={gridClass}>
-            <Range
-              name={field.name}
-              steps={field.steps || []}
-              setFormData={handleInputChange}
-              label={field.label}
-              required={field.required}
-            />
-          </div>
-        );
+      return (
+        <div key={field.name} className={gridClass}>
+          <Range
+            name={field.name}
+            steps={field.steps || []}
+            setFormData={handleInputChange}
+            label={field.label}
+            required={field.required}
+            initialValue={formData[field.name]} // Pasamos el valor inicial aquí
+            value={formData[field.name]} // Aseguramos que el 'value' se pase también
+            disabled={readOnly}
+          />
+        </div>
+      );
+
 
       case "RevealRadio":
         return (
           <div key={field.name} className={gridClass}>
             <RevealRadio
+               label={field.label}
               name={field.name}
-              label={field.label}
               options={field.options || []}
               setFormData={handleInputChange}
               required={field.required}
-              renderField={renderField}
+              value={formData[field.name]} // Añadimos el valor para el autocompletado
+              renderField={(subField: AnyFormField) => renderField(subField)} 
+              disabled={readOnly}
             />
           </div>
         );
 
-      case "TeethSelector":
+        
+        case "TeethSelector":
         return (
           <div key={field.name} className="col-span-full">
             <TeethSelector
@@ -127,6 +188,8 @@ const DynamicForm = ({ config }: DynamicFormProps) => {
               label={field.label}
               setFormData={handleInputChange}
               required={field.required}
+              value={formData[field.name]}
+              disabled={readOnly}
             />
           </div>
         );
@@ -166,11 +229,14 @@ const DynamicForm = ({ config }: DynamicFormProps) => {
           ))}
 
           {/* Submit Button */}
+          {!readOnly && (
           <div className="flex justify-center pt-2 pb-4">
             <Button className="btn-md min-w-40" type="submit">
-              Créer le PDF
+              Guardar datos
             </Button>
           </div>
+        )}
+
         </form>
       </div>
     </div>

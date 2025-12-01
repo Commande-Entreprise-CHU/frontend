@@ -11,6 +11,7 @@ interface ToothDropdownProps {
   toothId: string;
   currentState: ToothState;
   onStateChange: (toothId: string, state: ToothState) => void;
+  disabled?: boolean;  // ✅ NUEVO
 }
 
 const ToothDropdown: React.FC<ToothDropdownProps> = ({
@@ -22,6 +23,7 @@ const ToothDropdown: React.FC<ToothDropdownProps> = ({
   toothId,
   currentState,
   onStateChange,
+  disabled = false, // ✅ NUEVO
 }) => {
   const detailsRef = useRef<HTMLDetailsElement>(null);
 
@@ -48,19 +50,29 @@ const ToothDropdown: React.FC<ToothDropdownProps> = ({
     }
   };
 
+  // ❗ Si está disabled, NO mostrar dropdown interactivo
+  if (disabled) {
+    return <div className="opacity-50">{trigger}</div>;
+  }
+
   return (
     <details
       className={`dropdown ${position} ${align} ${className}`}
       ref={detailsRef}
     >
-      <summary className="cursor-pointer list-none" role="button">
+      <summary
+        className="cursor-pointer list-none"
+        role="button"
+      >
         {trigger}
       </summary>
+
       <div className={`absolute dropdown-content z-[10] ${dropdownClassName}`}>
         <div className="p-3 bg-base-200 rounded-lg shadow-lg min-w-[150px]">
           <p className="text-sm font-semibold mb-2 text-base-content">
             Dent {toothId}
           </p>
+
           <div className="space-y-1">
             <button
               type="button"
@@ -72,6 +84,7 @@ const ToothDropdown: React.FC<ToothDropdownProps> = ({
               <span className="w-3 h-3 rounded-full bg-base-300 mr-2"></span>
               Normal
             </button>
+
             <button
               type="button"
               onClick={() => handleStateSelect("Missing")}
@@ -82,6 +95,7 @@ const ToothDropdown: React.FC<ToothDropdownProps> = ({
               <span className="w-3 h-3 rounded-full bg-error mr-2"></span>
               Absente
             </button>
+
             <button
               type="button"
               onClick={() => handleStateSelect("Implant")}

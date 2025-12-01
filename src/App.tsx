@@ -1,10 +1,12 @@
 import Navbar from "./components/Navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import PremConsult from "./page/PremConsult";
 import Home from "./page/home";
-import Préop from "./page/Pré-op";
-import Postop6mois from "./page/Post-op6mois";
-import Postop3mois from "./page/Post-op3mois";
+import DossierPatient from "./page/DossierPatient";
+import PremConsult from "./page/forms/PremConsult";
+import Préop from "./page/forms/PreOp";
+import Postop6mois from "./page/forms/Post-op6mois";
+import Postop3mois from "./page/forms/PostOp";
+import Find from "./page/Find";
 
 function App() {
   return (
@@ -13,10 +15,16 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/PremConsult" element={<PremConsult />} />
-          <Route path="/Pré-op" element={<Préop />} />
-          <Route path="/Post-op3mois" element={<Postop3mois />} />
-          <Route path="/Post-op6mois" element={<Postop6mois />} />
+          <Route path="/Find" element={<Find />} />
+
+          <Route path="/patient/new/prem-consult" element={<PremConsult />} />
+          {/* Dossier del paciente */}
+          
+          <Route path="/patient/:id" element={<DossierPatient />} />
+          <Route path="/patient/:id/prem-consult" element={<PremConsult />} />
+          <Route path="/patient/:id/pre-op" element={<Préop />} />
+          <Route path="/patient/:id/post-op-3" element={<Postop3mois />} />
+          <Route path="/patient/:id/post-op-6" element={<Postop6mois />} />
         </Routes>
       </div>
     </Router>

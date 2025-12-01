@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 
 interface RangeProps {
   steps: string[];
@@ -6,6 +6,9 @@ interface RangeProps {
   name: string;
   label?: string;
   required?: boolean;
+  initialValue?: string;
+  value?: string | number;
+  disabled?: boolean;   // ← IMPORTANTE
 }
 
 const Range: React.FC<RangeProps> = ({
@@ -14,8 +17,11 @@ const Range: React.FC<RangeProps> = ({
   name,
   label,
   required = false,
+  initialValue,
+  value = 0,
+  disabled = false,   // ← DEFAULT
 }) => {
-  const [value, setValue] = React.useState(0);
+  const [sliderValue, setSliderValue] = React.useState(value);
 
   const stepSize = useMemo(() => {
     return steps.length > 1
@@ -31,9 +37,22 @@ const Range: React.FC<RangeProps> = ({
     return valuetostep;
   }, [steps, stepSize]);
 
+  useEffect(() => {
+    if (initialValue) {
+      const index = steps.indexOf(initialValue);
+      if (index !== -1) {
+        const sliderPos = index * stepSize;
+        setSliderValue(sliderPos);
+      }
+    }
+  }, [initialValue, steps, stepSize]);
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (disabled) return; // ← si está bloqueado, no hace nada
+
     const numValue = Number(event.target.value);
-    setValue(numValue);
+    setSliderValue(numValue);
+
     setFormData({
       name: name,
       value: valueToStep[numValue] || steps[steps.length - 1],
@@ -56,34 +75,42 @@ const Range: React.FC<RangeProps> = ({
   }, [inputTransform, inputWidth]);
 
   return (
-    <div className=" space-y-2">
-      <div className="text-sm font-semibold text-primary opacity-80">
+    <div className="space-y-2 opacity-100">
+      <div
+        className={`text-sm font-semibold ${
+          disabled ? "opacity-50" : "text-primary opacity-80"
+        }`}
+      >
         {label || "Sévérité de la douleur"}
         {required && <span className="text-error ml-1">*</span>}
       </div>
+
       <div className="w-full max-w-md">
         <input
           type="range"
           name={name}
           min={0}
           max={100}
-          value={value}
-          onChange={(e) => {
-            handleChange(e);
-          }}
-          className="range range-primary range-sm"
+          value={sliderValue}
+          onChange={handleChange}
+          className={`range range-primary range-sm ${
+            disabled ? "opacity-50 cursor-not-allowed" : ""
+          }`}
           style={inputStyle}
           step={stepSize}
           required={required}
+          disabled={disabled}   // ← AQUI VA
         />
-        <div className="flex justify-between text-xs opacity-70 mt-3 px-0.5">
+
+        <div
+          className={`flex justify-between text-xs mt-3 px-0.5 ${
+            disabled ? "opacity-40" : "opacity-70"
+          }`}
+        >
           {steps.map((step, index) => (
-            <div
-              key={step + index}
-              className="flex flex-col items-center flex-1"
-            >
-              <span className="text-xs">|</span>
-              <span className="text-xs mt-1 text-center">{step}</span>
+            <div key={step + index} className="flex flex-col items-center flex-1">
+              <span>|</span>
+              <span className="mt-1 text-center">{step}</span>
             </div>
           ))}
         </div>

@@ -89,19 +89,19 @@ Les sections organisent les champs du formulaire en groupes logiques. Chaque sec
 
 ## Types de Champs
 
-Il y a 7 types de champs différents disponibles. Chaque type de champ a des propriétés spécifiques.
+Il y a 6 types de champs différents disponibles. Chaque type de champ a des propriétés spécifiques.
 
 ### Propriétés Communes pour Tous les Champs
 
 Tous les types de champs partagent ces propriétés :
 
-| Propriété  | Type    | Requis | Description                                                                           |
-| ---------- | ------- | ------ | ------------------------------------------------------------------------------------- |
-| `type`     | string  | Oui    | Le type de champ (Input, Radio, Range, RevealRadio, RevealCheckBox, Select, Checkbox) |
-| `label`    | string  | Oui    | Libellé d'affichage pour le champ                                                     |
-| `name`     | string  | Oui    | Identifiant unique du champ (utilisé dans les données du formulaire)                  |
-| `pdfName`  | string  | Oui    | Nom du libellé lors de l'export en PDF                                                |
-| `required` | boolean | Non    | Si le champ est obligatoire (défaut: false)                                           |
+| Propriété  | Type    | Requis | Description                                                           |
+| ---------- | ------- | ------ | --------------------------------------------------------------------- |
+| `type`     | string  | Oui    | Le type de champ (Input, Radio, Range, RevealRadio, Select, Checkbox) |
+| `label`    | string  | Oui    | Libellé d'affichage pour le champ                                     |
+| `name`     | string  | Oui    | Identifiant unique du champ (utilisé dans les données du formulaire)  |
+| `pdfName`  | string  | Oui    | Nom du libellé lors de l'export en PDF                                |
+| `required` | boolean | Non    | Si le champ est obligatoire (défaut: false)                           |
 
 ---
 
@@ -478,140 +478,7 @@ Un champ radio spécial qui révèle des champs supplémentaires en fonction de 
 
 ---
 
-### 6. Champ RevealCheckBox (Champs Conditionnels avec Checkboxes)
-
-Un champ checkbox spécial qui révèle des champs supplémentaires quand la checkbox est cochée. Parfait pour la logique conditionnelle avec des cases à cocher. Les champs imbriqués sont contenus dans les options.
-
-#### Propriétés
-
-| Propriété  | Type    | Requis | Description                                         |
-| ---------- | ------- | ------ | --------------------------------------------------- |
-| `type`     | string  | Oui    | Doit être `"RevealCheckBox"`                        |
-| `label`    | string  | Oui    | Libellé d'affichage de la checkbox                  |
-| `name`     | string  | Oui    | Identifiant unique du champ                         |
-| `pdfName`  | string  | Non    | Libellé pour export PDF                             |
-| `fields`   | array   | Non    | Tableau de champs imbriqués à afficher quand cochée |
-| `required` | boolean | Non    | Si la checkbox doit être cochée                     |
-
-#### Objet Champ ImbriquéCheckBox
-
-Dans le tableau `fields` d'une RevealCheckBox, chaque élément peut être :
-
-- Un champ normal (Input, Checkbox, Radio, etc.)
-- Un autre RevealCheckBox (pour l'imbrication)
-
-#### Objet Champ ImbriquéCheckBox
-
-Dans le tableau `fields` d'une RevealCheckBox, chaque élément peut être :
-
-- Un champ normal (Input, Checkbox, Radio, etc.)
-- Un autre RevealCheckBox (pour l'imbrication)
-
-#### Exemple 1 : RevealCheckBox Simple
-
-```json
-{
-  "type": "RevealCheckBox",
-  "label": "Traumatique",
-  "name": "atcd_traumatique",
-  "pdfName": "Traumatique",
-  "fields": [
-    {
-      "type": "Checkbox",
-      "label": "Fracture condyle",
-      "name": "trauma_fracture_condyle",
-      "pdfName": "Fracture condyle"
-    },
-    {
-      "type": "Checkbox",
-      "label": "Fracture mandibule",
-      "name": "trauma_fracture_mandibule",
-      "pdfName": "Fracture mandibule"
-    }
-  ]
-}
-```
-
-#### Exemple 2 : RevealCheckBox Imbriquée
-
-```json
-{
-  "type": "RevealCheckBox",
-  "label": "ATCD traumatique / septique",
-  "name": "atcd_trauma_septique",
-  "fields": [
-    {
-      "type": "RevealCheckBox",
-      "label": "Traumatique",
-      "name": "atcd_traumatique",
-      "pdfName": "Traumatique",
-      "fields": [
-        {
-          "type": "Checkbox",
-          "label": "Fracture condyle",
-          "name": "trauma_fracture_condyle",
-          "pdfName": "Fracture condyle"
-        },
-        {
-          "type": "Checkbox",
-          "label": "Fracture mandibule",
-          "name": "trauma_fracture_mandibule",
-          "pdfName": "Fracture mandibule"
-        },
-        {
-          "type": "RevealCheckBox",
-          "label": "Autre",
-          "name": "trauma_autre",
-          "pdfName": "Autre",
-          "fields": [
-            {
-              "type": "Input",
-              "name": "trauma_autre_details",
-              "pdfName": "Autre Détails",
-              "placeholder": "Préciser",
-              "required": false
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "Checkbox",
-      "label": "Septique",
-      "name": "atcd_septique",
-      "pdfName": "Septique"
-    },
-    {
-      "type": "RevealCheckBox",
-      "label": "Autre",
-      "name": "atcd_septique_autre",
-      "pdfName": "Autre",
-      "fields": [
-        {
-          "type": "Input",
-          "name": "atcd_septique_autre_details",
-          "pdfName": "Autre Détails",
-          "placeholder": "Préciser",
-          "required": false
-        }
-      ]
-    }
-  ]
-}
-```
-
-#### Différences entre RevealCheckBox et RevealRadio
-
-| Aspect          | RevealRadio                                | RevealCheckBox                               |
-| --------------- | ------------------------------------------ | -------------------------------------------- |
-| **Sélection**   | Une seule option peut être sélectionnée    | Plusieurs options peuvent être sélectionnées |
-| **Type parent** | Boutons radio mutuellement exclusifs       | Checkboxes indépendantes                     |
-| **Options**     | `options` avec `value`, `label`, `default` | Checkboxes simples ou imbriquées             |
-| **Cas d'usage** | Choix Oui/Non, sélection parmi catégories  | Listes de vérification, sélection multiple   |
-
----
-
-### 7. Champ Select
+### 6. Champ Select
 
 Un menu déroulant pour sélectionner une option unique dans une liste.
 
@@ -804,25 +671,18 @@ Choisissez le `inputType` approprié pour les champs Input :
 - `date` - Sélecteur de date
 - `tel` - Input numéro de téléphone
 
-### 6. Motif RevealRadio et RevealCheckBox
+### 6. Motif RevealRadio
 
-Utilisez **RevealRadio** quand :
+Utilisez RevealRadio quand :
 
-- Vous avez besoin d'un affichage conditionnel de champs basé sur un choix unique
+- Vous avez besoin d'un affichage conditionnel de champs
 - Le formulaire a des questions "Oui/Non" avec des détails de suivi
-- Différentes options mutuellement exclusives nécessitent des informations différentes
-
-Utilisez **RevealCheckBox** quand :
-
-- Vous avez besoin d'un affichage conditionnel de champs pour des cases à cocher
-- Plusieurs checkboxes indépendantes peuvent être sélectionnées
-- Vous avez besoin de révéler des champs spécifiques quand une checkbox est cochée
-- Vous créez des listes de vérification hiérarchiques
+- Différentes options nécessitent des informations différentes
 
 À éviter :
 
 - Trop de niveaux d'imbrication (limiter à 2-3 niveaux)
-- RevealRadio/RevealCheckBox imbriqué complexe (peut confondre les utilisateurs)
+- RevealRadio imbriqué complexe dans RevealRadio (peut confondre les utilisateurs)
 
 ### 7. Texte d'Indication (Placeholder)
 
@@ -985,44 +845,6 @@ Le système de formulaire valide automatiquement :
 }
 ```
 
-### Motif 4 : Liste de Vérification Conditionnelle avec RevealCheckBox
-
-```json
-{
-  "type": "RevealCheckBox",
-  "label": "ATCD traumatique / septique",
-  "name": "atcd_trauma_septique",
-  "fields": [
-    {
-      "type": "RevealCheckBox",
-      "label": "Traumatique",
-      "name": "atcd_traumatique",
-      "pdfName": "Traumatique",
-      "fields": [
-        {
-          "type": "Checkbox",
-          "label": "Fracture condyle",
-          "name": "trauma_fracture_condyle",
-          "pdfName": "Fracture condyle"
-        },
-        {
-          "type": "Checkbox",
-          "label": "Fracture mandibule",
-          "name": "trauma_fracture_mandibule",
-          "pdfName": "Fracture mandibule"
-        }
-      ]
-    },
-    {
-      "type": "Checkbox",
-      "label": "Septique",
-      "name": "atcd_septique",
-      "pdfName": "Septique"
-    }
-  ]
-}
-```
-
 ---
 
 ## Dépannage
@@ -1051,8 +873,7 @@ Le système de formulaire valide automatiquement :
 
 ## Historique des Versions
 
-- **v1.1.0** (Actuel) - Ajout du type `RevealCheckBox` pour les checkboxes conditionnelles
-- **v1.0.0** - Système de formulaire de consultation initial supportant 6 types de champs
+- **v1.0.0** (Actuel) - Système de formulaire de consultation initial supportant tous les 6 types de champs
 
 ---
 

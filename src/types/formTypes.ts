@@ -92,10 +92,8 @@ export interface FormConfig {
 }
 
 export interface FormData {
-  [key: string]: string | number | boolean | undefined | TeethData;
+  [key: string]: string | number | boolean | undefined;
 }
-
-import type { TeethData } from "./teethTypes";
 
 export interface InputChangeData {
   name: string;
@@ -104,7 +102,9 @@ export interface InputChangeData {
 
 export interface DynamicFormProps {
   config: FormConfig;
-  onSubmit?: (data: FormData) => void;
+  initialData?: Record<string, any>; // datos pre-cargados opcionales
+  readOnly?: boolean;  
+  onSubmit?: (formValues: any) => void;  
 }
 
 export interface FormValidationError {
