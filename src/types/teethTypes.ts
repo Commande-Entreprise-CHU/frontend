@@ -1,4 +1,4 @@
-export type ToothState = "Normal" | "Missing" | "Implant";
+export type ToothState = string;
 
 export interface ToothData {
   id: string;
@@ -9,7 +9,7 @@ export interface TeethData {
   [toothId: string]: ToothState;
 }
 
-export const TOOTH_STATE_COLORS: Record<ToothState, string> = {
+export const TOOTH_STATE_COLORS: Record<string, string> = {
   Normal: "fill-base-300 hover:fill-primary",
   Missing: "fill-error hover:fill-error",
   Implant: "fill-warning hover:fill-warning",

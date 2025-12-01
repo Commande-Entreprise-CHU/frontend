@@ -17,7 +17,6 @@ export interface FormField {
     | "TeethSelector";
   label: string;
   name: string;
-  pdfName: string;
   required?: boolean;
 }
 
@@ -25,6 +24,7 @@ export interface InputField extends FormField {
   type: "Input";
   placeholder?: string;
   inputType?: "text" | "email" | "password" | "number" | "date" | "tel";
+  default?: string | number | "now";
 }
 
 export interface RadioField extends FormField {
@@ -51,16 +51,19 @@ export interface SelectField extends FormField {
 
 export interface CheckboxField extends FormField {
   type: "Checkbox";
+  default?: boolean;
 }
 
 export interface RevealCheckBoxField extends FormField {
   type: "RevealCheckBox";
   categoryLabel?: string;
   fields?: AnyFormField[];
+  default?: boolean;
 }
 
 export interface TeethSelectorField extends FormField {
   type: "TeethSelector";
+  options?: { value: string; label: string; color: string }[];
 }
 
 export type AnyFormField =

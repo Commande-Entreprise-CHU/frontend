@@ -24,8 +24,7 @@ const RevealRadio: React.FC<RevealRadioProps> = ({
   value,
   disabled = false, // ⬅️ NUEVO
 }) => {
-  const defaultOption =
-    options.find((opt) => opt.default) || options[0];
+  const defaultOption = options.find((opt) => opt.default) || options[0];
 
   const [selectedValue, setSelectedValue] = useState<string | number>(
     value ??
@@ -72,7 +71,9 @@ const RevealRadio: React.FC<RevealRadioProps> = ({
           <label
             key={String(option.value)}
             className={`flex items-center transition-opacity ${
-              disabled ? "cursor-not-allowed" : "cursor-pointer hover:opacity-80"
+              disabled
+                ? "cursor-not-allowed"
+                : "cursor-pointer hover:opacity-80"
             }`}
           >
             <input
@@ -85,23 +86,19 @@ const RevealRadio: React.FC<RevealRadioProps> = ({
               required={required}
               disabled={disabled} // ⬅️ DESHABILITA EL INPUT
             />
-            <span className="label-text text-sm ml-2">
-              {option.label}
-            </span>
+            <span className="label-text text-sm ml-2">{option.label}</span>
           </label>
         ))}
       </div>
 
       {/* Subcampos SOLO si está seleccionado y NO está disabled */}
-      {!disabled &&
-        nestedFields.length > 0 &&
-        renderField && (
-          <div className="pl-3 border-l-2 border-primary/40 space-y-2">
-            {nestedFields.map((nestedField) =>
-              renderField(nestedField as AnyFormField)
-            )}
-          </div>
-        )}
+      {!disabled && nestedFields.length > 0 && renderField && (
+        <div className="pl-3 border-l-2 border-primary/40 space-y-2">
+          {nestedFields.map((nestedField) =>
+            renderField(nestedField as AnyFormField)
+          )}
+        </div>
+      )}
     </div>
   );
 };
