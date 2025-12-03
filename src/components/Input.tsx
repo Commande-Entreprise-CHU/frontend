@@ -9,9 +9,9 @@ interface InputProps {
   className?: string;
   optional?: boolean;
   name: string;
-  setFormData: (data: { name: string; value: string }) => void;
+  setFormData: (data: { name: string; value: string | null }) => void;
   required?: boolean;
-  disabled?: boolean;   // ✔️ AÑADIDO
+  disabled?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -24,12 +24,16 @@ const Input: React.FC<InputProps> = ({
   name,
   setFormData,
   required = false,
-  disabled = false,    // ✔️ DEFAULT
+  disabled = false,
 }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (disabled) return; // ✔️ Si está deshabilitado, no cambia nada
+    if (disabled) return;
     const { name, value } = e.target;
-    setFormData({ name, value });
+    if (type === "number" && value === "") {
+      setFormData({ name, value: null }); // Send null for empty number inputs
+    } else {
+      setFormData({ name, value });
+    }
   };
 
   const hasLabel = label && label.trim() !== "";
@@ -50,14 +54,14 @@ const Input: React.FC<InputProps> = ({
       <input
         name={name}
         type={type}
-        className={`input input-bordered input-sm w-full ${
-          className || ""
-        } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`} // ✔️ estilizado
+        className={`input input-bordered input-sm w-full ${className || ""} ${
+          disabled ? "opacity-50 cursor-not-allowed" : ""
+        }`}
         placeholder={placeholder}
-        value={value ?? ""} // ✔️ evita undefined
+        value={value ?? ""}
         onChange={handleInputChange}
         required={required}
-        disabled={disabled} // ✔️ AÑADIDO
+        disabled={disabled}
       />
 
       {optional && <p className="text-xs opacity-70">Optionnel</p>}

@@ -13,6 +13,7 @@ interface ToothDropdownProps {
   currentState: ToothState;
   onStateChange: (toothId: string, state: ToothState) => void;
   options: ToothOption[];
+  disabled?: boolean;
 }
 
 const ToothDropdown: React.FC<ToothDropdownProps> = ({
@@ -25,6 +26,7 @@ const ToothDropdown: React.FC<ToothDropdownProps> = ({
   currentState,
   onStateChange,
   options,
+  disabled = false,
 }) => {
   const detailsRef = useRef<HTMLDetailsElement>(null);
 
@@ -51,7 +53,6 @@ const ToothDropdown: React.FC<ToothDropdownProps> = ({
     }
   };
 
-  // ❗ Si está disabled, NO mostrar dropdown interactivo
   if (disabled) {
     return <div className="opacity-50">{trigger}</div>;
   }

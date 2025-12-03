@@ -1,98 +1,67 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Radio from "./Radio";
 import Input from "./Input";
 import Range from "./Range";
 import RevealRadio from "./RevealRadio";
 import RevealCheckBox from "./RevealCheckBox";
 import Checkbox from "./Checkbox";
+import CheckboxGroup from "./CheckboxGroup";
 import TeethSelector from "./TeethSelector";
-import type { AnyFormField, DynamicFormProps } from "../types";
-
-const DynamicForm = ({ 
-  config, 
-  initialData, 
-  readOnly = false,
-  onSubmit 
-}: DynamicFormProps) => {
-
-  const [formData, setFormData] = useState<Record<string, any>>({});
-
-  function collectFieldNames(fields: any[], initialData: any, output: any) {
-    fields.forEach((field) => {
-      if (initialData[field.name] !== undefined) {
-        output[field.name] = initialData[field.name];
-      }
-
-      if (field.type === "RevealRadio" && field.options) {
-        field.options.forEach((opt: any) => {
-          if (opt.fields) {
-            collectFieldNames(opt.fields, initialData, output);
-          }
-        });
-      }
-
-      if (field.type === "RevealCheckBox" && field.fields) {
-        collectFieldNames(field.fields, initialData, output);
-      }
-
-      if (field.type === "TeethSelector") {
-        if (initialData[field.name]) {
-          output[field.name] = initialData[field.name];
-        }
-      }
-    });
-  }
-
-  useEffect(() => {
-    if (initialData) {
-      const initialFormData: Record<string, any> = {};
-
-      config.sections.forEach((section) => {
-        collectFieldNames(section.fields, initialData, initialFormData);
-      });
-
-      setFormData(initialFormData);
-    }
-  }, [initialData, config.sections]);
-
-import { useState, useMemo, useEffect } from "react";
+import Button from "./Button";
 import type { AnyFormField, FormConfig } from "../types";
 import { createTxt } from "../utils/textLogic/createTxt";
 
+interface DynamicFormProps {
+  config: FormConfig;
+  templateSrc?: string;
+  initialData?: Record<string, any>;
+  readOnly?: boolean;
+  onSubmit?: (formValues: any) => void;
+  showTextGeneration?: boolean;
+  submitButtonText?: string;
+}
+
 const DynamicForm = ({
   config,
-  templateSrc,
-}: {
-  config: FormConfig;
-  templateSrc: string;
-}) => {
+  templateSrc = "",
+  initialData,
+  readOnly = false,
+  onSubmit,
+  showTextGeneration = true,
+  submitButtonText = "Sauvegarder",
+}: DynamicFormProps) => {
   const [formData, setFormData] = useState<Record<string, any>>(() => {
-    const initialData: Record<string, any> = {};
+    const data: Record<string, any> = {};
+
+    // Process defaults from config first
     const processFields = (fields: AnyFormField[]) => {
       fields.forEach((field) => {
         if (field.type === "Input") {
-          if ((field as any).default === "now" && field.inputType === "date") {
-            initialData[field.name] = new Date().toISOString().split("T")[0];
+          if (
+            (field as any).default === "now" &&
+            (field as any).inputType === "date"
+          ) {
+            data[field.name] = new Date().toISOString().split("T")[0];
           } else if ((field as any).default !== undefined) {
-            initialData[field.name] = (field as any).default;
+            data[field.name] = (field as any).default;
           }
         } else if (field.type === "Radio" || field.type === "RevealRadio") {
           const defaultOpt = field.options?.find((opt) => opt.default);
           if (defaultOpt) {
-            initialData[field.name] = defaultOpt.value;
+            data[field.name] = defaultOpt.value;
             if (defaultOpt.fields) processFields(defaultOpt.fields);
           }
         } else if (field.type === "RevealCheckBox") {
           if ((field as any).default === true) {
-            initialData[field.name] = true;
+            data[field.name] = true;
             if (field.fields) {
               processFields(field.fields);
             }
           } else if ((field as any).default !== undefined) {
-            initialData[field.name] = (field as any).default;
+            data[field.name] = (field as any).default;
           }
         } else if ((field as any).default !== undefined) {
-          initialData[field.name] = (field as any).default;
+          data[field.name] = (field as any).default;
         }
       });
     };
@@ -100,7 +69,13 @@ const DynamicForm = ({
     (config as any).sections.forEach((section: any) => {
       processFields(section.fields);
     });
-    return initialData;
+
+    // Then, merge initialData over the defaults
+    if (initialData) {
+      Object.assign(data, initialData);
+    }
+
+    return data;
   });
   const [templateText, setTemplateText] = useState<string>("");
 
@@ -192,18 +167,10 @@ const DynamicForm = ({
 
   const handleInputChange = (data: {
     name: string;
-    value: string | number | boolean;
+    value: string | number | boolean | string[] | null;
   }) => {
     const { name, value } = data;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (onSubmit) {
-      onSubmit(formData);  // <-- ahora sí existe
-    }
   };
 
   const renderField = (field: AnyFormField) => {
@@ -249,7 +216,7 @@ const DynamicForm = ({
               options={field.options || []}
               setFormData={handleInputChange}
               required={field.required}
-              value={formData[field.name]}  
+              value={formData[field.name]}
               disabled={readOnly}
             />
           </div>
@@ -264,6 +231,25 @@ const DynamicForm = ({
               setFormData={handleInputChange}
               required={field.required}
               checked={formData[field.name] || false}
+              disabled={readOnly}
+            />
+          </div>
+        );
+      
+      case "CheckboxGroup":
+        return (
+          <div
+            key={field.name}
+            className="col-span-full"
+            id={`field-${field.name}`}
+          >
+            <CheckboxGroup
+              label={field.label}
+              name={field.name}
+              options={field.options || []}
+              setFormData={handleInputChange}
+              required={field.required}
+              value={formData[field.name] || []}
               disabled={readOnly}
             />
           </div>
@@ -292,21 +278,6 @@ const DynamicForm = ({
         );
 
       case "Range":
-      return (
-        <div key={field.name} className={gridClass}>
-          <Range
-            name={field.name}
-            steps={field.steps || []}
-            setFormData={handleInputChange}
-            label={field.label}
-            required={field.required}
-            initialValue={formData[field.name]} // Pasamos el valor inicial aquí
-            value={formData[field.name]} // Aseguramos que el 'value' se pase también
-            disabled={readOnly}
-          />
-        </div>
-      );
-
         return (
           <div
             key={field.name}
@@ -315,10 +286,12 @@ const DynamicForm = ({
           >
             <Range
               name={field.name}
-              steps={field.steps || []}
+              steps={(field as any).steps || []}
               setFormData={handleInputChange}
               label={field.label}
               required={field.required}
+              value={formData[field.name]}
+              disabled={readOnly}
             />
           </div>
         );
@@ -331,20 +304,19 @@ const DynamicForm = ({
             id={`field-${field.name}`}
           >
             <RevealRadio
-               label={field.label}
+              label={field.label}
               name={field.name}
               options={field.options || []}
               setFormData={handleInputChange}
               required={field.required}
               value={formData[field.name]} // Añadimos el valor para el autocompletado
-              renderField={(subField: AnyFormField) => renderField(subField)} 
+              renderField={(subField: AnyFormField) => renderField(subField)}
               disabled={readOnly}
             />
           </div>
         );
 
-        
-        case "TeethSelector":
+      case "TeethSelector":
         return (
           <div
             key={field.name}
@@ -379,7 +351,15 @@ const DynamicForm = ({
         </div>
 
         {/* Form */}
-        <form className="space-y-4">
+        <form
+          className="space-y-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (onSubmit) {
+              onSubmit(formData);
+            }
+          }}
+        >
           {config.sections.map((section, sectionIndex) => (
             <div
               key={sectionIndex}
@@ -399,13 +379,12 @@ const DynamicForm = ({
 
           {/* Submit Button */}
           {!readOnly && (
-          <div className="flex justify-center pt-2 pb-4">
-            <Button className="btn-md min-w-40" type="submit">
-              Guardar datos
-            </Button>
-          </div>
-        )}
-
+            <div className="flex justify-center pt-2 pb-4">
+              <Button className="btn-md min-w-40" type="submit">
+                {submitButtonText}
+              </Button>
+            </div>
+          )}
         </form>
 
         {/* Missing Fields Alert */}
@@ -478,36 +457,38 @@ const DynamicForm = ({
         )}
 
         {/* Text Output */}
-        <div className="card bg-base-100 shadow mt-4 border border-base-300">
-          <div className="card-body p-4">
-            <div className="flex items-start justify-between gap-4">
-              <h3 className="font-semibold">Texte généré</h3>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={copyToClipboard}
-                  className="btn btn-sm"
-                >
-                  Copier
-                </button>
-                <button
-                  type="button"
-                  onClick={downloadTxt}
-                  className="btn btn-sm btn-ghost"
-                >
-                  Télécharger
-                </button>
+        {showTextGeneration && (
+          <div className="card bg-base-100 shadow mt-4 border border-base-300">
+            <div className="card-body p-4">
+              <div className="flex items-start justify-between gap-4">
+                <h3 className="font-semibold">Texte généré</h3>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={copyToClipboard}
+                    className="btn btn-sm"
+                  >
+                    Copier
+                  </button>
+                  <button
+                    type="button"
+                    onClick={downloadTxt}
+                    className="btn btn-sm btn-ghost"
+                  >
+                    Télécharger
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <textarea
-              readOnly
-              value={outputText}
-              aria-label="Texte généré"
-              className="w-full min-h-[200px] mt-3 p-3 rounded textarea textarea-bordered font-mono whitespace-pre-wrap"
-            />
+              <textarea
+                readOnly
+                value={outputText}
+                aria-label="Texte généré"
+                className="w-full min-h-[200px] mt-3 p-3 rounded textarea textarea-bordered font-mono whitespace-pre-wrap"
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

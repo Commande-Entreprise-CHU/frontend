@@ -1,12 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
 import DynamicForm from "../../components/DynamicForm";
-import PreOpJson from "../../utils/json/PreOp.json" with { type: "json" };
+import PostOP6Json from "../../utils/json/PostOp6.json" with { type: "json" };
 import { usePatient, useUpdatePatientSection } from "../../hooks/patientHooks";
 import type { FormConfig } from "../../types";
 
-const PreOpConfig = PreOpJson as unknown as FormConfig;
+const PostOP6Config = PostOP6Json as unknown as FormConfig;
 
-export default function PreOp() {
+export default function PostOp6() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { data: patient, isLoading } = usePatient(id || "");
@@ -19,11 +19,11 @@ export default function PreOp() {
     if (!id) return;
     updateSectionMutation.mutate({
       id,
-      section: "preOp",
+      section: "postOp6",
       values: formValues
     }, {
       onSuccess: () => {
-        alert("Pré-opératoire mis à jour avec succès !");
+        alert("Post-opératoire 6 mois mis à jour avec succès !");
         navigate(`/patient/${id}`);
       },
       onError: () => {
@@ -34,8 +34,8 @@ export default function PreOp() {
 
   return (
     <DynamicForm 
-      config={PreOpConfig} 
-      initialData={patient.preOp || {}}
+      config={PostOP6Config} 
+      initialData={patient.postOp6 || {}}
       onSubmit={handleSubmit}
     />
   );

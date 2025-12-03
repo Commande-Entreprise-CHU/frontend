@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import DynamicForm from "../../components/DynamicForm";
 import PremConsultJson from "../../utils/json/PremConsult.json" with { type: "json" };
-import { getPatientById } from "../../utils/api/patientApi";
-import { savePatient } from "../../utils/api/savePatient";
+import { usePatient, useUpdatePatientSection } from "../../hooks/patientHooks";
 import type { FormConfig } from "../../types";
 
 const PremConsultConfig = PremConsultJson as FormConfig;
@@ -11,53 +9,37 @@ const PremConsultConfig = PremConsultJson as FormConfig;
 export default function PremConsult() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { data: patient, isLoading } = usePatient(id || "");
+  const updateSectionMutation = useUpdatePatientSection();
 
-  const [initialData, setInitialData] = useState<any | null>(null);
+  if (isLoading) return <p>Chargement...</p>;
+  if (!patient) return <p>Patient introuvable</p>;
 
-  /* ===============================
-      🟣 Charger données patient si ID
-     =============================== */
-  useEffect(() => {
-    async function load() {
-      if (!id) return;
+  const initialData = {
+    ...(patient.preConsult || {}),
+    name: patient.name,
+    prenom: patient.prenom,
+    dob: patient.dob,
+    ipp: patient.ipp,
+    sexe: patient.sexe
+  };
 
-      const patient = await getPatientById(id);
-      if (!patient) return;
+  const handleSubmit = (formValues: any) => {
+    if (!id) return;
 
-      setInitialData(patient.preConsult || {});
-    }
-
-    load();
-  }, [id]);
-
-  /* ===============================
-      🟢 Sauvegarder patient
-     =============================== */
-  const handleSubmit = async (formValues: any) => {
-    const saved = await savePatient(formValues, id);
-
-    // ❌ Doublon → avertir et arrêter
-    if (saved.duplicate) {
-      alert("⚠️ Ce patient existe déjà. Impossible de le créer une deuxième fois.");
-      return;
-    }
-
-    // ❌ Erreur inattendue
-    if (!saved.success) {
-      alert("❌ Erreur lors de l’enregistrement des données.");
-      return;
-    }
-
-    // 🟢 Succès : création ou mise à jour
-    const patientId = saved.patient.id;
-
-    if (!id) {
-      alert("Patient créé avec succès !");
-      navigate(`/patient/${patientId}`);
-    } else {
-      alert("Pré-consultation mise à jour avec succès !");
-      navigate(`/patient/${patientId}`);
-    }
+    updateSectionMutation.mutate({
+      id,
+      section: "preConsult",
+      values: formValues
+    }, {
+      onSuccess: () => {
+        alert("Pré-consultation mise à jour avec succès !");
+        navigate(`/patient/${id}`);
+      },
+      onError: () => {
+        alert("Erreur lors de l’enregistrement des données.");
+      }
+    });
   };
 
   return (

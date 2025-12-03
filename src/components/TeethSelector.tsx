@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import B1 from "./teeth/B1";
 import B2 from "./teeth/B2";
 import B3 from "./teeth/B3";
@@ -7,6 +7,14 @@ import B5 from "./teeth/B5";
 import B6 from "./teeth/B6";
 import B7 from "./teeth/B7";
 import B8 from "./teeth/B8";
+import H1 from "./teeth/H1";
+import H2 from "./teeth/H2";
+import H3 from "./teeth/H3";
+import H4 from "./teeth/H4";
+import H5 from "./teeth/H5";
+import H6 from "./teeth/H6";
+import H7 from "./teeth/H7";
+import H8 from "./teeth/H8";
 
 import Tooth from "./Tooth";
 import TeethSummary from "./TeethSummary";
@@ -30,80 +38,66 @@ interface TeethSelectorProps {
   label?: string;
   required?: boolean;
   options?: ToothOption[];
+  value?: string | TeethData;
+  setFormData: (data: { name: string; value: string }) => void;
+  disabled?: boolean;
 }
-
-const COMPONENTS: Record<string, any> = {
-  "11": H1,
-  "12": H2,
-  "13": H3,
-  "14": H4,
-  "15": H5,
-  "16": H6,
-  "17": H7,
-  "18": H8,
-  "21": H1,
-  "22": H2,
-  "23": H3,
-  "24": H4,
-  "25": H5,
-  "26": H6,
-  "27": H7,
-  "28": H8,
-
-  "31": B1,
-  "32": B2,
-  "33": B3,
-  "34": B4,
-  "35": B5,
-  "36": B6,
-  "37": B7,
-  "38": B8,
-  "41": B1,
-  "42": B2,
-  "43": B3,
-  "44": B4,
-  "45": B5,
-  "46": B6,
-  "47": B7,
-  "48": B8,
-};
 
 const TeethSelector: React.FC<TeethSelectorProps> = ({
   name,
   label,
   required,
   options = DEFAULT_OPTIONS,
+  value,
+  setFormData,
+  disabled = false,
 }) => {
   const [teethData, setTeethData] = useState<TeethData>(() => {
+    if (value) {
+      if (typeof value === "string") {
+        try {
+          return JSON.parse(value);
+        } catch {
+          return {};
+        }
+      }
+      return value;
+    }
     const initialData: TeethData = {};
     TOOTH_IDS.forEach((id) => {
       initialData[id] = options[0].value; // Default to first option
     });
-    setFormData({ name, value: JSON.stringify(initialData) });
     return initialData;
   });
-
-  const [teethData, setTeethData] = useState<TeethData>({});
 
   // 🟩 2. AUTOCOMPLETADO — solo cargar, nunca subir al padre
   useEffect(() => {
     if (value) {
       // Cargar valores guardados
-      setTeethData(value);
+      if (typeof value === "string") {
+        try {
+          setTeethData(JSON.parse(value));
+        } catch (e) {
+          console.error("Error parsing teeth data", e);
+        }
+      } else {
+        setTeethData(value);
+      }
     } else {
       // Inicializar si no hay nada
       const initial: TeethData = {};
-      TOOTH_IDS.forEach((id) => (initial[id] = "Normal"));
+      TOOTH_IDS.forEach((id) => (initial[id] = options[0].value));
       setTeethData(initial);
     }
-  }, [value]);
+  }, [value, options]);
 
   // CAMBIO DEL ESTADO DE UN DIENTE
   const setToothState = useCallback(
     (toothId: string, state: string) => {
+      if (disabled) return;
       setTeethData((prev) => {
         const updated = { ...prev, [toothId]: state };
-        setFormData({ name, value: updated });
+        setFormData({ name, value: JSON.stringify(updated) });
         return updated;
       });
     },

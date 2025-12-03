@@ -10,13 +10,13 @@ const Navbar: React.FC = () => {
       <Link to="/" className="btn btn-ghost">
         <span className="text-small">Accueil</span>
       </Link>
-      <Link to="/patient/new/prem-consult" className="btn btn-ghost">
+      <Link to="/patient/new" className="btn btn-ghost">
         <span className="text-small">Nouveau patient</span>
       </Link>
-      <Link to="/Find" className="btn btn-ghost">
+      <Link to="/search" className="btn btn-ghost">
         <span className="text-small">Continuer consultation</span>
       </Link>
-      <Link to="/Find?edit=true" className="btn btn-ghost">
+      <Link to="/search?edit=true" className="btn btn-ghost">
         <span className="text-small">Modifier un patient</span>
       </Link>
       <div className="flex-none">

@@ -3,7 +3,7 @@
     "name": "PreOperatoire",
     "description": "Formulaire de consultation pré-opératoire"
   },
-  "sections": [ 
+  "sections": [
     {
       "title": "Examen Exobuccal",
       "fields": [
@@ -425,7 +425,7 @@
         }
       ]
     },
-    
+
     {
       "title": "Examen Dentaire",
       "fields": [
@@ -901,8 +901,4 @@
       ]
     }
   ]
-<<<<<<< HEAD:src/utils/json/PreOp.json
 }
-=======
-}
->>>>>>> main:src/utils/PréopConsult.json

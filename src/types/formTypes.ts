@@ -14,7 +14,8 @@ export interface FormField {
     | "Select"
     | "Checkbox"
     | "RevealCheckBox"
-    | "TeethSelector";
+    | "TeethSelector"
+    | "CheckboxGroup";
   label: string;
   name: string;
   required?: boolean;
@@ -30,6 +31,11 @@ export interface InputField extends FormField {
 export interface RadioField extends FormField {
   type: "Radio";
   options: FormOption[];
+}
+
+export interface CheckboxGroupField extends FormField {
+  type: "CheckboxGroup";
+  options: { value: string; label: string }[];
 }
 
 export interface RangeField extends FormField {
@@ -74,7 +80,8 @@ export type AnyFormField =
   | SelectField
   | CheckboxField
   | RevealCheckBoxField
-  | TeethSelectorField;
+  | TeethSelectorField
+  | CheckboxGroupField;
 
 export interface FormSection {
   title: string;

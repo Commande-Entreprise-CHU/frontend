@@ -20,7 +20,7 @@ const Home: React.FC = () => {
       {/* BOTONES ELEGANTES */}
       <div className="flex flex-col gap-4 mt-4 w-full max-w-md">
         <Link
-          to="/patient/new/prem-consult"
+          to="/patient/new"
           className="btn btn-primary btn-lg shadow-md rounded-xl w-full text-lg font-semibold"
         >
           <UserPlus size={22} />
@@ -28,7 +28,7 @@ const Home: React.FC = () => {
         </Link>
 
         <Link
-          to="/Find"
+          to="/search"
           className="btn btn-primary btn-lg shadow-md rounded-xl w-full text-lg font-semibold"
         >
           <Search size={22} />
@@ -36,7 +36,7 @@ const Home: React.FC = () => {
         </Link>
 
         <Link
-          to="/Find?edit=true"
+          to="/search?edit=true"
           className="btn btn-primary btn-lg shadow-md rounded-xl w-full text-lg font-semibold"
         >
           <Edit3 size={22} />

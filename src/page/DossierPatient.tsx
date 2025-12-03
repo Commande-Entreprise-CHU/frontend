@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { getPatientById } from "../utils/api/patientApi";
-import { updatePatientSection } from "../utils/api/updateSection";
+import { usePatient, useUpdatePatientSection } from "../hooks/patientHooks";
 
 import DynamicForm from "../components/DynamicForm";
 
@@ -13,6 +12,8 @@ import Post6Json from "../utils/json/PostOp6.json" with { type: "json" };
 
 import type { FormConfig } from "../types";
 
+import { formatDate } from "../utils/date";
+
 const premConfig = PremConsultJson as FormConfig;
 const preOpConfig = PreOpJson as FormConfig;
 const post3Config = Post3Json as FormConfig;
@@ -22,22 +23,14 @@ const TABS = ["preConsult", "preOp", "postOp3", "postOp6"] as const;
 
 export default function DossierPatient() {
   const { id } = useParams();
-  const [patient, setPatient] = useState<any | null>(null);
+  const { data: patient, isLoading, error } = usePatient(id || "");
+  const updateSectionMutation = useUpdatePatientSection();
   const [activeTab, setActiveTab] = useState<"preConsult" | "preOp" | "postOp3" | "postOp6">("preConsult");
 
-  useEffect(() => {
-    async function load() {
-      if (!id) return;
-      const p = await getPatientById(id);
-      setPatient(p);
-    }
-    load();
-  }, [id]);
+  if (isLoading) return <p className="text-center mt-10">Chargement...</p>;
+  if (error || !patient) return <p className="text-center mt-10 text-error">Erreur lors du chargement du patient.</p>;
 
-  if (!patient) return <p className="text-center mt-10">Chargement...</p>;
-
-  /* ==== FUNCIONES DE ESTADO ==== */
-  const isCompleted = (key: string) => !!patient[key];
+  const isCompleted = (key: string) => !!patient[key as keyof typeof patient];
   const canOpen = (key: string) => {
     if (key === "preConsult") return true;
     if (key === "preOp") return isCompleted("preConsult");
@@ -53,47 +46,60 @@ export default function DossierPatient() {
     return post6Config;
   };
 
-  const getInitialData = () => patient[activeTab] || {};
+  const getInitialData = () => {
+    const data = patient[activeTab] || {};
+    
+    // If preConsult, merge with patient demographics
+    if (activeTab === "preConsult") {
+      return {
+        ...data,
+        name: patient.name,
+        prenom: patient.prenom,
+        dob: patient.dob,
+        ipp: patient.ipp,
+        sexe: patient.sexe
+      };
+    }
+    
+    return data;
+  };
 
   const isReadOnly = isCompleted(activeTab);
   
-  async function handleSave(values: any) {
-  const res = await updatePatientSection(
-    patient.id,
-    activeTab,
-    values
-  );
-
-  if (res.success) {
-    alert("Données enregistrées !");
-    setPatient(res.patient); // refrescar
-  } else {
-    alert("Erreur lors de la sauvegarde.");
-  }
-}
+  const handleSave = (values: any) => {
+    updateSectionMutation.mutate({
+      id: patient.id,
+      section: activeTab,
+      values
+    }, {
+      onSuccess: () => {
+        alert("Données enregistrées !");
+      },
+      onError: () => {
+        alert("Erreur lors de la sauvegarde.");
+      }
+    });
+  };
 
 
   return (
     <div className="max-w-6xl mx-auto py-6">
 
-      {/* ====================== HEADER ====================== */}
       <h1 className="text-3xl font-bold text-primary text-center mb-6">
         Dossier Patient – {patient.name} {patient.prenom}
       </h1>
 
-      {/* ====================== INFO GENERAL ====================== */}
       <div className="w-full bg-base-200 rounded-lg py-3 px-6 shadow-sm mb-4">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-y-1 gap-x-6 text-[15px] leading-tight">
             <p><strong>Nom:</strong> {patient.name}</p>
             <p><strong>Prénom:</strong> {patient.prenom}</p>
             <p><strong>IPP:</strong> {patient.ipp || "—"}</p>
             <p><strong>Sexe:</strong> {patient.sexe}</p>
-            <p><strong>Date de naissance:</strong> {patient.dob}</p>
+            <p><strong>Date de naissance:</strong> {formatDate(patient.dob)}</p>
         </div>
       </div>
 
 
-      {/* ====================== NAVIGATION TABS ====================== */}
       <div className="flex gap-3 mb-6">
         {TABS.map((tab) => {
           const labelMap: Record<typeof tab, string> = {
@@ -121,7 +127,6 @@ export default function DossierPatient() {
             >
               {labelMap[tab]}
 
-              {/* BADGE */}
               <span
                 className={`
                   absolute -top-1 -right-1 badge badge-xs
@@ -137,7 +142,6 @@ export default function DossierPatient() {
 
       
 
-      {/* ====================== FORMULAIRE ====================== */}
       <DynamicForm
         config={getConfig()}
         initialData={getInitialData()}

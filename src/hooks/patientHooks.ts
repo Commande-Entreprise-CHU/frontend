@@ -1,0 +1,49 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  fetchPatient,
+  searchPatients,
+  createPatient,
+  updateSection,
+  type Patient,
+} from "../endpoints/patientEndpoints";
+
+export type { Patient };
+
+// --- Hooks ---
+
+export const usePatient = (id: string) => {
+  return useQuery({
+    queryKey: ["patient", id],
+    queryFn: () => fetchPatient(id),
+    enabled: !!id,
+  });
+};
+
+export const useSearchPatients = (query: string) => {
+  return useQuery({
+    queryKey: ["patients", "search", query],
+    queryFn: () => searchPatients(query),
+    // Only search if query is not empty, or you can allow empty to fetch all
+    // enabled: true
+  });
+};
+
+export const useCreatePatient = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createPatient,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["patients"] });
+    },
+  });
+};
+
+export const useUpdatePatientSection = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updateSection,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["patient", data.id] });
+    },
+  });
+};

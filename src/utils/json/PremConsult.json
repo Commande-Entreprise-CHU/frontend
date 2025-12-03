@@ -1,21 +1,5 @@
 {
   "metadata": {
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-    "name": "PremConsult",
-    "description": "Première consultation"
-  },
-  "sections": [
-    {
-      "title": "Données Administratives",
-      "fields": [
-        {
-          "type": "Input",
-          "label": "Date de consultation",
-          "name": "date_consultation",
-          "pdfName": "Date de consultation",
-          "inputType": "date",
-          "required": true
-=======
     "name": "ConsultationOrthodontieFinal",
     "description": "Première consultation",
     "version": "5.0.0"
@@ -31,102 +15,10 @@
           "inputType": "date",
           "required": true,
           "default": "now"
->>>>>>> main:src/utils/PremConsult/PremConsult.json
-        },
-        {
-          "type": "Input",
-          "label": "Nom",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-          "name": "name",
-          "pdfName": "Nom",
-          "placeholder": "Nom",
-=======
-          "name": "nom",
-          "inputType": "text",
->>>>>>> main:src/utils/PremConsult/PremConsult.json
-          "required": true
-        },
-        {
-          "type": "Input",
-          "label": "Prénom",
-          "name": "prenom",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-          "pdfName": "Prénom",
-          "placeholder": "Prénom",
-=======
-          "inputType": "text",
->>>>>>> main:src/utils/PremConsult/PremConsult.json
-          "required": true
-        },
-        {
-          "type": "Input",
-          "label": "Date de naissance",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-          "name": "dob",
-          "pdfName": "Date de naissance",
-=======
-          "name": "dateNaissance",
->>>>>>> main:src/utils/PremConsult/PremConsult.json
-          "inputType": "date",
-          "required": true
-        },
-        {
-          "type": "Input",
-          "label": "IPP",
-          "name": "ipp",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-          "pdfName": "IPP",
-          "placeholder": "IPP",
-          "required": false
-=======
-          "inputType": "text",
-          "required": true
->>>>>>> main:src/utils/PremConsult/PremConsult.json
-        },
-        {
-          "type": "Radio",
-          "label": "Sexe",
-          "name": "sexe",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-          "pdfName": "Sexe",
-          "options": [
-            {
-              "value": "femme",
-              "label": "Femme"
-            },
-            {
-              "value": "homme",
-              "label": "Homme",
-              "default": true
-=======
-          "options": [
-            {
-              "value": "F",
-              "label": "Femme"
-            },
-            {
-              "value": "H",
-              "label": "Homme"
->>>>>>> main:src/utils/PremConsult/PremConsult.json
-            }
-          ],
-          "required": true
         }
       ]
     },
     {
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-      "title": "Antécédents (ATCD)",
-      "fields": [
-        {
-          "type": "RevealRadio",
-          "name": "antecedentsRadio",
-          "pdfName": "Antécédents Médicaux",
-          "label": "A t'il des antécédents médicaux ?",
-          "options": [
-            {
-              "value": "yes",
-=======
       "title": "ANTÉCÉDENTS (ATCD)",
       "fields": [
         {
@@ -136,82 +28,41 @@
           "options": [
             {
               "value": "oui",
->>>>>>> main:src/utils/PremConsult/PremConsult.json
               "label": "Oui",
               "fields": [
                 {
                   "type": "Checkbox",
                   "label": "ATCD chir orthognathique",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-                  "name": "atcd_chir_ortho",
-                  "pdfName": "ATCD chir orthognathique"
-=======
                   "name": "atcdChirOrtho"
->>>>>>> main:src/utils/PremConsult/PremConsult.json
                 },
                 {
                   "type": "RevealCheckBox",
                   "label": "ATCD traumatique / septique",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-                  "name": "atcd_trauma_septique",
-=======
                   "name": "atcdTraumaSeptique",
->>>>>>> main:src/utils/PremConsult/PremConsult.json
                   "fields": [
                     {
                       "type": "RevealCheckBox",
                       "label": "Traumatique",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-                      "name": "atcd_traumatique",
-                      "pdfName": "Traumatique",
-=======
                       "name": "atcdTraumatique",
->>>>>>> main:src/utils/PremConsult/PremConsult.json
                       "fields": [
                         {
                           "type": "Checkbox",
                           "label": "Fracture condyle",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-                          "name": "trauma_fracture_condyle",
-                          "pdfName": "Fracture condyle"
-=======
                           "name": "fracCondyle"
->>>>>>> main:src/utils/PremConsult/PremConsult.json
                         },
                         {
                           "type": "Checkbox",
                           "label": "Fracture mandibule",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-                          "name": "trauma_fracture_mandibule",
-                          "pdfName": "Fracture mandibule"
-=======
                           "name": "fracMandibule"
->>>>>>> main:src/utils/PremConsult/PremConsult.json
                         },
                         {
                           "type": "Checkbox",
                           "label": "Fracture Lefort",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-                          "name": "trauma_fracture_lefort",
-                          "pdfName": "Fracture Lefort"
-=======
                           "name": "fracLefort"
->>>>>>> main:src/utils/PremConsult/PremConsult.json
                         },
                         {
                           "type": "RevealCheckBox",
                           "label": "Autre",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-                          "name": "trauma_autre",
-                          "pdfName": "Autre",
-                          "fields": [
-                            {
-                              "type": "Input",
-                              "name": "trauma_autre_details",
-                              "pdfName": "Autre Détails",
-                              "placeholder": "Préciser",
-                              "required": false
-=======
                           "name": "fracAutre",
                           "fields": [
                             {
@@ -220,32 +71,12 @@
                               "name": "fracAutreTexte",
                               "inputType": "text",
                               "required": true
->>>>>>> main:src/utils/PremConsult/PremConsult.json
                             }
                           ]
                         }
                       ]
                     },
                     {
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-                      "type": "Checkbox",
-                      "label": "Septique",
-                      "name": "atcd_septique",
-                      "pdfName": "Septique"
-                    },
-                    {
-                      "type": "RevealCheckBox",
-                      "label": "Autre",
-                      "name": "atcd_septique_autre",
-                      "pdfName": "Autre",
-                      "fields": [
-                        {
-                          "type": "Input",
-                          "name": "atcd_septique_autre_details",
-                          "pdfName": "Autre Détails",
-                          "placeholder": "Préciser",
-                          "required": false
-=======
                       "type": "RevealCheckBox",
                       "label": "Septique",
                       "name": "atcdSeptique",
@@ -263,7 +94,6 @@
                               "required": true
                             }
                           ]
->>>>>>> main:src/utils/PremConsult/PremConsult.json
                         }
                       ]
                     }
@@ -272,57 +102,11 @@
                 {
                   "type": "Checkbox",
                   "label": "ATCD inflammatoire",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-                  "name": "atcd_inflammatoire",
-                  "pdfName": "ATCD inflammatoire"
-                },
-                {
-                  "type": "Input",
-                  "label": "Autres Antécédents",
-                  "name": "antecedents_details",
-                  "pdfName": "Antécédents Détails",
-                  "placeholder": "Préciser les antécédents",
-                  "required": false
-                },
-                {
-                  "type": "Input",
-                  "label": "Traitements",
-                  "name": "traitements",
-                  "pdfName": "Traitements",
-                  "placeholder": "Lister les traitements en cours",
-                  "required": false
-=======
                   "name": "atcdInflammatoire"
->>>>>>> main:src/utils/PremConsult/PremConsult.json
                 }
               ]
             },
             {
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-              "value": "no",
-              "label": "Non",
-              "default": true
-            }
-          ],
-          "required": true
-        },
-        {
-          "type": "Radio",
-          "label": "Sport",
-          "name": "sport",
-          "pdfName": "Sport",
-          "options": [
-            {
-              "value": "loisirs",
-              "label": "Pratique en loisirs"
-            },
-            {
-              "value": "competition",
-              "label": "Pratique en compétition/pro"
-            },
-            {
-=======
->>>>>>> main:src/utils/PremConsult/PremConsult.json
               "value": "non",
               "label": "Non",
               "default": true
@@ -331,12 +115,6 @@
           "required": true
         },
         {
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-          "type": "RevealRadio",
-          "label": "Quelle est son activité principale ?",
-          "name": "activite",
-          "pdfName": "Activité",
-=======
           "type": "Radio",
           "label": "Sport",
           "name": "sport",
@@ -361,21 +139,12 @@
           "type": "RevealRadio",
           "label": "Activité",
           "name": "activite",
->>>>>>> main:src/utils/PremConsult/PremConsult.json
           "options": [
             {
               "value": "active",
               "label": "Vie active",
               "fields": [
                 {
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-                  "type": "Input",
-                  "label": "Profession",
-                  "name": "profession",
-                  "pdfName": "Profession",
-                  "placeholder": "Profession",
-                  "required": false
-=======
                   "type": "Radio",
                   "label": "Statut",
                   "name": "statutVieActive",
@@ -392,7 +161,6 @@
                   "name": "profession",
                   "inputType": "text",
                   "required": true
->>>>>>> main:src/utils/PremConsult/PremConsult.json
                 }
               ]
             },
@@ -404,29 +172,12 @@
                   "type": "Input",
                   "label": "Etudes",
                   "name": "etudes",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-                  "pdfName": "Etudes",
-                  "placeholder": "Etudes",
-                  "required": false
-=======
                   "inputType": "text",
                   "required": true
->>>>>>> main:src/utils/PremConsult/PremConsult.json
                 }
               ]
             },
             {
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-              "value": "sans_emploi",
-              "label": "Sans emploi"
-            },
-            {
-              "value": "retraite",
-              "label": "Retraité"
-            }
-          ],
-          "required": true
-=======
               "value": "ecole",
               "label": "Ecole",
               "fields": [
@@ -629,16 +380,14 @@
           "type": "Checkbox",
           "label": "Tabac",
           "name": "tabac"
->>>>>>> main:src/utils/PremConsult/PremConsult.json
         }
       ]
     },
     {
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-      "title": "Informations Patient & Motif",
+      "title": "INFOS SUR LE PATIENT",
       "fields": [
         {
-          "type": "Radio",
+          "type": "CheckboxGroup",
           "label": "Motif de la consultation",
           "name": "motifConsultation",
           "required": true,
@@ -662,35 +411,6 @@
             },
             {
               "value": "pas_plainte",
-=======
-      "title": "INFOS SUR LE PATIENT",
-      "fields": [
-        {
-          "type": "Select",
-          "label": "Motif consultation",
-          "name": "motifConsultation",
-          "required": true,
-          "options": [
-            {
-              "value": "adresseOrtho",
-              "label": "Adressé par Orthodontiste (Default)",
-              "default": true
-            },
-            {
-              "value": "esthetique",
-              "label": "Esthétique du visage / sourire / profil"
-            },
-            {
-              "value": "fonctionAtm",
-              "label": "Fonction ATM"
-            },
-            {
-              "value": "fonctionOcclusion",
-              "label": "Fonction occlusion"
-            },
-            {
-              "value": "pasPlainte",
->>>>>>> main:src/utils/PremConsult/PremConsult.json
               "label": "Pas de plainte"
             },
             {
@@ -718,12 +438,7 @@
         {
           "type": "Radio",
           "label": "Ancrages osseux",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-          "name": "ancrages_osseux",
-          "pdfName": "Ancrages osseux",
-=======
           "name": "ancragesOsseux",
->>>>>>> main:src/utils/PremConsult/PremConsult.json
           "options": [
             {
               "value": true,
@@ -735,22 +450,12 @@
               "default": true
             }
           ],
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-          "required": false
-        },
-        {
-          "type": "Radio",
-          "label": "Toxine botulique utilisée ?",
-          "name": "toxine_botulique",
-          "pdfName": "Toxine botulique",
-=======
           "required": true
         },
         {
           "type": "Radio",
           "label": "Toxine botulique utilisée",
           "name": "toxineBotulique",
->>>>>>> main:src/utils/PremConsult/PremConsult.json
           "options": [
             {
               "value": true,
@@ -762,89 +467,19 @@
               "default": true
             }
           ],
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-          "required": false
-        },
-        {
-          "type": "RevealRadio",
-          "name": "claquementsRadio",
-          "pdfName": "Claquements",
-          "label": "A t'il des claquements ?",
-          "options": [
-            {
-              "value": "yes",
-              "label": "Oui",
-              "fields": [
-                {
-                  "type": "Radio",
-                  "label": "Coté des claquements",
-                  "name": "cote_claquements",
-                  "pdfName": "Côté des claquements",
-                  "options": [
-                    {
-                      "value": "gauche",
-                      "label": "Gauche"
-                    },
-                    {
-                      "value": "droite",
-                      "label": "Droite"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "value": "no",
-              "label": "Non",
-              "default": true
-            }
-          ],
-=======
->>>>>>> main:src/utils/PremConsult/PremConsult.json
           "required": true
         },
         {
           "type": "RevealRadio",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-          "name": "douleurs_atm_Radio",
-          "pdfName": "Douleurs ATM",
-          "label": "Douleurs ATM ?",
-          "options": [
-            {
-              "value": "yes",
-=======
           "label": "Claquements",
           "name": "claquements",
           "options": [
             {
               "value": "oui",
->>>>>>> main:src/utils/PremConsult/PremConsult.json
               "label": "Oui",
               "fields": [
                 {
                   "type": "Radio",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-                  "label": "Coté des douleurs ATM",
-                  "name": "cote_douleurs_atm",
-                  "pdfName": "Côté des douleurs ATM",
-                  "options": [
-                    {
-                      "value": "gauche",
-                      "label": "Gauche"
-                    },
-                    {
-                      "value": "droite",
-                      "label": "Droite"
-                    }
-                  ]
-                },
-                {
-                  "type": "Range",
-                  "label": "Douleur (1-10)",
-                  "name": "douleur_atm_Range",
-                  "pdfName": "Niveau de douleur",
-                  "steps": ["1","2","3","4","5","6","7","8","9","10"],
-=======
                   "label": "Côté",
                   "name": "claquementsCote",
                   "options": [
@@ -857,17 +492,12 @@
                       "label": "Gauche"
                     }
                   ],
->>>>>>> main:src/utils/PremConsult/PremConsult.json
                   "required": true
                 }
               ]
             },
             {
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-              "value": "no",
-=======
               "value": "non",
->>>>>>> main:src/utils/PremConsult/PremConsult.json
               "label": "Non",
               "default": true
             }
@@ -876,47 +506,15 @@
         },
         {
           "type": "RevealRadio",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-          "name": "douleurs_musculaires_Radio",
-          "pdfName": "Douleurs musculaires",
-
-          "label": "Douleurs musculaires ?",
-          "options": [
-            {
-              "value": "yes",
-=======
           "label": "Douleurs ATM",
           "name": "douleursAtm",
           "options": [
             {
               "value": "oui",
->>>>>>> main:src/utils/PremConsult/PremConsult.json
               "label": "Oui",
               "fields": [
                 {
                   "type": "Radio",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-                  "label": "Coté des douleurs musculaires",
-                  "name": "cote_douleurs_musculaires",
-                  "pdfName": "Côté des douleurs musculaires",
-                  "options": [
-                    {
-                      "value": "gauche",
-                      "label": "Gauche"
-                    },
-                    {
-                      "value": "droite",
-                      "label": "Droite"
-                    }
-                  ]
-                },
-                {
-                  "type": "Range",
-                  "label": "Douleur (1-10)",
-                  "name": "douleur_musculaire_Range",
-                  "pdfName": "Niveau de douleur",
-                  "steps": ["1","2","3","4","5","6","7","8","9","10"],
-=======
                   "label": "Côté",
                   "name": "douleursAtmCote",
                   "options": [
@@ -929,17 +527,12 @@
                       "label": "Gauche"
                     }
                   ],
->>>>>>> main:src/utils/PremConsult/PremConsult.json
                   "required": true
                 }
               ]
             },
             {
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-              "value": "no",
-=======
               "value": "non",
->>>>>>> main:src/utils/PremConsult/PremConsult.json
               "label": "Non",
               "default": true
             }
@@ -947,57 +540,6 @@
           "required": true
         },
         {
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-          "type": "RevealRadio",
-          "name": "bruxisme_Radio",
-          "pdfName": "Bruxisme",
-          "label": "Bruxisme ?",
-          "options": [
-            {
-              "value": "yes",
-              "label": "Oui",
-              "fields": [
-                {
-                  "type": "Checkbox",
-                  "label": "Diurne",
-                  "name": "bruxisme_diurne",
-                  "pdfName": "Bruxisme Diurne"
-                },
-                {
-                  "type": "Checkbox",
-                  "label": "Nocturne",
-                  "name": "bruxisme_nocturne",
-                  "pdfName": "Bruxisme Nocturne"
-                },
-                {
-                  "type": "Checkbox",
-                  "label": "Gouttière",
-                  "name": "bruxisme_gouttiere",
-                  "pdfName": "Gouttière"
-                }
-              ]
-            },
-            {
-              "value": "no",
-              "label": "Non",
-              "default": true
-            }
-          ],
-          "required": true
-        },
-        {
-          "type": "Radio",
-          "label": "SAOS / Apnées",
-          "name": "saos_apnees",
-          "pdfName": "SAOS / Apnées",
-          "options": [
-            {
-              "value": true,
-              "label": "Oui"
-            },
-            {
-              "value": false,
-=======
           "type": "Checkbox",
           "label": "Bruxisme",
           "name": "bruxisme",
@@ -1063,7 +605,6 @@
             },
             {
               "value": "non",
->>>>>>> main:src/utils/PremConsult/PremConsult.json
               "label": "Non",
               "default": true
             }
@@ -1071,92 +612,20 @@
           "required": true
         },
         {
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-          "type": "Radio",
-          "label": "Décalage aux réveils",
-          "name": "decalage_reveils",
-          "pdfName": "Décalage aux réveils",
-          "options": [
-            {
-              "value": true,
-              "label": "Oui"
-            },
-            {
-              "value": false,
-              "label": "Non",
-              "default": true
-            }
-          ],
-          "required": true
-=======
           "type": "Input",
           "label": "Esthétisme (attendus, craintes...)",
           "name": "esthetisme",
           "inputType": "text"
->>>>>>> main:src/utils/PremConsult/PremConsult.json
         }
       ]
     },
     {
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-      "title": "Examen Clinique",
-      "fields": [
-        {
-          "type": "Input",
-          "label": "Poids (kg)",
-          "name": "poids",
-          "pdfName": "Poids",
-          "placeholder": "Poids en kg",
-          "inputType": "number",
-          "required": true
-        },
-        {
-          "type": "Input",
-          "label": "Taille (cm)",
-          "name": "taille",
-          "pdfName": "Taille",
-          "placeholder": "Taille en cm",
-          "inputType": "number",
-          "required": true
-        },
-        {
-          "type": "Radio",
-          "label": "Forme du visage",
-          "name": "forme_visage",
-          "pdfName": "Forme du visage",
-          "options": [
-            {
-              "value": "ovoide",
-              "label": "Ovoide"
-            },
-            {
-              "value": "carre",
-              "label": "Carré"
-            },
-            {
-              "value": "allonge",
-              "label": "Allongé"
-            },
-            {
-              "value": "rond",
-              "label": "Rond"
-            }
-          ],
-          "required": true
-        },
-        {
-          "type": "RevealRadio",
-          "name": "symetrie_faciale_Radio",
-          "pdfName": "Symétrie faciale",
-          "label": "Symétrie faciale",
-=======
       "title": "Données Cliniques - Examen exobuccal",
       "fields": [
         {
           "type": "Radio",
           "label": "Symétrie faciale",
           "name": "symetrieFaciale",
->>>>>>> main:src/utils/PremConsult/PremConsult.json
           "options": [
             {
               "value": "symetrique",
@@ -1165,39 +634,6 @@
             },
             {
               "value": "asymetrique",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-              "label": "Asymétrique",
-              "fields": [
-                {
-                  "type": "Checkbox",
-                  "label": "Déviation droite",
-                  "name": "sym_dev_droite"
-                },
-                {
-                  "type": "Checkbox",
-                  "label": "Déviation gauche",
-                  "name": "sym_dev_gauche"
-                },
-                {
-                  "type": "Checkbox",
-                  "label": "Etage moyen",
-                  "name": "sym_etage_moyen"
-                },
-                {
-                  "type": "Checkbox",
-                  "label": "Etage inférieur",
-                  "name": "sym_etage_inf"
-                },
-                {
-                  "type": "Checkbox",
-                  "label": "Agrandissement côté G",
-                  "name": "sym_aug_g"
-                },
-                {
-                  "type": "Checkbox",
-                  "label": "Agrandissement côté D",
-                  "name": "sym_aug_d"
-=======
               "label": "Asymétrique"
             }
           ]
@@ -1639,7 +1075,6 @@
                   "name": "pointInterMandMm",
                   "inputType": "number",
                   "required": true
->>>>>>> main:src/utils/PremConsult/PremConsult.json
                 }
               ]
             }
@@ -1648,23 +1083,6 @@
         },
         {
           "type": "Radio",
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-          "label": "Profil",
-          "name": "profil",
-          "pdfName": "Profil",
-          "options": [
-            {
-              "value": "droit",
-              "label": "Droit"
-            },
-            {
-              "value": "concave",
-              "label": "Concave"
-            },
-            {
-              "value": "convexe",
-              "label": "Convexe"
-=======
           "label": "Découvrement gingival",
           "name": "decouvrementGingival",
           "options": [
@@ -1703,14 +1121,11 @@
             {
               "value": "incompetence",
               "label": "Incompétence labiale au repos"
->>>>>>> main:src/utils/PremConsult/PremConsult.json
             }
           ],
           "required": true
         }
       ]
-<<<<<<< HEAD:src/utils/json/PremConsult.json
-=======
     },
     {
       "title": "Fonction ATM",
@@ -2025,7 +1440,6 @@
           "inputType": "date"
         }
       ]
->>>>>>> main:src/utils/PremConsult/PremConsult.json
     }
   ]
 }
