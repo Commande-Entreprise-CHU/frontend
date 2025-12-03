@@ -21,7 +21,7 @@ function SearchPatient() {
     error,
   } = useSearchPatients(searchQuery);
 
-  const handleInputChange = (data: { name: string; value: string }) => {
+  const handleInputChange = (data: { name: string; value: string | null }) => {
     setFormData((prev) => ({ ...prev, [data.name]: data.value }));
   };
 
@@ -131,7 +131,8 @@ function SearchPatient() {
                       <strong>Sexe:</strong> {item.sexe || "—"}
                     </p>
                     <p>
-                      <strong>Date de naissance:</strong> {formatDate(item.dob) || "—"}
+                      <strong>Date de naissance:</strong>{" "}
+                      {formatDate(item.dob) || "—"}
                     </p>
                     <p>
                       <strong>Motif de consultation:</strong>{" "}
