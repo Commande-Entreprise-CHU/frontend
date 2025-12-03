@@ -1,7 +1,9 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5001";
-
+const BASE_URL =
+  (import.meta.env.VITE_BASE_URL as string) || "http://localhost:5001";
+//const BASE_URL = "http://localhost:5001";
+//const BASE_URL = "http://zs0cg84g0g4okgc4skw0c0oo.37.59.112.252.sslip.io";
 export interface Patient {
   id: string;
   name: string;
@@ -51,4 +53,3 @@ export const updateSection = async ({
   if (!data.success) throw new Error(data.message || "Error updating section");
   return data.patient;
 };
-
