@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const SERVER_URL = (import.meta.env.SERVER_URL as string) || "caca";
+const SERVER_URL =
+  (import.meta.env.VITE_SERVER_URL as string) || "http://localhost:5001";
 console.log("SERVER_URL:", SERVER_URL);
 //const BASE_URL = "http://localhost:5001";
 //const BASE_URL = "http://zs0cg84g0g4okgc4skw0c0oo.37.59.112.252.sslip.io";
