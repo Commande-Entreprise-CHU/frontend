@@ -46,7 +46,6 @@ export default function DossierPatient() {
   // Simple logic: allow access if previous one is completed, or if it's the first one
   const canOpen = (index: number) => {
     if (index === 0) return true;
-    const prevSlug = sortedTypes[index - 1].slug;
     return true;
   };
 
