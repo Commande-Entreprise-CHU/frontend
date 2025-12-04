@@ -100,7 +100,7 @@ export const setActiveTemplate = async (
   templateId: string
 ): Promise<Template> => {
   const { data } = await axios.put(
-    `${SERVER_URL}/api/templates/templates/${templateId}/active`
+    `${SERVER_URL}/api/templates/${templateId}/active`
   );
   return data;
 };
