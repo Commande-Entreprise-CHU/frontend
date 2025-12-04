@@ -1,9 +1,6 @@
 @import "tailwindcss";
+@config "../tailwind.config.js";
 @plugin "@tailwindcss/typography";
-
-/* Safelist for TeethSelector dynamic colors from JSON config:
-   fill-white, fill-red-500, fill-blue-400, fill-gray-500, fill-yellow-500,
-   fill-purple-500, fill-orange-400, fill-gray-400, fill-green-500 */
 
 @plugin "daisyui" {
   themes: chu-light --default, chu-dark --prefersdark;
