@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import DynamicForm from "../components/DynamicForm";
 import { Edit, Trash2 } from "lucide-react";
 import {
@@ -113,6 +113,9 @@ export default function TemplateManager() {
   const [editTypeSlug, setEditTypeSlug] = useState("");
 
   // New Template Form
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
+    null
+  );
   const [newVersion, setNewVersion] = useState("");
   const [newStructure, setNewStructure] = useState("");
   const [newTemplateStr, setNewTemplateStr] = useState("");
@@ -127,6 +130,24 @@ export default function TemplateManager() {
     if (!types) return [];
     return [...types].sort((a, b) => a.order - b.order);
   }, [types]);
+
+  // Load active template when templates change (e.g. type switch)
+  useEffect(() => {
+    if (templates) {
+      const activeTemplate = templates.find((t) => t.isActive);
+      if (activeTemplate) {
+        setNewVersion(activeTemplate.version);
+        setNewStructure(JSON.stringify(activeTemplate.structure, null, 2));
+        setNewTemplateStr(activeTemplate.template);
+        setSelectedTemplateId(activeTemplate.id);
+      } else {
+        setNewVersion("");
+        setNewStructure("");
+        setNewTemplateStr("");
+        setSelectedTemplateId(null);
+      }
+    }
+  }, [templates]);
 
   const { mutate: createType } = useCreateConsultationType();
 
@@ -333,19 +354,25 @@ export default function TemplateManager() {
                       </div>
                     ) : (
                       <div
-                        className={`flex justify-between items-center ${
-                          selectedType?.id === type.id ? "active" : ""
+                        className={`flex justify-between items-center rounded px-2 py-1 ${
+                          selectedType?.id === type.id
+                            ? "bg-primary text-primary-content"
+                            : "hover:bg-base-300"
                         }`}
                       >
                         <a
-                          className="flex-1 truncate"
+                          className="flex-1 truncate cursor-pointer font-medium"
                           onClick={() => setSelectedType(type)}
                         >
                           {type.name}
                         </a>
                         <div className="flex gap-1">
                           <button
-                            className="btn btn-xs btn-ghost px-1"
+                            className={`btn btn-xs btn-ghost px-1 ${
+                              selectedType?.id === type.id
+                                ? "text-primary-content hover:bg-primary-focus"
+                                : ""
+                            }`}
                             onClick={(e) => {
                               e.stopPropagation();
                               setEditingTypeId(type.id);
@@ -357,7 +384,11 @@ export default function TemplateManager() {
                           </button>
                           <div className="flex flex-col">
                             <button
-                              className="btn btn-[10px] min-h-0 h-4 btn-ghost px-0 leading-none"
+                              className={`btn btn-[10px] min-h-0 h-4 btn-ghost px-0 leading-none ${
+                                selectedType?.id === type.id
+                                  ? "text-primary-content hover:bg-primary-focus"
+                                  : ""
+                              }`}
                               disabled={index === 0}
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -367,7 +398,11 @@ export default function TemplateManager() {
                               ▲
                             </button>
                             <button
-                              className="btn btn-[10px] min-h-0 h-4 btn-ghost px-0 leading-none"
+                              className={`btn btn-[10px] min-h-0 h-4 btn-ghost px-0 leading-none ${
+                                selectedType?.id === type.id
+                                  ? "text-primary-content hover:bg-primary-focus"
+                                  : ""
+                              }`}
                               disabled={index === sortedTypes.length - 1}
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -448,9 +483,22 @@ export default function TemplateManager() {
                           templates.map((tmpl) => (
                             <tr
                               key={tmpl.id}
-                              className={tmpl.isActive ? "bg-base-200" : ""}
+                              className={`${
+                                tmpl.isActive ? "bg-base-200" : ""
+                              } ${
+                                selectedTemplateId === tmpl.id
+                                  ? "border-l-4 border-primary bg-base-200"
+                                  : ""
+                              }`}
                             >
-                              <td className="font-bold">{tmpl.version}</td>
+                              <td className="font-bold">
+                                {tmpl.version}
+                                {selectedTemplateId === tmpl.id && (
+                                  <span className="ml-2 text-xs text-primary">
+                                    (Édition)
+                                  </span>
+                                )}
+                              </td>
                               <td>
                                 {new Date(tmpl.createdAt).toLocaleDateString()}
                               </td>
@@ -482,9 +530,10 @@ export default function TemplateManager() {
                                       JSON.stringify(tmpl.structure, null, 2)
                                     );
                                     setNewTemplateStr(tmpl.template);
+                                    setSelectedTemplateId(tmpl.id);
                                   }}
                                 >
-                                  Charger
+                                  Editer
                                 </button>
                                 <button
                                   className="btn btn-xs btn-outline btn-error ml-2"
