@@ -134,10 +134,11 @@ function SearchPatient() {
                       <strong>Date de naissance:</strong>{" "}
                       {formatDate(item.dob) || "—"}
                     </p>
-                    <p>
+                    {/* <p>
                       <strong>Motif de consultation:</strong>{" "}
-                      {item.preConsult?.motifConsultation || "—"}
-                    </p>
+                      {item.consultations?.["pre-consult"]?.motifConsultation ||
+                        "—"}
+                    </p> */}
                   </div>
                 </div>
               </div>

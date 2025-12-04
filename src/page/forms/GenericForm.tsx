@@ -1,0 +1,114 @@
+import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import DynamicForm from "../../components/DynamicForm";
+import { usePatient, useUpdatePatientSection } from "../../hooks/patientHooks";
+import { useActiveTemplateByType } from "../../hooks/templateHooks";
+import type { FormConfig } from "../../types";
+
+interface GenericFormProps {
+  patientId?: string;
+  formSlug?: string;
+  onSuccess?: () => void;
+}
+
+export default function GenericForm({
+  patientId: propId,
+  formSlug: propSlug,
+  onSuccess,
+}: GenericFormProps = {}) {
+  const params = useParams();
+  const navigate = useNavigate();
+
+  const id = propId || params.id;
+  const slug = propSlug || params.slug;
+
+  const { data: patient, isLoading: patientLoading } = usePatient(id || "");
+  const {
+    data: activeTemplate,
+    isLoading: templateLoading,
+    error: templateError,
+  } = useActiveTemplateByType(slug || "");
+  const updateSectionMutation = useUpdatePatientSection();
+
+  const [config, setConfig] = useState<FormConfig | null>(null);
+  const [templateString, setTemplateString] = useState<string>("");
+  const [consultationTypeId, setConsultationTypeId] = useState<string | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (activeTemplate) {
+      setConfig(activeTemplate.structure);
+      setTemplateString(activeTemplate.template);
+      setConsultationTypeId(activeTemplate.consultationTypeId);
+    }
+  }, [activeTemplate]);
+
+  if (patientLoading || templateLoading)
+    return <p className="text-center mt-10">Chargement...</p>;
+  if (!patient)
+    return <p className="text-center mt-10 text-error">Patient introuvable</p>;
+  if (templateError)
+    return (
+      <p className="text-center mt-10 text-warning">
+        Aucun modèle actif pour ce type de consultation ({slug}).
+      </p>
+    );
+  if (!config)
+    return (
+      <p className="text-center mt-10 text-warning">
+        Modèle de consultation en cours de construction.
+      </p>
+    );
+
+  // Get existing data from patient.consultations map
+  const existingData = patient.consultations?.[slug || ""] || {};
+
+  const initialData = {
+    ...existingData,
+    // Always inject patient demographics
+    name: patient.name,
+    prenom: patient.prenom,
+    dob: patient.dob,
+    ipp: patient.ipp,
+    sexe: patient.sexe,
+  };
+
+  const handleSubmit = (formValues: any) => {
+    if (!id || !consultationTypeId) return;
+
+    updateSectionMutation.mutate(
+      {
+        id,
+        values: formValues,
+        consultationTypeId,
+      },
+      {
+        onSuccess: () => {
+          alert("Consultation enregistrée avec succès !");
+          if (onSuccess) {
+            onSuccess();
+          } else {
+            // Default behavior if used as a page
+            navigate(`/patient/${id}`);
+          }
+        },
+        onError: () => {
+          alert("Erreur lors de l’enregistrement des données.");
+        },
+      }
+    );
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto py-6">
+      <h1 className="text-2xl font-bold mb-4 text-center">Consultation</h1>
+      <DynamicForm
+        config={config}
+        templateString={templateString}
+        initialData={initialData}
+        onSubmit={handleSubmit}
+      />
+    </div>
+  );
+}

@@ -112,9 +112,9 @@ export interface InputChangeData {
 
 export interface DynamicFormProps {
   config: FormConfig;
-  initialData?: Record<string, any>; // datos pre-cargados opcionales
-  readOnly?: boolean;  
-  onSubmit?: (formValues: any) => void;  
+  initialData?: Record<string, any>;
+  readOnly?: boolean;
+  onSubmit?: (formValues: any) => void;
 }
 
 export interface FormValidationError {

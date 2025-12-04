@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { UserPlus, Search, Edit3 } from "lucide-react"; // íconos elegantes
+import { UserPlus, Search, Edit3 } from "lucide-react";
 
 const Home: React.FC = () => {
   return (
@@ -17,7 +17,6 @@ const Home: React.FC = () => {
         Actions disponibles :
       </h3>
 
-      {/* BOTONES ELEGANTES */}
       <div className="flex flex-col gap-4 mt-4 w-full max-w-md">
         <Link
           to="/patient/new"

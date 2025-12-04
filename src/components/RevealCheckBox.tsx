@@ -6,8 +6,8 @@ interface RevealCheckBoxProps {
   className?: string;
   name?: string;
   setFormData?: (data: { name: string; value: boolean }) => void;
-  disabled?: boolean; // ⬅️ NUEVO
-  checked?: boolean;  // ⬅️ Para soportar valores iniciales
+  disabled?: boolean;
+  checked?: boolean;
 }
 
 const RevealCheckBox: React.FC<RevealCheckBoxProps> = ({
@@ -27,7 +27,7 @@ const RevealCheckBox: React.FC<RevealCheckBoxProps> = ({
   }, [checked]);
 
   const handleCheckboxChange = () => {
-    if (disabled) return; // ⬅️ Evita cambios si está bloqueado
+    if (disabled) return;
 
     const newValue = checkboxRef.current?.checked || false;
     setIsChecked(newValue);
@@ -41,7 +41,9 @@ const RevealCheckBox: React.FC<RevealCheckBoxProps> = ({
     <div className={`w-full space-y-2 ${className || ""}`}>
       <label
         className={`flex items-center transition-opacity ${
-          disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:opacity-80"
+          disabled
+            ? "opacity-50 cursor-not-allowed"
+            : "cursor-pointer hover:opacity-80"
         }`}
       >
         <input
@@ -51,12 +53,10 @@ const RevealCheckBox: React.FC<RevealCheckBoxProps> = ({
           ref={checkboxRef}
           name={name}
           checked={isChecked}
-          disabled={disabled} // ⬅️ DESHABILITA EL INPUT
+          disabled={disabled}
         />
 
-        <span className="label-text text-sm ml-2">
-          {label}
-        </span>
+        <span className="label-text text-sm ml-2">{label}</span>
       </label>
 
       {/* Solo mostrar children si está marcado y no está deshabilitado */}
