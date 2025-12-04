@@ -21,19 +21,6 @@ import TeethSummary from "./TeethSummary";
 import type { TeethData } from "../types/teethTypes";
 import { TOOTH_IDS } from "../types/teethTypes";
 
-// Safelist for dynamic colors from JSON configuration
-const SAFELIST_COLORS = [
-  "fill-white",
-  "fill-red-500",
-  "fill-blue-400",
-  "fill-gray-500",
-  "fill-yellow-500",
-  "fill-purple-500",
-  "fill-orange-400",
-  "fill-gray-400",
-  "fill-green-500",
-];
-
 export interface ToothOption {
   value: string;
   label: string;
