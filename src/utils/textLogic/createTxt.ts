@@ -168,9 +168,7 @@ function registerHelpers() {
 registerHelpers();
 
 export function createTxt(params: CreateTxtParams) {
-  const { config, formData, template: templateString } = params;
-  console.log("Creating TXT with config:", config);
-  console.log("Form data:", formData);
+  const { formData, template: templateString } = params;
 
   try {
     const template = Handlebars.compile(

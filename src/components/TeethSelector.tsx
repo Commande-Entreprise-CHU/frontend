@@ -21,6 +21,19 @@ import TeethSummary from "./TeethSummary";
 import type { TeethData } from "../types/teethTypes";
 import { TOOTH_IDS } from "../types/teethTypes";
 
+// Safelist for dynamic colors from JSON configuration
+const SAFELIST_COLORS = [
+  "fill-white",
+  "fill-red-500",
+  "fill-blue-400",
+  "fill-gray-500",
+  "fill-yellow-500",
+  "fill-purple-500",
+  "fill-orange-400",
+  "fill-gray-400",
+  "fill-green-500",
+];
+
 export interface ToothOption {
   value: string;
   label: string;
@@ -70,10 +83,10 @@ const TeethSelector: React.FC<TeethSelectorProps> = ({
     return initialData;
   });
 
-  // 🟩 2. AUTOCOMPLETADO — solo cargar, nunca subir al padre
+  // Autocomplete - only load, never upload to parent
   useEffect(() => {
     if (value) {
-      // Cargar valores guardados
+      // Load saved values
       if (typeof value === "string") {
         try {
           setTeethData(JSON.parse(value));
@@ -84,14 +97,14 @@ const TeethSelector: React.FC<TeethSelectorProps> = ({
         setTeethData(value);
       }
     } else {
-      // Inicializar si no hay nada
+      // Initialize if nothing
       const initial: TeethData = {};
       TOOTH_IDS.forEach((id) => (initial[id] = options[0].value));
       setTeethData(initial);
     }
   }, [value, options]);
 
-  // CAMBIO DEL ESTADO DE UN DIENTE
+  // Change tooth state
   const setToothState = useCallback(
     (toothId: string, state: string) => {
       if (disabled) return;

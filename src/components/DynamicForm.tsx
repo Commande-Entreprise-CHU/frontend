@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import Radio from "./Radio";
 import Input from "./Input";
 import Range from "./Range";
@@ -13,7 +13,7 @@ import { createTxt } from "../utils/textLogic/createTxt";
 
 interface DynamicFormProps {
   config: FormConfig;
-  templateSrc?: string;
+  templateString?: string;
   initialData?: Record<string, any>;
   readOnly?: boolean;
   onSubmit?: (formValues: any) => void;
@@ -23,7 +23,7 @@ interface DynamicFormProps {
 
 const DynamicForm = ({
   config,
-  templateSrc = "",
+  templateString = "",
   initialData,
   readOnly = false,
   onSubmit,
@@ -77,21 +77,6 @@ const DynamicForm = ({
 
     return data;
   });
-  const [templateText, setTemplateText] = useState<string>("");
-
-  useEffect(() => {
-    if (!templateSrc) {
-      setTemplateText("");
-      return;
-    }
-    fetch(templateSrc)
-      .then((response) => response.text())
-      .then((text) => setTemplateText(text))
-      .catch((error) => {
-        console.error("Error fetching template:", error);
-        setTemplateText("");
-      });
-  }, [templateSrc]);
 
   const missingFields = useMemo(() => {
     const missing: { name: string; label: string }[] = [];
@@ -131,13 +116,13 @@ const DynamicForm = ({
       return createTxt({
         config: config as any,
         formData,
-        template: templateText,
+        template: templateString,
       });
     } catch (error) {
       console.error("createTxt error:", error);
       return "Erreur lors de la génération du texte.";
     }
-  }, [config, formData, templateText]);
+  }, [config, formData, templateString]);
 
   const copyToClipboard = async () => {
     try {
@@ -235,7 +220,7 @@ const DynamicForm = ({
             />
           </div>
         );
-      
+
       case "CheckboxGroup":
         return (
           <div
@@ -309,7 +294,7 @@ const DynamicForm = ({
               options={field.options || []}
               setFormData={handleInputChange}
               required={field.required}
-              value={formData[field.name]} // Añadimos el valor para el autocompletado
+              value={formData[field.name]} // Add value for autocomplete
               renderField={(subField: AnyFormField) => renderField(subField)}
               disabled={readOnly}
             />

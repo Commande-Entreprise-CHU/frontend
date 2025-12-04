@@ -8,7 +8,7 @@ interface RangeProps {
   required?: boolean;
   initialValue?: string;
   value?: string | number;
-  disabled?: boolean;   // ← IMPORTANTE
+  disabled?: boolean;
 }
 
 const Range: React.FC<RangeProps> = ({
@@ -19,7 +19,7 @@ const Range: React.FC<RangeProps> = ({
   required = false,
   initialValue,
   value = 0,
-  disabled = false,   // ← DEFAULT
+  disabled = false,
 }) => {
   const [sliderValue, setSliderValue] = React.useState(value);
 
@@ -48,7 +48,7 @@ const Range: React.FC<RangeProps> = ({
   }, [initialValue, steps, stepSize]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (disabled) return; // ← si está bloqueado, no hace nada
+    if (disabled) return;
 
     const numValue = Number(event.target.value);
     setSliderValue(numValue);
@@ -99,7 +99,7 @@ const Range: React.FC<RangeProps> = ({
           style={inputStyle}
           step={stepSize}
           required={required}
-          disabled={disabled}   // ← AQUI VA
+          disabled={disabled}
         />
 
         <div
@@ -108,7 +108,10 @@ const Range: React.FC<RangeProps> = ({
           }`}
         >
           {steps.map((step, index) => (
-            <div key={step + index} className="flex flex-col items-center flex-1">
+            <div
+              key={step + index}
+              className="flex flex-col items-center flex-1"
+            >
               <span>|</span>
               <span className="mt-1 text-center">{step}</span>
             </div>

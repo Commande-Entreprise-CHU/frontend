@@ -4,7 +4,7 @@ interface CheckboxProps {
   setFormData: (data: { name: string; value: boolean }) => void;
   required?: boolean;
   checked?: boolean;
-  disabled?: boolean; // ⬅️ NUEVO
+  disabled?: boolean;
 }
 
 const Checkbox: React.FC<CheckboxProps> = ({
@@ -13,10 +13,10 @@ const Checkbox: React.FC<CheckboxProps> = ({
   setFormData,
   required = false,
   checked = false,
-  disabled = false, // ⬅️ VALOR POR DEFECTO
+  disabled = false,
 }) => {
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (disabled) return; // ⬅️ No permitir cambios si está bloqueado
+    if (disabled) return;
 
     const { name, checked } = e.target;
     setFormData({ name, value: checked });
@@ -35,7 +35,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
         defaultChecked={checked}
         onChange={handleCheckboxChange}
         required={required}
-        disabled={disabled} // ⬅️ DESHABILITAR INPUT
+        disabled={disabled}
       />
 
       <span className="label-text text-sm ml-2">

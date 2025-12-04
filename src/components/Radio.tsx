@@ -7,11 +7,14 @@ interface RadioProps {
     label: string;
     default?: boolean;
   }[];
-  setFormData: (data: { name: string; value: string | number | boolean }) => void;
+  setFormData: (data: {
+    name: string;
+    value: string | number | boolean;
+  }) => void;
   name: string;
   required?: boolean;
   value?: string | number | boolean;
-  disabled?: boolean;   // ⬅️ NUEVO
+  disabled?: boolean;
 }
 
 const Radio: React.FC<RadioProps> = ({
@@ -21,17 +24,21 @@ const Radio: React.FC<RadioProps> = ({
   name,
   required = false,
   value,
-  disabled = false,     // ⬅️ VALOR POR DEFECTO
+  disabled = false,
 }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (disabled) return; // ⬅️ NO PERMITIR CAMBIOS
+    if (disabled) return;
     const { name, value } = e.target;
     setFormData({ name, value });
   };
 
   return (
     <div className="w-full space-y-2 opacity-100">
-      <div className={`text-sm font-semibold text-primary opacity-80 ${disabled ? "opacity-50" : ""}`}>
+      <div
+        className={`text-sm font-semibold text-primary opacity-80 ${
+          disabled ? "opacity-50" : ""
+        }`}
+      >
         {label}
         {required && <span className="text-error ml-1">*</span>}
       </div>
@@ -41,7 +48,9 @@ const Radio: React.FC<RadioProps> = ({
           <label
             key={String(option.value)}
             className={`flex items-center transition-opacity ${
-              disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:opacity-80"
+              disabled
+                ? "opacity-50 cursor-not-allowed"
+                : "cursor-pointer hover:opacity-80"
             }`}
           >
             <input
@@ -52,7 +61,7 @@ const Radio: React.FC<RadioProps> = ({
               onChange={handleInputChange}
               className="radio radio-primary radio-sm"
               required={required}
-              disabled={disabled} // ⬅️ DESHABILITAR EL INPUT
+              disabled={disabled}
             />
             <span className="label-text text-sm ml-2">{option.label}</span>
           </label>

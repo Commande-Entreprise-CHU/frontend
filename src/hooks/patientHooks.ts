@@ -23,8 +23,6 @@ export const useSearchPatients = (query: string) => {
   return useQuery({
     queryKey: ["patients", "search", query],
     queryFn: () => searchPatients(query),
-    // Only search if query is not empty, or you can allow empty to fetch all
-    // enabled: true
   });
 };
 

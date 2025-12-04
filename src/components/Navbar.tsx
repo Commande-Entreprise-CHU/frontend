@@ -19,6 +19,9 @@ const Navbar: React.FC = () => {
       <Link to="/search?edit=true" className="btn btn-ghost">
         <span className="text-small">Modifier un patient</span>
       </Link>
+      <Link to="/templates" className="btn btn-ghost">
+        <span className="text-small">Modèles</span>
+      </Link>
       <div className="flex-none">
         <ThemeController />
       </div>

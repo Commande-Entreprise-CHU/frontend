@@ -10,7 +10,7 @@ interface RevealRadioProps {
   required?: boolean;
   renderField?: (field: AnyFormField) => React.ReactNode;
   value?: string | number;
-  disabled?: boolean; // ⬅️ NUEVO
+  disabled?: boolean;
 }
 
 const RevealRadio: React.FC<RevealRadioProps> = ({
@@ -22,7 +22,7 @@ const RevealRadio: React.FC<RevealRadioProps> = ({
   required = false,
   renderField,
   value,
-  disabled = false, // ⬅️ NUEVO
+  disabled = false,
 }) => {
   const defaultOption = options.find((opt) => opt.default) || options[0];
 
@@ -42,7 +42,7 @@ const RevealRadio: React.FC<RevealRadioProps> = ({
   }, [value]);
 
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (disabled) return; // ⬅️ BLOQUEO TOTAL SI ESTÁ DESHABILITADO
+    if (disabled) return;
 
     const newValue = event.target.value;
     setSelectedValue(newValue);
@@ -84,7 +84,7 @@ const RevealRadio: React.FC<RevealRadioProps> = ({
               onChange={handleRadioChange}
               className="radio radio-primary radio-sm"
               required={required}
-              disabled={disabled} // ⬅️ DESHABILITA EL INPUT
+              disabled={disabled}
             />
             <span className="label-text text-sm ml-2">{option.label}</span>
           </label>
