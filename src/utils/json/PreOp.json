@@ -5,6 +5,436 @@
   },
   "sections": [
     {
+      "title": "Données Administratives",
+      "fields": [
+        {
+          "type": "Input",
+          "label": "Date",
+          "name": "date_consultation",
+          "pdfName": "Date de consultation",
+          "inputType": "date",
+          "required": true
+        },
+        {
+          "type": "Input",
+          "label": "Nom",
+          "name": "nom",
+          "pdfName": "Nom",
+          "placeholder": "Nom du patient",
+          "required": true
+        },
+        {
+          "type": "Input",
+          "label": "Prénom",
+          "name": "prenom",
+          "pdfName": "Prénom",
+          "placeholder": "Prénom du patient",
+          "required": true
+        },
+        {
+          "type": "Input",
+          "label": "IPP",
+          "name": "ipp",
+          "pdfName": "IPP",
+          "placeholder": "Numéro IPP",
+          "required": true
+        },
+        {
+          "type": "Radio",
+          "label": "Sexe",
+          "name": "sexe",
+          "pdfName": "Sexe",
+          "options": [
+            {
+              "value": "F",
+              "label": "Féminin"
+            },
+            {
+              "value": "H",
+              "label": "Masculin"
+            }
+          ],
+          "required": true
+        },
+        {
+          "type": "Input",
+          "label": "Poids",
+          "name": "poids",
+          "pdfName": "Poids",
+          "placeholder": "Poids en kg",
+          "inputType": "number",
+          "required": false
+        }
+      ]
+    },
+    {
+      "title": "ATCD et Traitements",
+      "fields": [
+        {
+          "type": "RevealRadio",
+          "label": "ATCD médicaux",
+          "name": "atcd_medicaux",
+          "pdfName": "ATCD médicaux",
+          "categoryLabel": "ATCD Médicaux",
+          "options": [
+            {
+              "value": "yes",
+              "label": "Ajouter si nouveau",
+              "fields": [
+                {
+                  "type": "Input",
+                  "label": "Détails ATCD médicaux",
+                  "name": "atcd_medicaux_details",
+                  "pdfName": "Détails ATCD médicaux",
+                  "placeholder": "Décrire les antécédents médicaux"
+                }
+              ]
+            },
+            {
+              "value": "no",
+              "label": "Rappel 1ère consultation",
+              "default": true
+            }
+          ]
+        },
+        {
+          "type": "RevealRadio",
+          "label": "ATCD traumatiques",
+          "name": "atcd_traumatiques",
+          "pdfName": "ATCD traumatiques",
+          "categoryLabel": "ATCD Traumatiques",
+          "options": [
+            {
+              "value": "yes",
+              "label": "Ajouter si nouveau",
+              "fields": [
+                {
+                  "type": "Input",
+                  "label": "Détails ATCD traumatiques",
+                  "name": "atcd_traumatiques_details",
+                  "pdfName": "Détails ATCD traumatiques",
+                  "placeholder": "Décrire les antécédents traumatiques"
+                }
+              ]
+            },
+            {
+              "value": "no",
+              "label": "Rappel 1ère consultation",
+              "default": true
+            }
+          ]
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Traitement orthodontique",
+          "name": "traitement_orthodontique",
+          "pdfName": "Traitement orthodontique",
+          "categoryLabel": "Traitement Orthodontique",
+          "options": [
+            {
+              "value": "yes",
+              "label": "Ajouter si nouveau",
+              "fields": [
+                {
+                  "type": "Input",
+                  "label": "Durée traitement",
+                  "name": "duree_traitement_ortho",
+                  "pdfName": "Durée traitement orthodontique",
+                  "placeholder": "Durée en mois"
+                },
+                {
+                  "type": "Input",
+                  "label": "Modalité traitement",
+                  "name": "modalite_traitement_ortho",
+                  "pdfName": "Modalité traitement orthodontique",
+                  "placeholder": "Modalités du traitement"
+                }
+              ]
+            },
+            {
+              "value": "no",
+              "label": "Rappel 1ère consultation",
+              "default": true
+            }
+          ]
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Motif consultation",
+          "name": "motif_consultation",
+          "pdfName": "Motif consultation",
+          "categoryLabel": "Motif Consultation",
+          "options": [
+            {
+              "value": "yes",
+              "label": "Ajouter si nouveau",
+              "fields": [
+                {
+                  "type": "Input",
+                  "label": "Nouveau motif",
+                  "name": "nouveau_motif",
+                  "pdfName": "Nouveau motif consultation",
+                  "placeholder": "Décrire le nouveau motif"
+                }
+              ]
+            },
+            {
+              "value": "no",
+              "label": "Rappel 1ère consultation",
+              "default": true
+            }
+          ]
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Ancrages osseux",
+          "name": "ancrages_osseux",
+          "pdfName": "Ancrages osseux",
+          "categoryLabel": "Ancrages Osseux",
+          "options": [
+            {
+              "value": "yes",
+              "label": "Ajouter si nouveau",
+              "fields": [
+                {
+                  "type": "Input",
+                  "label": "Détails ancrages osseux",
+                  "name": "ancrages_osseux_details",
+                  "pdfName": "Détails ancrages osseux",
+                  "placeholder": "Préciser les ancrages"
+                }
+              ]
+            },
+            {
+              "value": "no",
+              "label": "Rappel 1ère consultation",
+              "default": true
+            }
+          ]
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Toxine botulique utilisée",
+          "name": "toxine_botulique",
+          "pdfName": "Toxine botulique",
+          "categoryLabel": "Toxine Botulique",
+          "options": [
+            {
+              "value": "yes",
+              "label": "Ajouter si nouveau",
+              "fields": [
+                {
+                  "type": "Input",
+                  "label": "Détails toxine botulique",
+                  "name": "toxine_botulique_details",
+                  "pdfName": "Détails toxine botulique",
+                  "placeholder": "Préciser l'utilisation"
+                }
+              ]
+            },
+            {
+              "value": "no",
+              "label": "Rappel 1ère consultation",
+              "default": true
+            }
+          ]
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Claquements",
+          "name": "claquements",
+          "pdfName": "Claquements",
+          "categoryLabel": "Claquements ATM",
+          "options": [
+            {
+              "value": "yes",
+              "label": "Ajouter si nouveau",
+              "fields": [
+                {
+                  "type": "Input",
+                  "label": "Détails claquements",
+                  "name": "claquements_details",
+                  "pdfName": "Détails claquements",
+                  "placeholder": "Décrire les claquements"
+                }
+              ]
+            },
+            {
+              "value": "no",
+              "label": "Rappel 1ère consultation",
+              "default": true
+            }
+          ]
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Douleurs ATM",
+          "name": "douleurs_atm",
+          "pdfName": "Douleurs ATM",
+          "categoryLabel": "Douleurs ATM",
+          "options": [
+            {
+              "value": "yes",
+              "label": "Ajouter si nouveau",
+              "fields": [
+                {
+                  "type": "Input",
+                  "label": "Détails douleurs ATM",
+                  "name": "douleurs_atm_details",
+                  "pdfName": "Détails douleurs ATM",
+                  "placeholder": "Localisation et intensité"
+                }
+              ]
+            },
+            {
+              "value": "no",
+              "label": "Rappel 1ère consultation",
+              "default": true
+            }
+          ]
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Bruxisme",
+          "name": "bruxisme",
+          "pdfName": "Bruxisme",
+          "categoryLabel": "Bruxisme",
+          "options": [
+            {
+              "value": "yes",
+              "label": "Ajouter si nouveau",
+              "fields": [
+                {
+                  "type": "Checkbox",
+                  "label": "Diurne",
+                  "name": "bruxisme_diurne",
+                  "pdfName": "Bruxisme diurne"
+                },
+                {
+                  "type": "Checkbox",
+                  "label": "Nocturne",
+                  "name": "bruxisme_nocturne",
+                  "pdfName": "Bruxisme nocturne"
+                },
+                {
+                  "type": "RevealRadio",
+                  "label": "Gouttière",
+                  "name": "gouttiere",
+                  "pdfName": "Gouttière",
+                  "options": [
+                    {
+                      "value": "yes",
+                      "label": "Utilise une gouttière",
+                      "fields": [
+                        {
+                          "type": "Input",
+                          "label": "Type de gouttière",
+                          "name": "type_gouttiere",
+                          "pdfName": "Type de gouttière",
+                          "placeholder": "Préciser le type"
+                        }
+                      ]
+                    },
+                    {
+                      "value": "no",
+                      "label": "Pas de gouttière",
+                      "default": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "value": "no",
+              "label": "Rappel 1ère consultation",
+              "default": true
+            }
+          ]
+        },
+        {
+          "type": "RevealRadio",
+          "label": "SAOS / Apnées",
+          "name": "saos_apnees",
+          "pdfName": "SAOS Apnées",
+          "categoryLabel": "SAOS Apnées",
+          "options": [
+            {
+              "value": "yes",
+              "label": "Ajouter si nouveau",
+              "fields": [
+                {
+                  "type": "Input",
+                  "label": "Détails SAOS/Apnées",
+                  "name": "saos_apnees_details",
+                  "pdfName": "Détails SAOS/Apnées",
+                  "placeholder": "Décrire les symptômes"
+                }
+              ]
+            },
+            {
+              "value": "no",
+              "label": "Rappel 1ère consultation",
+              "default": true
+            }
+          ]
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Déviation septale",
+          "name": "deviation_septale",
+          "pdfName": "Déviation septale",
+          "categoryLabel": "Déviation Septale",
+          "options": [
+            {
+              "value": "yes",
+              "label": "Ajouter si nouveau",
+              "fields": [
+                {
+                  "type": "Input",
+                  "label": "Détails déviation septale",
+                  "name": "deviation_septale_details",
+                  "pdfName": "Détails déviation septale",
+                  "placeholder": "Décrire la déviation"
+                }
+              ]
+            },
+            {
+              "value": "no",
+              "label": "Rappel 1ère consultation",
+              "default": true
+            }
+          ]
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Esthétisme (attendus, craintes,...)",
+          "name": "esthetisme",
+          "pdfName": "Esthétisme",
+          "categoryLabel": "Esthétisme",
+          "options": [
+            {
+              "value": "yes",
+              "label": "Ajouter si nouveau",
+              "fields": [
+                {
+                  "type": "Input",
+                  "label": "Attendus et craintes",
+                  "name": "esthetisme_details",
+                  "pdfName": "Détails esthétisme",
+                  "placeholder": "Attentes et préoccupations du patient"
+                }
+              ]
+            },
+            {
+              "value": "no",
+              "label": "Rappel 1ère consultation",
+              "default": true
+            }
+          ]
+        }
+      ]
+    },
+    {
       "title": "Examen Exobuccal",
       "fields": [
         {
@@ -425,19 +855,6 @@
         }
       ]
     },
-
-    {
-      "title": "Examen Dentaire",
-      "fields": [
-        {
-          "type": "TeethSelector",
-          "label": "État des dents",
-          "name": "teeth_state",
-          "pdfName": "État des dents",
-          "required": false
-        }
-      ]
-    },
     {
       "title": "Imagerie",
       "fields": [
@@ -471,6 +888,31 @@
           "label": "Dents de lait présentes",
           "name": "dents_lait",
           "pdfName": "Dents de lait"
+        },
+        {
+          "type": "RevealRadio",
+          "label": "Agénésie",
+          "name": "agenesie",
+          "pdfName": "Agénésie",
+          "options": [
+            {
+              "value": "yes",
+              "label": "Présente",
+              "fields": [
+                {
+                  "type": "Input",
+                  "label": "Dents concernées",
+                  "name": "agenesie_dents",
+                  "pdfName": "Dents agénésie",
+                  "placeholder": "Liste des dents"
+                }
+              ]
+            },
+            {
+              "value": "no",
+              "label": "Absente"
+            }
+          ]
         },
         {
           "type": "Checkbox",
