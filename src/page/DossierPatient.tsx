@@ -3,8 +3,9 @@ import { useParams } from "react-router-dom";
 import { usePatient } from "../hooks/patientHooks";
 import { useConsultationTypes } from "../hooks/templateHooks";
 import GenericForm from "./forms/GenericForm";
+import Card from "../components/Card";
 import { formatDate } from "../utils/date";
-import { User, Calendar, FileText, Activity, AlertCircle } from "lucide-react";
+import { User, Calendar, Activity, AlertCircle } from "lucide-react";
 
 export default function DossierPatient() {
   const { id } = useParams();
@@ -77,44 +78,45 @@ export default function DossierPatient() {
       </div>
 
       {/* Patient Info Card */}
-      <div className="card bg-base-100 shadow-md border border-base-200">
-        <div className="card-body p-6">
-          <h2 className="card-title text-sm uppercase tracking-wider text-base-content/50 mb-4">
+      <Card
+        title={
+          <span className="text-sm uppercase tracking-wider text-base-content/50">
             Informations Administratives
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                <User size={20} />
-              </div>
-              <div>
-                <p className="text-xs text-base-content/50">Sexe</p>
-                <p className="font-medium">{patient.sexe}</p>
-              </div>
+          </span>
+        }
+        className="shadow-md"
+        bodyClassName="p-6"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-lg text-primary">
+              <User size={20} />
             </div>
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-secondary/10 rounded-lg text-secondary">
-                <Calendar size={20} />
-              </div>
-              <div>
-                <p className="text-xs text-base-content/50">
-                  Date de naissance
-                </p>
-                <p className="font-medium">{formatDate(patient.dob)}</p>
-              </div>
+            <div>
+              <p className="text-xs text-base-content/50">Sexe</p>
+              <p className="font-medium">{patient.sexe}</p>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-accent/10 rounded-lg text-accent">
-                <Activity size={20} />
-              </div>
-              <div>
-                <p className="text-xs text-base-content/50">Statut</p>
-                <p className="font-medium">Actif</p>
-              </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-secondary/10 rounded-lg text-secondary">
+              <Calendar size={20} />
+            </div>
+            <div>
+              <p className="text-xs text-base-content/50">Date de naissance</p>
+              <p className="font-medium">{formatDate(patient.dob)}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-accent/10 rounded-lg text-accent">
+              <Activity size={20} />
+            </div>
+            <div>
+              <p className="text-xs text-base-content/50">Statut</p>
+              <p className="font-medium">Actif</p>
             </div>
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Consultations Tabs */}
       <div className="space-y-6">
@@ -154,7 +156,7 @@ export default function DossierPatient() {
         </div>
 
         {/* Active Tab Content */}
-        <div className="bg-base-100 rounded-2xl shadow-sm border border-base-200 min-h-[400px] p-6">
+        <Card className="min-h-[400px] rounded-2xl" bodyClassName="p-6">
           {activeTabSlug && (
             <GenericForm
               key={activeTabSlug}
@@ -162,7 +164,7 @@ export default function DossierPatient() {
               formSlug={activeTabSlug}
             />
           )}
-        </div>
+        </Card>
       </div>
     </div>
   );

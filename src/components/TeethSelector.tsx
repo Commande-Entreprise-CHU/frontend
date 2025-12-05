@@ -78,7 +78,7 @@ const TeethSelector: React.FC<TeethSelectorProps> = ({
   const setToothState = useCallback(
     (toothId: string, newState: string) => {
       if (disabled) return;
-      
+
       setTeethData((prev) => {
         const newData = { ...prev, [toothId]: newState };
         setFormData({ name, value: JSON.stringify(newData) });
@@ -103,17 +103,6 @@ const TeethSelector: React.FC<TeethSelectorProps> = ({
           <span className="w-2 h-6 bg-primary rounded-full"></span>
           {label || "Schéma Dentaire"}
         </h3>
-        <div className="flex gap-4 text-sm">
-          {options.map((opt) => (
-            <div key={opt.value} className="flex items-center gap-2">
-              <div 
-                className="w-3 h-3 rounded-full" 
-                style={{ backgroundColor: colorMap[opt.value]?.replace('fill-', 'var(--') || '#e5e7eb' }}
-              />
-              <span className="text-base-content/70">{opt.label}</span>
-            </div>
-          ))}
-        </div>
       </div>
 
       <div className="relative bg-base-200/30 p-8 rounded-3xl border border-base-200">
@@ -122,8 +111,14 @@ const TeethSelector: React.FC<TeethSelectorProps> = ({
           {/* Quadrant 1 (Right Upper) */}
           <div className="flex gap-0.5">
             {[
-              { id: "18", Comp: H8 }, { id: "17", Comp: H7 }, { id: "16", Comp: H6 }, { id: "15", Comp: H5 },
-              { id: "14", Comp: H4 }, { id: "13", Comp: H3 }, { id: "12", Comp: H2 }, { id: "11", Comp: H1 }
+              { id: "18", Comp: H8 },
+              { id: "17", Comp: H7 },
+              { id: "16", Comp: H6 },
+              { id: "15", Comp: H5 },
+              { id: "14", Comp: H4 },
+              { id: "13", Comp: H3 },
+              { id: "12", Comp: H2 },
+              { id: "11", Comp: H1 },
             ].map(({ id, Comp }) => (
               <Tooth
                 key={id}
@@ -136,12 +131,18 @@ const TeethSelector: React.FC<TeethSelectorProps> = ({
               />
             ))}
           </div>
-          
+
           {/* Quadrant 2 (Left Upper) */}
           <div className="flex gap-0.5">
             {[
-              { id: "21", Comp: H1 }, { id: "22", Comp: H2 }, { id: "23", Comp: H3 }, { id: "24", Comp: H4 },
-              { id: "25", Comp: H5 }, { id: "26", Comp: H6 }, { id: "27", Comp: H7 }, { id: "28", Comp: H8 }
+              { id: "21", Comp: H1 },
+              { id: "22", Comp: H2 },
+              { id: "23", Comp: H3 },
+              { id: "24", Comp: H4 },
+              { id: "25", Comp: H5 },
+              { id: "26", Comp: H6 },
+              { id: "27", Comp: H7 },
+              { id: "28", Comp: H8 },
             ].map(({ id, Comp }) => (
               <Tooth
                 key={id}
@@ -162,9 +163,15 @@ const TeethSelector: React.FC<TeethSelectorProps> = ({
           {/* Quadrant 4 (Right Lower) */}
           <div className="flex gap-0.5">
             {[
-              { id: "48", Comp: B8 }, { id: "47", Comp: B7 }, { id: "46", Comp: B6 }, { id: "45", Comp: B5 },
-              { id: "44", Comp: B4 }, { id: "43", Comp: B3 }, { id: "42", Comp: B2 }, { id: "41", Comp: B1 }
-            ].reverse().map(({ id, Comp }) => (
+              { id: "48", Comp: B8 },
+              { id: "47", Comp: B7 },
+              { id: "46", Comp: B6 },
+              { id: "45", Comp: B5 },
+              { id: "44", Comp: B4 },
+              { id: "43", Comp: B3 },
+              { id: "42", Comp: B2 },
+              { id: "41", Comp: B1 },
+            ].map(({ id, Comp }) => (
               <Tooth
                 key={id}
                 toothId={id}
@@ -180,8 +187,14 @@ const TeethSelector: React.FC<TeethSelectorProps> = ({
           {/* Quadrant 3 (Left Lower) */}
           <div className="flex gap-0.5">
             {[
-              { id: "31", Comp: B1 }, { id: "32", Comp: B2 }, { id: "33", Comp: B3 }, { id: "34", Comp: B4 },
-              { id: "35", Comp: B5 }, { id: "36", Comp: B6 }, { id: "37", Comp: B7 }, { id: "38", Comp: B8 }
+              { id: "31", Comp: B1 },
+              { id: "32", Comp: B2 },
+              { id: "33", Comp: B3 },
+              { id: "34", Comp: B4 },
+              { id: "35", Comp: B5 },
+              { id: "36", Comp: B6 },
+              { id: "37", Comp: B7 },
+              { id: "38", Comp: B8 },
             ].map(({ id, Comp }) => (
               <Tooth
                 key={id}
