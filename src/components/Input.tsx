@@ -2,69 +2,106 @@ import React from "react";
 
 interface InputProps {
   label?: string;
-  value?: string;
+  value?: string | number | null;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: string;
   placeholder?: string;
   className?: string;
   optional?: boolean;
   name: string;
-  setFormData: (data: { name: string; value: string | null }) => void;
+  setFormData?: (data: { name: string; value: string | null }) => void;
   required?: boolean;
   disabled?: boolean;
+  error?: string;
+  helperText?: string;
+  icon?: React.ReactNode;
+  size?: "xs" | "sm" | "md" | "lg";
 }
 
 const Input: React.FC<InputProps> = ({
   label,
   value,
+  onChange,
   type = "text",
   placeholder,
-  className,
+  className = "",
   optional = false,
   name,
   setFormData,
   required = false,
   disabled = false,
+  error,
+  helperText,
+  icon,
+  size = "md",
 }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (disabled) return;
-    const { name, value } = e.target;
-    if (type === "number" && value === "") {
-      setFormData({ name, value: null }); // Send null for empty number inputs
-    } else {
-      setFormData({ name, value });
+
+    if (onChange) {
+      onChange(e);
+    }
+
+    if (setFormData) {
+      const { name, value } = e.target;
+      if (type === "number" && value === "") {
+        setFormData({ name, value: null }); // Send null for empty number inputs
+      } else {
+        setFormData({ name, value });
+      }
     }
   };
 
   const hasLabel = label && label.trim() !== "";
 
   return (
-    <div className="w-full space-y-2">
+    <div className={`form-control w-full ${className}`}>
       {hasLabel && (
-        <div
-          className={`text-sm font-semibold ${
-            disabled ? "opacity-50" : "text-primary opacity-80"
-          }`}
-        >
-          {label}
-          {required && <span className="text-error ml-1">*</span>}
-        </div>
+        <label className="label">
+          <span
+            className={`label-text font-medium ${disabled ? "opacity-50" : ""}`}
+          >
+            {label}
+            {required && <span className="text-error ml-1">*</span>}
+            {optional && (
+              <span className="text-xs text-base-content/50 ml-2">
+                (Optionnel)
+              </span>
+            )}
+          </span>
+        </label>
       )}
 
-      <input
-        name={name}
-        type={type}
-        className={`input input-bordered input-sm w-full ${className || ""} ${
-          disabled ? "opacity-50 cursor-not-allowed" : ""
-        }`}
-        placeholder={placeholder}
-        value={value ?? ""}
-        onChange={handleInputChange}
-        required={required}
-        disabled={disabled}
-      />
+      <div className="relative">
+        {icon && (
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-base-content/50">
+            {icon}
+          </div>
+        )}
+        <input
+          type={type}
+          name={name}
+          placeholder={placeholder}
+          className={`input input-bordered w-full ${icon ? "pl-10" : ""} ${
+            error ? "input-error" : ""
+          } ${disabled ? "opacity-50 cursor-not-allowed" : ""} input-${size}`}
+          value={value === null ? "" : value}
+          onChange={handleInputChange}
+          required={required}
+          disabled={disabled}
+        />
+      </div>
 
-      {optional && <p className="text-xs opacity-70">Optionnel</p>}
+      {(error || helperText) && (
+        <label className="label">
+          {error && <span className="label-text-alt text-error">{error}</span>}
+          {helperText && !error && (
+            <span className="label-text-alt text-base-content/60">
+              {helperText}
+            </span>
+          )}
+        </label>
+      )}
     </div>
   );
 };

@@ -50,357 +50,157 @@ const TeethSelector: React.FC<TeethSelectorProps> = ({
   options = DEFAULT_OPTIONS,
   value,
   setFormData,
-  disabled = false,
+  disabled,
 }) => {
   const [teethData, setTeethData] = useState<TeethData>(() => {
-    if (value) {
-      if (typeof value === "string") {
-        try {
-          return JSON.parse(value);
-        } catch {
-          return {};
-        }
-      }
-      return value;
-    }
     const initialData: TeethData = {};
     TOOTH_IDS.forEach((id) => {
-      initialData[id] = options[0].value; // Default to first option
+      initialData[id] = "Normal";
     });
     return initialData;
   });
 
-  // Autocomplete - only load, never upload to parent
   useEffect(() => {
     if (value) {
-      // Load saved values
       if (typeof value === "string") {
         try {
-          setTeethData(JSON.parse(value));
+          const parsed = JSON.parse(value);
+          setTeethData((prev) => ({ ...prev, ...parsed }));
         } catch (e) {
-          console.error("Error parsing teeth data", e);
+          console.error("Failed to parse teeth data", e);
         }
       } else {
-        setTeethData(value);
+        setTeethData((prev) => ({ ...prev, ...value }));
       }
-    } else {
-      // Initialize if nothing
-      const initial: TeethData = {};
-      TOOTH_IDS.forEach((id) => (initial[id] = options[0].value));
-      setTeethData(initial);
     }
-  }, [value, options]);
+  }, [value]);
 
-  // Change tooth state
   const setToothState = useCallback(
-    (toothId: string, state: string) => {
+    (toothId: string, newState: string) => {
       if (disabled) return;
+      
       setTeethData((prev) => {
-        const updated = { ...prev, [toothId]: state };
-        setFormData({ name, value: JSON.stringify(updated) });
-        return updated;
+        const newData = { ...prev, [toothId]: newState };
+        setFormData({ name, value: JSON.stringify(newData) });
+        return newData;
       });
     },
-    [disabled, name, setFormData]
+    [name, setFormData, disabled]
   );
 
   const colorMap = useMemo(() => {
-    return options.reduce((acc, opt) => {
-      acc[opt.value] = opt.color;
-      return acc;
-    }, {} as Record<string, string>);
+    const map: Record<string, string> = {};
+    options.forEach((opt) => {
+      map[opt.value] = opt.color;
+    });
+    return map;
   }, [options]);
 
   return (
-    <div
-      className={`flex flex-col items-center gap-4 ${
-        disabled ? "opacity-50 cursor-not-allowed" : ""
-      }`}
-    >
-      {label && (
-        <label className="font-semibold text-primary">
-          {label} {required && <span className="text-red-500">*</span>}
-        </label>
-      )}
-      <div className="flex gap-0.5 flex-row items-end">
-        <Tooth
-          toothId="18"
-          ToothComponent={H8}
-          currentState={teethData["18"]}
-          onStateChange={setToothState}
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="17"
-          ToothComponent={H7}
-          currentState={teethData["17"]}
-          onStateChange={setToothState}
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="16"
-          ToothComponent={H6}
-          currentState={teethData["16"]}
-          onStateChange={setToothState}
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="15"
-          ToothComponent={H5}
-          currentState={teethData["15"]}
-          onStateChange={setToothState}
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="14"
-          ToothComponent={H4}
-          currentState={teethData["14"]}
-          onStateChange={setToothState}
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="13"
-          ToothComponent={H3}
-          currentState={teethData["13"]}
-          onStateChange={setToothState}
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="12"
-          ToothComponent={H2}
-          currentState={teethData["12"]}
-          onStateChange={setToothState}
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="11"
-          ToothComponent={H1}
-          currentState={teethData["11"]}
-          onStateChange={setToothState}
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="21"
-          ToothComponent={H1}
-          currentState={teethData["21"]}
-          onStateChange={setToothState}
-          mirrored
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="22"
-          ToothComponent={H2}
-          currentState={teethData["22"]}
-          onStateChange={setToothState}
-          mirrored
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="23"
-          ToothComponent={H3}
-          currentState={teethData["23"]}
-          onStateChange={setToothState}
-          mirrored
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="24"
-          ToothComponent={H4}
-          currentState={teethData["24"]}
-          onStateChange={setToothState}
-          mirrored
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="25"
-          ToothComponent={H5}
-          currentState={teethData["25"]}
-          onStateChange={setToothState}
-          mirrored
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="26"
-          ToothComponent={H6}
-          currentState={teethData["26"]}
-          onStateChange={setToothState}
-          mirrored
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="27"
-          ToothComponent={H7}
-          currentState={teethData["27"]}
-          onStateChange={setToothState}
-          mirrored
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="28"
-          ToothComponent={H8}
-          currentState={teethData["28"]}
-          onStateChange={setToothState}
-          mirrored
-          options={options}
-          colorMap={colorMap}
-        />
+    <div className="flex flex-col items-center gap-8 p-6 bg-base-100 rounded-xl shadow-sm border border-base-200">
+      <div className="w-full flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold flex items-center gap-2">
+          <span className="w-2 h-6 bg-primary rounded-full"></span>
+          {label || "Schéma Dentaire"}
+        </h3>
+        <div className="flex gap-4 text-sm">
+          {options.map((opt) => (
+            <div key={opt.value} className="flex items-center gap-2">
+              <div 
+                className="w-3 h-3 rounded-full" 
+                style={{ backgroundColor: colorMap[opt.value]?.replace('fill-', 'var(--') || '#e5e7eb' }}
+              />
+              <span className="text-base-content/70">{opt.label}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className="flex gap-0.5 flex-row">
-        <Tooth
-          toothId="38"
-          ToothComponent={B8}
-          currentState={teethData["38"]}
-          onStateChange={setToothState}
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="37"
-          ToothComponent={B7}
-          currentState={teethData["37"]}
-          onStateChange={setToothState}
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="36"
-          ToothComponent={B6}
-          currentState={teethData["36"]}
-          onStateChange={setToothState}
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="35"
-          ToothComponent={B5}
-          currentState={teethData["35"]}
-          onStateChange={setToothState}
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="34"
-          ToothComponent={B4}
-          currentState={teethData["34"]}
-          onStateChange={setToothState}
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="33"
-          ToothComponent={B3}
-          currentState={teethData["33"]}
-          onStateChange={setToothState}
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="32"
-          ToothComponent={B2}
-          currentState={teethData["32"]}
-          onStateChange={setToothState}
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="31"
-          ToothComponent={B1}
-          currentState={teethData["31"]}
-          onStateChange={setToothState}
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="41"
-          ToothComponent={B1}
-          currentState={teethData["41"]}
-          onStateChange={setToothState}
-          mirrored
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="42"
-          ToothComponent={B2}
-          currentState={teethData["42"]}
-          onStateChange={setToothState}
-          mirrored
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="43"
-          ToothComponent={B3}
-          currentState={teethData["43"]}
-          onStateChange={setToothState}
-          mirrored
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="44"
-          ToothComponent={B4}
-          currentState={teethData["44"]}
-          onStateChange={setToothState}
-          mirrored
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="45"
-          ToothComponent={B5}
-          currentState={teethData["45"]}
-          onStateChange={setToothState}
-          mirrored
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="46"
-          ToothComponent={B6}
-          currentState={teethData["46"]}
-          onStateChange={setToothState}
-          mirrored
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="47"
-          ToothComponent={B7}
-          currentState={teethData["47"]}
-          onStateChange={setToothState}
-          mirrored
-          options={options}
-          colorMap={colorMap}
-        />
-        <Tooth
-          toothId="48"
-          ToothComponent={B8}
-          currentState={teethData["48"]}
-          onStateChange={setToothState}
-          mirrored
-          options={options}
-          colorMap={colorMap}
-        />
+      <div className="relative bg-base-200/30 p-8 rounded-3xl border border-base-200">
+        {/* Upper Jaw */}
+        <div className="flex gap-1 justify-center mb-1">
+          {/* Quadrant 1 (Right Upper) */}
+          <div className="flex gap-0.5">
+            {[
+              { id: "18", Comp: H8 }, { id: "17", Comp: H7 }, { id: "16", Comp: H6 }, { id: "15", Comp: H5 },
+              { id: "14", Comp: H4 }, { id: "13", Comp: H3 }, { id: "12", Comp: H2 }, { id: "11", Comp: H1 }
+            ].map(({ id, Comp }) => (
+              <Tooth
+                key={id}
+                toothId={id}
+                ToothComponent={Comp}
+                currentState={teethData[id]}
+                onStateChange={setToothState}
+                options={options}
+                colorMap={colorMap}
+              />
+            ))}
+          </div>
+          
+          {/* Quadrant 2 (Left Upper) */}
+          <div className="flex gap-0.5">
+            {[
+              { id: "21", Comp: H1 }, { id: "22", Comp: H2 }, { id: "23", Comp: H3 }, { id: "24", Comp: H4 },
+              { id: "25", Comp: H5 }, { id: "26", Comp: H6 }, { id: "27", Comp: H7 }, { id: "28", Comp: H8 }
+            ].map(({ id, Comp }) => (
+              <Tooth
+                key={id}
+                toothId={id}
+                ToothComponent={Comp}
+                currentState={teethData[id]}
+                onStateChange={setToothState}
+                mirrored
+                options={options}
+                colorMap={colorMap}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Lower Jaw */}
+        <div className="flex gap-1 justify-center">
+          {/* Quadrant 4 (Right Lower) */}
+          <div className="flex gap-0.5">
+            {[
+              { id: "48", Comp: B8 }, { id: "47", Comp: B7 }, { id: "46", Comp: B6 }, { id: "45", Comp: B5 },
+              { id: "44", Comp: B4 }, { id: "43", Comp: B3 }, { id: "42", Comp: B2 }, { id: "41", Comp: B1 }
+            ].reverse().map(({ id, Comp }) => (
+              <Tooth
+                key={id}
+                toothId={id}
+                ToothComponent={Comp}
+                currentState={teethData[id]}
+                onStateChange={setToothState}
+                options={options}
+                colorMap={colorMap}
+              />
+            ))}
+          </div>
+
+          {/* Quadrant 3 (Left Lower) */}
+          <div className="flex gap-0.5">
+            {[
+              { id: "31", Comp: B1 }, { id: "32", Comp: B2 }, { id: "33", Comp: B3 }, { id: "34", Comp: B4 },
+              { id: "35", Comp: B5 }, { id: "36", Comp: B6 }, { id: "37", Comp: B7 }, { id: "38", Comp: B8 }
+            ].map(({ id, Comp }) => (
+              <Tooth
+                key={id}
+                toothId={id}
+                ToothComponent={Comp}
+                currentState={teethData[id]}
+                onStateChange={setToothState}
+                mirrored
+                options={options}
+                colorMap={colorMap}
+              />
+            ))}
+          </div>
+        </div>
       </div>
 
-      <TeethSummary teethData={teethData} options={options} />
+      <div className="w-full mt-4">
+        <TeethSummary teethData={teethData} options={options} />
+      </div>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Input from "../components/Input";
-import { Search } from "lucide-react";
+import { Search, User, FileText, Hash, Stethoscope } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSearchPatients } from "../hooks/patientHooks";
 import { formatDate } from "../utils/date";
@@ -29,7 +29,7 @@ function SearchPatient() {
     const query =
       `${formData.name} ${formData.sexe} ${formData.ipp} ${formData.motifConsultation}`.trim();
     if (!query) {
-      alert("Veuillez entrer quelque chose pour rechercher.");
+      // Optional: Show a toast or less intrusive alert
       return;
     }
     setSearchQuery(query);
@@ -40,112 +40,129 @@ function SearchPatient() {
   };
 
   return (
-    <div className="flex flex-col items-center p-8 bg-base-100 min-h-screen">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-primary">
-          Recherche de Patient
-        </h1>
-        <p className="text-sm opacity-70 mt-1">
-          Entrez le nom, le sexe, l'IPP ou le motif de consultation pour
-          rechercher.
-        </p>
-      </div>
+    <div className="min-h-[calc(100vh-4rem)] bg-base-200/30 p-6 md:p-12">
+      <div className="max-w-5xl mx-auto space-y-8">
+        {/* Header */}
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl font-bold text-base-content">
+            Recherche de Patient
+          </h1>
+          <p className="text-base-content/60">
+            Retrouvez un dossier patient en utilisant les filtres ci-dessous
+          </p>
+        </div>
 
-      <div
-        onKeyDown={handleKeyDown}
-        className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full max-w-4xl bg-base-200 p-5 rounded-lg shadow-sm"
-      >
-        <Input
-          label="Nom"
-          name="name"
-          placeholder="Ex: Jean"
-          value={formData.name}
-          setFormData={handleInputChange}
-        />
+        {/* Search Form */}
+        <div className="card bg-base-100 shadow-lg border border-base-200">
+          <div className="card-body p-6 md:p-8">
+            <div
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+              onKeyDown={handleKeyDown}
+            >
+              <Input
+                label="Nom"
+                name="name"
+                placeholder="Ex: Jean"
+                value={formData.name}
+                setFormData={handleInputChange}
+                icon={<User size={18} />}
+              />
 
-        <Input
-          label="Sexe"
-          name="sexe"
-          placeholder="Ex: Femme"
-          value={formData.sexe}
-          setFormData={handleInputChange}
-        />
+              <Input
+                label="Sexe"
+                name="sexe"
+                placeholder="Ex: Femme"
+                value={formData.sexe}
+                setFormData={handleInputChange}
+                icon={<User size={18} />}
+              />
 
-        <Input
-          label="IPP"
-          name="ipp"
-          placeholder="Ex: 1234567"
-          value={formData.ipp}
-          setFormData={handleInputChange}
-        />
+              <Input
+                label="IPP"
+                name="ipp"
+                placeholder="Ex: 1234567"
+                value={formData.ipp}
+                setFormData={handleInputChange}
+                icon={<Hash size={18} />}
+              />
 
-        <Input
-          label="Motif de Consultation"
-          name="motifConsultation"
-          placeholder="Ex: Esthétique"
-          value={formData.motifConsultation}
-          setFormData={handleInputChange}
-        />
-      </div>
+              <Input
+                label="Motif"
+                name="motifConsultation"
+                placeholder="Ex: Esthétique"
+                value={formData.motifConsultation}
+                setFormData={handleInputChange}
+                icon={<Stethoscope size={18} />}
+              />
+            </div>
 
-      <div className="mt-5">
-        <button
-          onClick={handleBuscar}
-          className="btn btn-primary btn-md flex items-center gap-2"
-          disabled={loading}
-        >
-          <Search size={18} />
-          {loading ? "Recherche..." : "Rechercher"}
-        </button>
-      </div>
-
-      <div className="mt-8 w-full max-w-6xl">
-        {error ? (
-          <div className="text-center text-error font-semibold">
-            Erreur lors de la recherche.
-          </div>
-        ) : loading ? (
-          <div className="text-center text-primary font-semibold">
-            Chargement des résultats...
-          </div>
-        ) : resultados.length > 0 ? (
-          <div className="space-y-3">
-            {resultados.map((item, index) => (
-              <div
-                key={index}
-                className="flex flex-col md:flex-row justify-between items-start md:items-center bg-base-200 border border-base-300 rounded-lg px-6 py-3 shadow-sm hover:bg-primary hover:text-white cursor-pointer transition-all duration-200"
-                onClick={() => {
-                  navigate(`/patient/${item.id}`);
-                }}
+            <div className="card-actions justify-end mt-6">
+              <button
+                onClick={handleBuscar}
+                className="btn btn-primary px-8"
+                disabled={loading}
               >
-                <div className="flex flex-col md:flex-row gap-4 w-full justify-between">
-                  <div className="text-primary font-semibold text-lg">
-                    {item.name || "—"} {item.prenom || ""}
-                  </div>
+                {loading ? (
+                  <span className="loading loading-spinner loading-sm"></span>
+                ) : (
+                  <Search size={18} />
+                )}
+                {loading ? "Recherche..." : "Rechercher"}
+              </button>
+            </div>
+          </div>
+        </div>
 
-                  <div className="text-sm opacity-80 flex flex-wrap gap-x-6 gap-y-1">
-                    <p>
-                      <strong>IPP:</strong> {item.ipp || "—"}
-                    </p>
-                    <p>
-                      <strong>Sexe:</strong> {item.sexe || "—"}
-                    </p>
-                    <p>
-                      <strong>Date de naissance:</strong>{" "}
-                      {formatDate(item.dob) || "—"}
-                    </p>
-                    {/* <p>
-                      <strong>Motif de consultation:</strong>{" "}
-                      {item.consultations?.["pre-consult"]?.motifConsultation ||
-                        "—"}
-                    </p> */}
+        {/* Results Section */}
+        {searchQuery && (
+          <div className="space-y-4 animate-fade-in">
+            <h2 className="text-xl font-semibold px-2">
+              Résultats ({resultados.length})
+            </h2>
+
+            <div className="grid grid-cols-1 gap-4">
+              {resultados.map((patient: any) => (
+                <div
+                  key={patient.id}
+                  onClick={() => navigate(`/patient/${patient.id}`)}
+                  className="card bg-base-100 shadow-sm hover:shadow-md transition-all duration-200 border border-base-200 cursor-pointer group"
+                >
+                  <div className="card-body p-6 flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg group-hover:bg-primary group-hover:text-primary-content transition-colors">
+                        {patient.name.charAt(0)}
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-lg group-hover:text-primary transition-colors">
+                          {patient.name} {patient.prenom}
+                        </h3>
+                        <div className="flex items-center gap-4 text-sm text-base-content/60 mt-1">
+                          <span className="flex items-center gap-1">
+                            <Hash size={14} /> {patient.ipp || "N/A"}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <User size={14} /> {patient.sexe}
+                          </span>
+                          <span>Né(e) le {formatDate(patient.dob)}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="hidden md:flex items-center text-base-content/40 group-hover:translate-x-1 transition-transform">
+                      <FileText size={24} />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+
+              {resultados.length === 0 && !loading && (
+                <div className="text-center py-12 text-base-content/50 bg-base-100 rounded-xl border border-dashed border-base-300">
+                  <Search size={48} className="mx-auto mb-4 opacity-20" />
+                  <p>Aucun patient trouvé pour cette recherche.</p>
+                </div>
+              )}
+            </div>
           </div>
-        ) : (
-          <p className="opacity-70 text-center mt-6">Aucun résultat trouvé.</p>
         )}
       </div>
     </div>

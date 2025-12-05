@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
+import { Copy, FileText, Save, RefreshCw, AlertCircle } from "lucide-react";
 import Radio from "./Radio";
 import Input from "./Input";
 import Range from "./Range";
@@ -35,6 +36,8 @@ const DynamicForm = ({
 
     // Process defaults from config first
     const processFields = (fields: AnyFormField[]) => {
+      if (!fields || !Array.isArray(fields)) return;
+
       fields.forEach((field) => {
         if (field.type === "Input") {
           if (
@@ -49,432 +52,411 @@ const DynamicForm = ({
           const defaultOpt = field.options?.find((opt) => opt.default);
           if (defaultOpt) {
             data[field.name] = defaultOpt.value;
-            if (defaultOpt.fields) processFields(defaultOpt.fields);
           }
-        } else if (field.type === "RevealCheckBox") {
+        } else if (field.type === "CheckboxGroup") {
+          const defaultOpts = field.options
+            ?.filter((opt) => opt.default)
+            .map((opt) => opt.value);
+          if (defaultOpts && defaultOpts.length > 0) {
+            data[field.name] = defaultOpts;
+          }
+        } else if (
+          field.type === "Checkbox" ||
+          field.type === "RevealCheckBox"
+        ) {
           if ((field as any).default === true) {
             data[field.name] = true;
-            if (field.fields) {
-              processFields(field.fields);
-            }
-          } else if ((field as any).default !== undefined) {
-            data[field.name] = (field as any).default;
           }
-        } else if ((field as any).default !== undefined) {
-          data[field.name] = (field as any).default;
         }
       });
     };
 
-    (config as any).sections.forEach((section: any) => {
-      processFields(section.fields);
-    });
+    if (config && config.sections) {
+      config.sections.forEach((section) => {
+        processFields(section.fields);
+      });
+    }
 
-    // Then, merge initialData over the defaults
+    // Override with initialData if provided
     if (initialData) {
-      Object.assign(data, initialData);
+      return { ...data, ...initialData };
     }
 
     return data;
   });
 
-  const missingFields = useMemo(() => {
-    const missing: { name: string; label: string }[] = [];
+  const [generatedText, setGeneratedText] = useState("");
+  const [isCopied, setIsCopied] = useState(false);
+  const [missingFields, setMissingFields] = useState<string[]>([]);
+
+  const handleFieldChange = (name: string, value: any) => {
+    setFormData((prev) => {
+      const newData = { ...prev, [name]: value };
+      return newData;
+    });
+
+    // Clear error for this field if it exists
+    if (missingFields.includes(name)) {
+      setMissingFields((prev) => prev.filter((f) => f !== name));
+    }
+  };
+
+  // Generate text whenever formData changes
+  useMemo(() => {
+    if (showTextGeneration && templateString) {
+      const text = createTxt({
+        config,
+        formData,
+        template: templateString,
+      });
+      setGeneratedText(text);
+    }
+  }, [formData, templateString, showTextGeneration, config]);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(generatedText);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
+
+  const validateFields = useCallback((sections: any[], data: any): string[] => {
+    let missing: string[] = [];
 
     const checkFields = (fields: AnyFormField[]) => {
       fields.forEach((field) => {
+        // Check if field is required
         if (field.required) {
-          const val = formData[field.name];
-          if (val === undefined || val === "" || val === null) {
-            missing.push({ name: field.name, label: field.label });
+          const value = data[field.name];
+          if (
+            value === undefined ||
+            value === null ||
+            value === "" ||
+            (Array.isArray(value) && value.length === 0)
+          ) {
+            missing.push(field.name);
           }
         }
+
+        // Check nested fields
         if (field.type === "RevealRadio") {
-          const val = formData[field.name];
-          const selectedOpt = field.options?.find((opt) => opt.value === val);
-          if (selectedOpt?.fields) {
-            checkFields(selectedOpt.fields);
+          const value = data[field.name];
+          const selectedOption = field.options?.find(
+            (opt: any) => opt.value === value
+          );
+          if (selectedOption && selectedOption.fields) {
+            checkFields(selectedOption.fields);
           }
-        }
-        if (field.type === "RevealCheckBox") {
-          const val = formData[field.name];
-          if (val === true && field.fields) {
-            checkFields(field.fields);
+        } else if (field.type === "RevealCheckBox") {
+          if (data[field.name]) {
+            if ((field as any).subFields) {
+              checkFields((field as any).subFields);
+            }
           }
         }
       });
     };
 
-    (config as any).sections.forEach((section: any) =>
-      checkFields(section.fields)
-    );
+    sections.forEach((section) => {
+      if (section.fields) checkFields(section.fields);
+    });
+
     return missing;
-  }, [config, formData]);
+  }, []);
 
-  const outputText = useMemo(() => {
-    try {
-      return createTxt({
-        config: config as any,
-        formData,
-        template: templateString,
-      });
-    } catch (error) {
-      console.error("createTxt error:", error);
-      return "Erreur lors de la génération du texte.";
+  useEffect(() => {
+    const missing = validateFields(config.sections || [], formData);
+    setMissingFields(missing);
+  }, [formData, config, validateFields]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const missing = validateFields(config.sections || [], formData);
+    setMissingFields(missing);
+
+    if (missing.length > 0) {
+      // Scroll to first missing field
+      const firstMissing = document.getElementsByName(missing[0])[0];
+      if (firstMissing) {
+        firstMissing.scrollIntoView({ behavior: "smooth", block: "center" });
+        firstMissing.focus();
+      }
+      return;
     }
-  }, [config, formData, templateString]);
 
-  const copyToClipboard = async () => {
-    try {
-      await navigator.clipboard.writeText(outputText);
-      // lightweight feedback
-      void (window as any).alert?.("Copié dans le presse-papiers");
-    } catch (err) {
-      console.error("Copy failed:", err);
+    if (onSubmit) {
+      onSubmit(formData);
     }
-  };
-
-  const downloadTxt = () => {
-    try {
-      const blob = new Blob([outputText], { type: "text/plain;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${config.metadata?.name || "consultation"}.txt`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Download failed:", err);
-    }
-  };
-
-  const handleInputChange = (data: {
-    name: string;
-    value: string | number | boolean | string[] | null;
-  }) => {
-    const { name, value } = data;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const renderField = (field: AnyFormField) => {
-    let needsFullRow =
-      field.type === "RevealRadio" &&
-      field.options?.some((opt) => opt.fields && opt.fields.length > 0);
+    const commonProps = {
+      key: field.name,
+      disabled: readOnly,
+    };
 
-    needsFullRow =
-      needsFullRow || (field.type === "Radio" && field.options?.length > 3);
-    const gridClass = needsFullRow ? "col-span-full" : "";
+    const isError = missingFields.includes(field.name);
+    const errorMessage = isError ? "Ce champ est requis" : undefined;
 
     switch (field.type) {
       case "Input":
         return (
-          <div
-            key={field.name}
-            className={gridClass}
-            id={`field-${field.name}`}
-          >
-            <Input
-              label={field.label}
-              name={field.name}
-              placeholder={field.placeholder || ""}
-              type={field.inputType}
-              setFormData={handleInputChange}
-              required={field.required}
-              value={formData[field.name] || ""}
-              disabled={readOnly}
-            />
-          </div>
+          <Input
+            {...commonProps}
+            name={field.name}
+            label={field.label}
+            type={(field as any).inputType || "text"}
+            required={field.required}
+            value={formData[field.name] || ""}
+            onChange={(e) => handleFieldChange(field.name, e.target.value)}
+            placeholder={(field as any).placeholder}
+            error={errorMessage}
+            size="sm"
+          />
         );
-
       case "Radio":
         return (
-          <div
-            key={field.name}
-            className={gridClass}
-            id={`field-${field.name}`}
-          >
-            <Radio
-              label={field.label}
-              name={field.name}
-              options={field.options || []}
-              setFormData={handleInputChange}
-              required={field.required}
-              value={formData[field.name]}
-              disabled={readOnly}
-            />
-          </div>
+          <Radio
+            {...commonProps}
+            name={field.name}
+            label={field.label}
+            options={field.options || []}
+            value={formData[field.name]}
+            onChange={(val) => handleFieldChange(field.name, val)}
+            required={field.required}
+            error={errorMessage}
+          />
         );
-
       case "Checkbox":
         return (
-          <div key={field.name} id={`field-${field.name}`}>
-            <Checkbox
-              label={field.label}
-              name={field.name}
-              setFormData={handleInputChange}
-              required={field.required}
-              checked={formData[field.name] || false}
-              disabled={readOnly}
-            />
-          </div>
+          <Checkbox
+            {...commonProps}
+            name={field.name}
+            label={field.label}
+            checked={!!formData[field.name]}
+            onChange={(checked) => handleFieldChange(field.name, checked)}
+            error={errorMessage}
+          />
         );
-
       case "CheckboxGroup":
         return (
-          <div
-            key={field.name}
-            className="col-span-full"
-            id={`field-${field.name}`}
-          >
-            <CheckboxGroup
-              label={field.label}
-              name={field.name}
-              options={field.options || []}
-              setFormData={handleInputChange}
-              required={field.required}
-              value={formData[field.name] || []}
-              disabled={readOnly}
-            />
-          </div>
+          <CheckboxGroup
+            {...commonProps}
+            name={field.name}
+            label={field.label}
+            options={field.options || []}
+            value={formData[field.name] || []}
+            onChange={(val) => handleFieldChange(field.name, val)}
+            error={errorMessage}
+          />
         );
-
-      case "RevealCheckBox":
-        return (
-          <div
-            key={field.name}
-            className="col-span-full"
-            id={`field-${field.name}`}
-          >
-            <RevealCheckBox
-              label={field.label}
-              name={field.name}
-              setFormData={handleInputChange}
-              disabled={readOnly}
-            >
-              <div className="space-y-2">
-                {field.fields?.map((subField: AnyFormField) =>
-                  renderField(subField)
-                )}
-              </div>
-            </RevealCheckBox>
-          </div>
-        );
-
       case "Range":
         return (
-          <div
-            key={field.name}
-            className={gridClass}
-            id={`field-${field.name}`}
-          >
-            <Range
-              name={field.name}
-              steps={(field as any).steps || []}
-              setFormData={handleInputChange}
-              label={field.label}
-              required={field.required}
-              value={formData[field.name]}
-              disabled={readOnly}
-            />
-          </div>
+          <Range
+            {...commonProps}
+            name={field.name}
+            label={field.label}
+            steps={(field as any).steps || []}
+            value={formData[field.name]}
+            onChange={(val) => handleFieldChange(field.name, val)}
+          />
         );
-
       case "RevealRadio":
         return (
-          <div
-            key={field.name}
-            className={gridClass}
-            id={`field-${field.name}`}
-          >
-            <RevealRadio
-              label={field.label}
-              name={field.name}
-              options={field.options || []}
-              setFormData={handleInputChange}
-              required={field.required}
-              value={formData[field.name]} // Add value for autocomplete
-              renderField={(subField: AnyFormField) => renderField(subField)}
-              disabled={readOnly}
-            />
-          </div>
+          <RevealRadio
+            {...commonProps}
+            name={field.name}
+            label={field.label}
+            options={field.options || []}
+            value={formData[field.name]}
+            onChange={(val) => handleFieldChange(field.name, val)}
+            setFormData={handleFieldChange}
+            formData={formData}
+            renderField={renderField}
+            required={field.required}
+            error={errorMessage}
+          />
         );
-
+      case "RevealCheckBox":
+        return (
+          <RevealCheckBox
+            {...commonProps}
+            name={field.name}
+            label={field.label}
+            checked={!!formData[field.name]}
+            onChange={(checked) => handleFieldChange(field.name, checked)}
+            subFields={(field as any).fields || []}
+            renderField={renderField}
+            error={errorMessage}
+          />
+        );
       case "TeethSelector":
         return (
-          <div
-            key={field.name}
-            className="col-span-full"
-            id={`field-${field.name}`}
-          >
-            <TeethSelector
-              name={field.name}
-              label={field.label}
-              setFormData={handleInputChange}
-              required={field.required}
-              value={formData[field.name]}
-              disabled={readOnly}
-              options={field.options}
-            />
-          </div>
+          <TeethSelector
+            {...commonProps}
+            name={field.name}
+            label={field.label}
+            options={field.options}
+            value={formData[field.name]}
+            setFormData={({ name, value }) => handleFieldChange(name, value)}
+          />
         );
-
       default:
         return null;
     }
   };
 
   return (
-    <div className="w-full min-h-screen bg-base-100 px-3 py-4 sm:px-4 lg:px-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-4 text-center">
-          <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-1.5">
-            {config.metadata.description}
-          </h1>
-        </div>
-
-        {/* Form */}
-        <form
-          className="space-y-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (onSubmit) {
-              onSubmit(formData);
-            }
-          }}
-        >
-          {config.sections.map((section, sectionIndex) => (
-            <div
-              key={sectionIndex}
-              className="card bg-base-100 shadow border border-base-300"
-            >
-              <div className="card-body p-4">
-                <h2 className="card-title text-xl text-primary mt-0 mb-3">
-                  {section.title}
-                </h2>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                  {section.fields.map((field) => renderField(field))}
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {/* Submit Button */}
-          {!readOnly && (
-            <div className="flex justify-center pt-2 pb-4">
-              <Button className="btn-md min-w-40" type="submit">
+    <div className="flex flex-col gap-6 h-full">
+      {/* Form Section */}
+      <div className="w-full flex flex-col">
+        <div className="bg-base-100 rounded-xl shadow-sm border border-base-200 flex flex-col h-full overflow-hidden">
+          <div className="p-4 border-b border-base-200 bg-base-100/50 backdrop-blur-sm sticky top-0 z-10 flex justify-between items-center">
+            <h2 className="text-lg font-semibold flex items-center gap-2">
+              <FileText className="w-5 h-5 text-primary" />
+              Formulaire
+            </h2>
+            {!readOnly && (
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={handleSubmit}
+                icon={Save}
+              >
                 {submitButtonText}
               </Button>
-            </div>
-          )}
-        </form>
+            )}
+          </div>
 
-        {/* Missing Fields Alert */}
-        {missingFields.length > 0 && (
-          <div className="card bg-warning/10 border border-warning text-warning-content mb-4">
-            <div className="card-body p-4">
-              <h3 className="font-bold text-lg flex items-center gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+          <div className="flex-1 overflow-y-auto p-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {config.sections?.map((section, idx) => (
+                <div key={idx} className="space-y-4">
+                  <h3 className="text-lg font-semibold border-b pb-2">
+                    {section.title}
+                  </h3>
+                  {section.fields.map((field) => (
+                    <div
+                      key={field.name}
+                      id={field.name}
+                      className="animate-in fade-in slide-in-from-bottom-4 duration-500 scroll-mt-24"
+                    >
+                      {renderField(field)}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </form>
+            {!readOnly && (
+              <div className="mt-6 flex justify-end">
+                <Button
+                  variant="primary"
+                  onClick={handleSubmit}
+                  icon={Save}
+                  className="w-full sm:w-auto"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  />
-                </svg>
-                Champs requis manquants ({missingFields.length})
+                  {submitButtonText}
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Missing Fields Summary */}
+      {missingFields.length > 0 && (
+        <div className="w-full bg-error/10 border border-error/20 rounded-xl p-4 animate-in fade-in slide-in-from-top-2">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-error mt-0.5 shrink-0" />
+            <div className="flex-1">
+              <h3 className="font-bold text-error mb-1">
+                {missingFields.length} champ
+                {missingFields.length > 1 ? "s" : ""} requis manquant
+                {missingFields.length > 1 ? "s" : ""}
               </h3>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {missingFields.map((field) => (
-                  <button
-                    key={field.name}
-                    onClick={() => {
-                      const el = document.getElementById(`field-${field.name}`);
-                      if (el) {
-                        el.scrollIntoView({
-                          behavior: "smooth",
-                          block: "center",
-                        });
+              <p className="text-sm text-base-content/70 mb-3">
+                Le texte ne peut pas être généré tant que ces champs ne sont pas
+                remplis :
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {missingFields.map((fieldName) => {
+                  const fieldLabel =
+                    config.sections
+                      .flatMap((s) => s.fields)
+                      .find((f) => f.name === fieldName)?.label || fieldName;
 
-                        el.classList.add(
-                          "ring-2",
-                          "ring-warning",
-                          "ring-offset-2",
-                          "rounded-lg",
-                          "transition-all",
-                          "duration-300"
-                        );
-
-                        setTimeout(() => {
-                          el.classList.remove(
+                  return (
+                    <button
+                      key={fieldName}
+                      onClick={() => {
+                        const element = document.getElementById(fieldName);
+                        if (element) {
+                          element.scrollIntoView({
+                            behavior: "smooth",
+                            block: "center",
+                          });
+                          element.classList.add(
                             "ring-2",
-                            "ring-warning",
+                            "ring-error",
                             "ring-offset-2",
-                            "rounded-lg",
-                            "transition-all",
-                            "duration-300"
+                            "rounded-lg"
                           );
-                        }, 2000);
-
-                        const input = el.querySelector(
-                          "input, select, textarea"
-                        ) as HTMLElement;
-                        if (input) input.focus();
-                      }
-                    }}
-                    className="btn btn-xs btn-outline btn-warning"
-                  >
-                    {field.label}
-                  </button>
-                ))}
+                          setTimeout(() => {
+                            element.classList.remove(
+                              "ring-2",
+                              "ring-error",
+                              "ring-offset-2",
+                              "rounded-lg"
+                            );
+                          }, 2000);
+                        }
+                      }}
+                      className="badge badge-error gap-1 hover:bg-error/80 cursor-pointer transition-colors py-3 h-auto text-white border-none"
+                    >
+                      {fieldLabel}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Text Output */}
-        {showTextGeneration && (
-          <div className="card bg-base-100 shadow mt-4 border border-base-300">
-            <div className="card-body p-4">
-              <div className="flex items-start justify-between gap-4">
-                <h3 className="font-semibold">Texte généré</h3>
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={copyToClipboard}
-                    className="btn btn-sm"
-                  >
-                    Copier
-                  </button>
-                  <button
-                    type="button"
-                    onClick={downloadTxt}
-                    className="btn btn-sm btn-ghost"
-                  >
-                    Télécharger
-                  </button>
-                </div>
-              </div>
+      {/* Generated Text Section */}
+      {showTextGeneration && (
+        <div className="w-full flex flex-col">
+          <div className="bg-base-100 rounded-xl shadow-sm border border-base-200 flex flex-col h-full overflow-hidden">
+            <div className="p-4 border-b border-base-200 bg-base-100/50 backdrop-blur-sm flex justify-between items-center">
+              <h2 className="text-lg font-semibold flex items-center gap-2">
+                <RefreshCw className="w-5 h-5 text-secondary" />
+                Aperçu du texte
+              </h2>
+              <Button
+                variant={isCopied ? "success" : "outline"}
+                size="sm"
+                onClick={handleCopy}
+                icon={isCopied ? undefined : Copy}
+              >
+                {isCopied ? "Copié !" : "Copier"}
+              </Button>
+            </div>
 
+            <div className="flex-1 p-0 relative">
               <textarea
+                className="w-full min-h-[300px] p-6 resize-y bg-base-100 focus:outline-none font-mono text-sm leading-relaxed"
+                value={generatedText}
                 readOnly
-                value={outputText}
-                aria-label="Texte généré"
-                className="w-full min-h-[200px] mt-3 p-3 rounded textarea textarea-bordered font-mono whitespace-pre-wrap"
+                placeholder="Le texte généré apparaîtra ici..."
               />
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

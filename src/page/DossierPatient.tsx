@@ -4,6 +4,7 @@ import { usePatient } from "../hooks/patientHooks";
 import { useConsultationTypes } from "../hooks/templateHooks";
 import GenericForm from "./forms/GenericForm";
 import { formatDate } from "../utils/date";
+import { User, Calendar, FileText, Activity, AlertCircle } from "lucide-react";
 
 export default function DossierPatient() {
   const { id } = useParams();
@@ -25,12 +26,20 @@ export default function DossierPatient() {
   }, [consultationTypes]);
 
   if (loadingPatient || loadingTypes)
-    return <p className="text-center mt-10">Chargement...</p>;
+    return (
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
+      </div>
+    );
+
   if (error || !patient)
     return (
-      <p className="text-center mt-10 text-error">
-        Erreur lors du chargement du patient.
-      </p>
+      <div className="flex flex-col items-center justify-center min-h-[50vh] text-error gap-4">
+        <AlertCircle size={48} />
+        <p className="text-lg font-medium">
+          Erreur lors du chargement du patient.
+        </p>
+      </div>
     );
 
   // Sort types by order
@@ -50,93 +59,111 @@ export default function DossierPatient() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto py-6">
-      <h1 className="text-3xl font-bold text-primary text-center mb-6">
-        Dossier Patient – {patient.name} {patient.prenom}
-      </h1>
-
-      <div className="w-full bg-base-200 rounded-lg py-3 px-6 shadow-sm mb-4">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-y-1 gap-x-6 text-[15px] leading-tight">
-          <p>
-            <strong>Nom:</strong> {patient.name}
+    <div className="max-w-7xl mx-auto py-8 px-4 space-y-8">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-base-content flex items-center gap-3">
+            <User className="text-primary" size={32} />
+            {patient.name} {patient.prenom}
+          </h1>
+          <p className="text-base-content/60 mt-1 ml-11">
+            Dossier médical informatisé
           </p>
-          <p>
-            <strong>Prénom:</strong> {patient.prenom}
-          </p>
-          <p>
-            <strong>IPP:</strong> {patient.ipp || "—"}
-          </p>
-          <p>
-            <strong>Sexe:</strong> {patient.sexe}
-          </p>
-          <p>
-            <strong>Date de naissance:</strong> {formatDate(patient.dob)}
-          </p>
+        </div>
+        <div className="badge badge-primary badge-lg p-4 font-mono">
+          IPP: {patient.ipp || "—"}
         </div>
       </div>
 
-      <div className="flex gap-3 mb-6 overflow-x-auto pb-2">
-        {sortedTypes.map((type, index) => {
-          const isActive = activeTabSlug === type.slug;
-          const completed = isCompleted(type.slug);
-          const allowed = canOpen(index);
+      {/* Patient Info Card */}
+      <div className="card bg-base-100 shadow-md border border-base-200">
+        <div className="card-body p-6">
+          <h2 className="card-title text-sm uppercase tracking-wider text-base-content/50 mb-4">
+            Informations Administratives
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                <User size={20} />
+              </div>
+              <div>
+                <p className="text-xs text-base-content/50">Sexe</p>
+                <p className="font-medium">{patient.sexe}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-secondary/10 rounded-lg text-secondary">
+                <Calendar size={20} />
+              </div>
+              <div>
+                <p className="text-xs text-base-content/50">
+                  Date de naissance
+                </p>
+                <p className="font-medium">{formatDate(patient.dob)}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-accent/10 rounded-lg text-accent">
+                <Activity size={20} />
+              </div>
+              <div>
+                <p className="text-xs text-base-content/50">Statut</p>
+                <p className="font-medium">Actif</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-          return (
-            <button
-              key={type.id}
-              onClick={() => allowed && setActiveTabSlug(type.slug)}
-              className={`
-                relative flex-1 min-w-[150px] text-center py-3 rounded-xl font-semibold transition-all
-                ${
-                  isActive
-                    ? "bg-primary text-primary-content scale-[1.05] shadow-lg"
-                    : ""
-                }
-                ${!isActive && completed ? "bg-primary/20 text-primary" : ""}
-                ${
-                  !isActive && !completed && allowed
-                    ? "bg-primary/10 text-primary"
-                    : ""
-                }
-                ${
-                  !allowed
-                    ? "bg-base-200 text-base-content cursor-not-allowed"
-                    : ""
-                }
-              `}
-            >
-              {type.name}
+      {/* Consultations Tabs */}
+      <div className="space-y-6">
+        <div className="tabs tabs-boxed bg-base-200/50 p-1 gap-1 overflow-x-auto flex-nowrap justify-start">
+          {sortedTypes.map((type, index) => {
+            const isActive = activeTabSlug === type.slug;
+            const completed = isCompleted(type.slug);
+            const allowed = canOpen(index);
 
-              <span
+            return (
+              <button
+                key={type.id}
+                type="button"
+                onClick={() => allowed && setActiveTabSlug(type.slug)}
                 className={`
-                  absolute -top-1 -right-1 badge badge-xs
+                  tab tab-lg h-12 px-6 rounded-lg transition-all duration-200 flex-nowrap whitespace-nowrap gap-2
                   ${
-                    completed
-                      ? "badge-primary"
-                      : allowed
-                      ? "badge-outline"
-                      : "badge-neutral"
+                    isActive
+                      ? "tab-active bg-base-100 shadow-sm text-primary font-bold border border-base-200"
+                      : "hover:bg-base-200"
+                  }
+                  ${!isActive && completed ? "text-success" : ""}
+                  ${
+                    !allowed
+                      ? "opacity-50 cursor-not-allowed"
+                      : "cursor-pointer"
                   }
                 `}
               >
-                {completed ? "✓" : allowed ? "○" : "—"}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      {activeTabSlug && id && (
-        <div key={activeTabSlug}>
-          <GenericForm
-            patientId={id}
-            formSlug={activeTabSlug}
-            onSuccess={() => {
-              // Refresh patient data is handled by react-query invalidation in GenericForm
-            }}
-          />
+                {completed && (
+                  <span className="w-2 h-2 rounded-full bg-success"></span>
+                )}
+                {type.name}
+              </button>
+            );
+          })}
         </div>
-      )}
+
+        {/* Active Tab Content */}
+        <div className="bg-base-100 rounded-2xl shadow-sm border border-base-200 min-h-[400px] p-6">
+          {activeTabSlug && (
+            <GenericForm
+              key={activeTabSlug}
+              patientId={id || ""}
+              formSlug={activeTabSlug}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 }

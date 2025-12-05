@@ -1,6 +1,23 @@
 import { useState, useMemo, useEffect } from "react";
 import DynamicForm from "../components/DynamicForm";
-import { Edit, Trash2 } from "lucide-react";
+import Button from "../components/Button";
+import Input from "../components/Input";
+import {
+  Edit,
+  Trash2,
+  Plus,
+  Save,
+  X,
+  ArrowUp,
+  ArrowDown,
+  FileJson,
+  FileCode,
+  FileText,
+  CheckCircle2,
+  AlertTriangle,
+  Check,
+  AlertCircle,
+} from "lucide-react";
 import {
   useConsultationTypes,
   useTemplatesByType,
@@ -318,45 +335,57 @@ export default function TemplateManager() {
           <div className="card-body p-4">
             <h2 className="card-title text-lg">Types de Consultation</h2>
             {typesLoading ? (
-              <p>Chargement...</p>
+              <div className="flex justify-center py-4">
+                <span className="loading loading-spinner loading-md text-primary"></span>
+              </div>
             ) : typesError ? (
-              <p className="text-error">Erreur: {typesError.message}</p>
+              <div className="alert alert-error text-sm p-2">
+                <span>Erreur: {typesError.message}</span>
+              </div>
             ) : (
-              <ul className="menu bg-base-200 w-full rounded-box p-2">
+              <ul className="menu bg-base-200/50 w-full rounded-xl p-2 gap-1">
                 {sortedTypes.map((type, index) => (
-                  <li key={type.id} className="mb-1">
+                  <li key={type.id}>
                     {editingTypeId === type.id ? (
-                      <div className="flex flex-col gap-2 p-2 bg-base-100 border rounded">
-                        <input
-                          className="input input-xs input-bordered w-full"
+                      <div className="flex flex-col gap-2 p-3 bg-base-100 border border-primary/20 rounded-lg shadow-sm">
+                        <Input
+                          name="editTypeName"
                           value={editTypeName}
                           onChange={(e) => setEditTypeName(e.target.value)}
+                          placeholder="Nom"
+                          className="w-full"
                         />
-                        <input
-                          className="input input-xs input-bordered w-full"
+                        <Input
+                          name="editTypeSlug"
                           value={editTypeSlug}
                           onChange={(e) => setEditTypeSlug(e.target.value)}
+                          placeholder="Slug"
+                          className="w-full"
                         />
-                        <div className="flex gap-2 justify-end">
-                          <button
-                            className="btn btn-xs btn-success"
+                        <div className="flex gap-2 justify-end w-full">
+                          <Button
+                            variant="ghost"
+                            size="xs"
+                            onClick={() => setEditingTypeId(null)}
+                            icon={X}
+                          >
+                            Annuler
+                          </Button>
+                          <Button
+                            variant="success"
+                            size="xs"
                             onClick={handleSaveEditType}
+                            icon={Save}
                           >
                             OK
-                          </button>
-                          <button
-                            className="btn btn-xs btn-ghost"
-                            onClick={() => setEditingTypeId(null)}
-                          >
-                            X
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     ) : (
                       <div
-                        className={`flex justify-between items-center rounded px-2 py-1 ${
+                        className={`flex justify-between items-center rounded-lg px-3 py-2 transition-all ${
                           selectedType?.id === type.id
-                            ? "bg-primary text-primary-content"
+                            ? "bg-primary text-primary-content shadow-md"
                             : "hover:bg-base-300"
                         }`}
                       >
@@ -366,9 +395,9 @@ export default function TemplateManager() {
                         >
                           {type.name}
                         </a>
-                        <div className="flex gap-1">
+                        <div className="flex gap-1 items-center">
                           <button
-                            className={`btn btn-xs btn-ghost px-1 ${
+                            className={`btn btn-xs btn-ghost btn-square ${
                               selectedType?.id === type.id
                                 ? "text-primary-content hover:bg-primary-focus"
                                 : ""
@@ -382,9 +411,9 @@ export default function TemplateManager() {
                           >
                             <Edit size={14} />
                           </button>
-                          <div className="flex flex-col">
+                          <div className="flex flex-col gap-0.5">
                             <button
-                              className={`btn btn-[10px] min-h-0 h-4 btn-ghost px-0 leading-none ${
+                              className={`btn btn-[10px] min-h-0 h-3.5 btn-ghost px-0 leading-none ${
                                 selectedType?.id === type.id
                                   ? "text-primary-content hover:bg-primary-focus"
                                   : ""
@@ -395,10 +424,10 @@ export default function TemplateManager() {
                                 handleMoveType(index, "up");
                               }}
                             >
-                              ▲
+                              <ArrowUp size={10} />
                             </button>
                             <button
-                              className={`btn btn-[10px] min-h-0 h-4 btn-ghost px-0 leading-none ${
+                              className={`btn btn-[10px] min-h-0 h-3.5 btn-ghost px-0 leading-none ${
                                 selectedType?.id === type.id
                                   ? "text-primary-content hover:bg-primary-focus"
                                   : ""
@@ -409,7 +438,7 @@ export default function TemplateManager() {
                                 handleMoveType(index, "down");
                               }}
                             >
-                              ▼
+                              <ArrowDown size={10} />
                             </button>
                           </div>
                         </div>
@@ -420,27 +449,33 @@ export default function TemplateManager() {
               </ul>
             )}
 
-            <div className="divider my-2">Nouveau Type</div>
-            <form onSubmit={handleCreateType} className="space-y-2">
-              <input
-                type="text"
+            <div className="divider my-4 text-xs font-medium text-base-content/50">
+              NOUVEAU TYPE
+            </div>
+            <form onSubmit={handleCreateType} className="space-y-3">
+              <Input
+                name="newTypeName"
                 placeholder="Nom (ex: Première Consult)"
-                className="input input-bordered w-full input-sm"
                 value={newTypeName}
                 onChange={(e) => setNewTypeName(e.target.value)}
                 required
               />
-              <input
-                type="text"
+              <Input
+                name="newTypeSlug"
                 placeholder="Slug (ex: pre-consult)"
-                className="input input-bordered w-full input-sm"
                 value={newTypeSlug}
                 onChange={(e) => setNewTypeSlug(e.target.value)}
                 required
               />
-              <button type="submit" className="btn btn-primary btn-sm w-full">
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                className="w-full"
+                icon={Plus}
+              >
                 Ajouter
-              </button>
+              </Button>
             </form>
           </div>
         </div>
@@ -450,112 +485,139 @@ export default function TemplateManager() {
           {selectedType ? (
             <>
               {/* Existing Versions List */}
-              <div className="card bg-base-100 shadow border border-base-300">
-                <div className="card-body p-4">
-                  <h2 className="card-title text-lg">
-                    Versions pour "{selectedType.name}"
-                  </h2>
+              <div className="card bg-base-100 shadow-sm border border-base-200">
+                <div className="card-body p-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="card-title text-lg flex items-center gap-2">
+                      <FileJson className="w-5 h-5 text-primary" />
+                      Versions pour "{selectedType.name}"
+                    </h2>
+                  </div>
 
-                  <div className="overflow-x-auto">
-                    <table className="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Version</th>
-                          <th>Date</th>
-                          <th>Statut</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {templatesLoading ? (
-                          <tr>
-                            <td colSpan={4} className="text-center">
-                              Chargement...
-                            </td>
-                          </tr>
-                        ) : templatesError ? (
-                          <tr>
-                            <td colSpan={4} className="text-center text-error">
-                              Erreur: {templatesError.message}
-                            </td>
-                          </tr>
-                        ) : templates && templates.length > 0 ? (
-                          templates.map((tmpl) => (
-                            <tr
-                              key={tmpl.id}
-                              className={`${
-                                tmpl.isActive ? "bg-base-200" : ""
-                              } ${
-                                selectedTemplateId === tmpl.id
-                                  ? "border-l-4 border-primary bg-base-200"
-                                  : ""
+                  <div className="space-y-3">
+                    {templatesLoading ? (
+                      <div className="flex justify-center py-8">
+                        <span className="loading loading-spinner loading-md text-primary"></span>
+                      </div>
+                    ) : templatesError ? (
+                      <div className="alert alert-error text-sm">
+                        <AlertCircle size={16} />
+                        <span>Erreur: {templatesError.message}</span>
+                      </div>
+                    ) : templates && templates.length > 0 ? (
+                      templates.map((tmpl) => (
+                        <div
+                          key={tmpl.id}
+                          className={`group flex items-center justify-between p-4 rounded-xl border transition-all duration-200 ${
+                            tmpl.isActive
+                              ? "bg-base-100 border-primary/30 shadow-sm"
+                              : "bg-base-100 border-base-200 hover:border-base-300"
+                          } ${
+                            selectedTemplateId === tmpl.id
+                              ? "ring-2 ring-primary ring-offset-2"
+                              : ""
+                          }`}
+                        >
+                          <div className="flex items-center gap-4">
+                            <div
+                              className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                                tmpl.isActive
+                                  ? "bg-primary/10 text-primary"
+                                  : "bg-base-200 text-base-content/50"
                               }`}
                             >
-                              <td className="font-bold">
-                                {tmpl.version}
-                                {selectedTemplateId === tmpl.id && (
-                                  <span className="ml-2 text-xs text-primary">
-                                    (Édition)
-                                  </span>
-                                )}
-                              </td>
-                              <td>
-                                {new Date(tmpl.createdAt).toLocaleDateString()}
-                              </td>
-                              <td>
-                                {tmpl.isActive ? (
-                                  <span className="badge badge-success badge-sm">
+                              {tmpl.isActive ? (
+                                <CheckCircle2 size={20} />
+                              ) : (
+                                <FileCode size={20} />
+                              )}
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold text-base">
+                                  v{tmpl.version}
+                                </span>
+                                {tmpl.isActive && (
+                                  <span className="badge badge-primary badge-sm">
                                     Actif
                                   </span>
-                                ) : (
-                                  <span className="badge badge-ghost badge-sm">
-                                    Inactif
+                                )}
+                                {selectedTemplateId === tmpl.id && (
+                                  <span className="badge badge-ghost badge-sm animate-pulse">
+                                    Édition
                                   </span>
                                 )}
-                              </td>
-                              <td>
-                                {!tmpl.isActive && (
-                                  <button
-                                    className="btn btn-xs btn-outline btn-primary"
-                                    onClick={() => handleActivate(tmpl.id)}
-                                  >
-                                    Activer
-                                  </button>
-                                )}
-                                <button
-                                  className="btn btn-xs btn-outline btn-secondary ml-2"
-                                  onClick={() => {
-                                    setNewVersion(tmpl.version); // Keep same version string to edit easily
-                                    setNewStructure(
-                                      JSON.stringify(tmpl.structure, null, 2)
-                                    );
-                                    setNewTemplateStr(tmpl.template);
-                                    setSelectedTemplateId(tmpl.id);
-                                  }}
+                              </div>
+                              <div className="text-xs text-base-content/60 mt-0.5">
+                                Créé le{" "}
+                                {new Date(tmpl.createdAt).toLocaleDateString()}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                            {!tmpl.isActive && (
+                              <div
+                                className="tooltip tooltip-left"
+                                data-tip="Activer cette version"
+                              >
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="btn-square text-success hover:bg-success/10"
+                                  onClick={() => handleActivate(tmpl.id)}
                                 >
-                                  Editer
-                                </button>
-                                <button
-                                  className="btn btn-xs btn-outline btn-error ml-2"
-                                  onClick={() => handleDeleteTemplate(tmpl.id)}
-                                >
-                                  <Trash2 size={14} />
-                                </button>
-                              </td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td
-                              colSpan={4}
-                              className="text-center text-gray-500"
+                                  <Check size={18} />
+                                </Button>
+                              </div>
+                            )}
+                            <div
+                              className="tooltip tooltip-left"
+                              data-tip="Éditer / Voir"
                             >
-                              Aucune version trouvée
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="btn-square text-primary hover:bg-primary/10"
+                                onClick={() => {
+                                  setNewVersion(tmpl.version);
+                                  setNewStructure(
+                                    JSON.stringify(tmpl.structure, null, 2)
+                                  );
+                                  setNewTemplateStr(tmpl.template);
+                                  setSelectedTemplateId(tmpl.id);
+                                }}
+                              >
+                                <Edit size={18} />
+                              </Button>
+                            </div>
+                            <div
+                              className="tooltip tooltip-left"
+                              data-tip="Supprimer"
+                            >
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="btn-square text-error hover:bg-error/10"
+                                onClick={() => handleDeleteTemplate(tmpl.id)}
+                              >
+                                <Trash2 size={18} />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center py-12 bg-base-200/30 rounded-xl border border-dashed border-base-300">
+                        <FileJson className="w-12 h-12 text-base-content/20 mx-auto mb-3" />
+                        <p className="text-base-content/50 font-medium">
+                          Aucune version trouvée pour ce type.
+                        </p>
+                        <p className="text-xs text-base-content/40 mt-1">
+                          Créez une nouvelle version ci-dessous.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -567,54 +629,63 @@ export default function TemplateManager() {
                     Éditeur de Version
                   </h2>
 
-                  <div className="form-control mb-4">
+                  <div className="form-control mb-6">
                     <label className="label">
-                      <span className="label-text font-bold">
+                      <span className="label-text font-medium">
                         Numéro de Version
                       </span>
                     </label>
-                    <input
+                    <Input
+                      name="version"
                       type="text"
                       placeholder="ex: 1.3"
-                      className="input input-bordered w-full max-w-xs"
                       value={newVersion}
                       onChange={(e) => setNewVersion(e.target.value)}
+                      className="w-full max-w-xs"
                     />
                   </div>
 
                   {/* Tabs */}
-                  <div role="tablist" className="tabs tabs-lifted mb-4">
+                  <div role="tablist" className="tabs tabs-lifted tabs-lg mb-0">
                     <a
                       role="tab"
-                      className={`tab ${
-                        activeTab === "structure" ? "tab-active" : ""
+                      className={`tab font-medium ${
+                        activeTab === "structure"
+                          ? "tab-active text-primary"
+                          : ""
                       }`}
                       onClick={() => setActiveTab("structure")}
                     >
+                      <FileJson className="w-4 h-4 mr-2" />
                       Structure JSON
                     </a>
                     <a
                       role="tab"
-                      className={`tab ${
-                        activeTab === "template" ? "tab-active" : ""
+                      className={`tab font-medium ${
+                        activeTab === "template"
+                          ? "tab-active text-primary"
+                          : ""
                       }`}
                       onClick={() => setActiveTab("template")}
                     >
+                      <FileText className="w-4 h-4 mr-2" />
                       Template Handlebars
                     </a>
                   </div>
 
                   {/* Tab Content */}
-                  <div className="bg-base-100 border-base-300 rounded-b-box border p-4 min-h-[400px]">
+                  <div className="bg-base-100 border-base-300 rounded-b-box border p-6 min-h-[500px]">
                     {/* Structure Tab */}
                     {activeTab === "structure" && (
                       <div className="space-y-4">
                         <div className="flex justify-end">
-                          <label className="label cursor-pointer gap-2">
-                            <span className="label-text">Mode Aperçu</span>
+                          <label className="label cursor-pointer gap-2 select-none">
+                            <span className="label-text font-medium">
+                              Mode Aperçu
+                            </span>
                             <input
                               type="checkbox"
-                              className="toggle toggle-primary"
+                              className="toggle toggle-primary toggle-sm"
                               checked={showPreview}
                               onChange={(e) => setShowPreview(e.target.checked)}
                             />
@@ -622,7 +693,7 @@ export default function TemplateManager() {
                         </div>
 
                         {showPreview ? (
-                          <div className="border rounded p-4 bg-gray-50 min-h-[300px]">
+                          <div className="border border-base-300 rounded-lg p-6 bg-base-50 min-h-[400px] shadow-inner">
                             {parsedStructure ? (
                               <DynamicForm
                                 config={parsedStructure}
@@ -631,12 +702,15 @@ export default function TemplateManager() {
                                 submitButtonText="Aperçu (Bouton)"
                               />
                             ) : (
-                              <div className="text-error">JSON invalide</div>
+                              <div className="alert alert-error">
+                                <AlertCircle className="w-5 h-5" />
+                                <span>JSON invalide</span>
+                              </div>
                             )}
                           </div>
                         ) : (
                           <textarea
-                            className="textarea textarea-bordered w-full h-[400px] font-mono text-xs"
+                            className="textarea textarea-bordered w-full h-[500px] font-mono text-sm leading-relaxed"
                             placeholder='{"metadata": ...}'
                             value={newStructure}
                             onChange={(e) => setNewStructure(e.target.value)}
@@ -647,36 +721,45 @@ export default function TemplateManager() {
 
                     {/* Template Tab */}
                     {activeTab === "template" && (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-full">
-                        <div className="md:col-span-2">
+                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
+                        <div className="lg:col-span-2">
                           <textarea
-                            className="textarea textarea-bordered w-full h-[400px] font-mono text-xs"
+                            className="textarea textarea-bordered w-full h-[500px] font-mono text-sm leading-relaxed"
                             placeholder="{{#if ...}}"
                             value={newTemplateStr}
                             onChange={(e) => setNewTemplateStr(e.target.value)}
                           ></textarea>
                         </div>
-                        <div className="md:col-span-1 bg-base-200 p-3 rounded text-sm overflow-y-auto max-h-[400px]">
-                          <h3 className="font-bold mb-2">Validation</h3>
+                        <div className="lg:col-span-1 bg-base-200/50 p-4 rounded-lg border border-base-200 overflow-y-auto max-h-[500px]">
+                          <h3 className="font-bold mb-4 flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-success" />
+                            Validation
+                          </h3>
                           {validationResult ? (
-                            <div className="space-y-4">
+                            <div className="space-y-6">
                               <div>
-                                <div className="font-semibold text-warning mb-1">
+                                <div className="font-semibold text-warning mb-2 text-sm flex items-center gap-2">
+                                  <AlertTriangle className="w-4 h-4" />
                                   Manquant dans le Template (
                                   {validationResult.missingInTemplate.length})
                                 </div>
                                 {validationResult.missingInTemplate.length >
                                 0 ? (
-                                  <ul className="list-disc list-inside text-xs text-base-content/70">
+                                  <ul className="menu menu-xs bg-base-100 rounded-box p-2 border border-base-200">
                                     {validationResult.missingInTemplate.map(
                                       (f) => (
-                                        <li key={f}>{f}</li>
+                                        <li key={f}>
+                                          <span className="text-base-content/70">
+                                            {f}
+                                          </span>
+                                        </li>
                                       )
                                     )}
                                   </ul>
                                 ) : (
-                                  <div className="text-success text-xs">
-                                    Tout est utilisé !
+                                  <div className="text-xs text-success flex items-center gap-1 pl-6">
+                                    <Check className="w-3 h-3" /> Aucun champ
+                                    manquant
                                   </div>
                                 )}
                               </div>
@@ -684,30 +767,36 @@ export default function TemplateManager() {
                               <div className="divider my-1"></div>
 
                               <div>
-                                <div className="font-semibold text-error mb-1">
-                                  Inconnu dans la Structure (
+                                <div className="font-semibold text-warning mb-2 text-sm flex items-center gap-2">
+                                  <AlertTriangle className="w-4 h-4" />
+                                  Manquant dans la Structure (
                                   {validationResult.missingInStructure.length})
                                 </div>
                                 {validationResult.missingInStructure.length >
                                 0 ? (
-                                  <ul className="list-disc list-inside text-xs text-base-content/70">
+                                  <ul className="menu menu-xs bg-base-100 rounded-box p-2 border border-base-200">
                                     {validationResult.missingInStructure.map(
                                       (v) => (
-                                        <li key={v}>{v}</li>
+                                        <li key={v}>
+                                          <span className="text-base-content/70">
+                                            {v}
+                                          </span>
+                                        </li>
                                       )
                                     )}
                                   </ul>
                                 ) : (
-                                  <div className="text-success text-xs">
-                                    Aucune variable inconnue !
+                                  <div className="text-xs text-success flex items-center gap-1 pl-6">
+                                    <Check className="w-3 h-3" /> Aucun champ
+                                    manquant
                                   </div>
                                 )}
                               </div>
                             </div>
                           ) : (
-                            <div className="text-base-content/50 italic">
-                              Ajoutez une structure JSON valide pour voir
-                              l'analyse.
+                            <div className="text-sm text-base-content/50 italic text-center py-8">
+                              Modifiez la structure ou le template pour voir la
+                              validation.
                             </div>
                           )}
                         </div>
@@ -715,22 +804,27 @@ export default function TemplateManager() {
                     )}
                   </div>
 
-                  <div className="mt-4 flex justify-end">
-                    <button
-                      className="btn btn-primary"
+                  <div className="flex justify-end pt-6 border-t border-base-200 mt-6">
+                    <Button
+                      variant="primary"
                       onClick={handleCreateTemplate}
                       disabled={!newVersion || !newStructure || !newTemplateStr}
+                      icon={Save}
+                      className="min-w-[150px]"
                     >
-                      Enregistrer la version {newVersion}
-                    </button>
+                      Enregistrer la version
+                    </Button>
                   </div>
                 </div>
               </div>
             </>
           ) : (
-            <div className="alert alert-info">
-              Sélectionnez un type de consultation à gauche pour voir et gérer
-              ses modèles.
+            <div className="alert alert-info shadow-sm">
+              <AlertCircle className="w-5 h-5" />
+              <span>
+                Sélectionnez un type de consultation pour voir et gérer les
+                versions.
+              </span>
             </div>
           )}
         </div>

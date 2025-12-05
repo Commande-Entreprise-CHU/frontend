@@ -1,68 +1,46 @@
-import React, { useRef, useState, useEffect } from "react";
+import React from "react";
+import Checkbox from "./Checkbox";
+import type { AnyFormField } from "../types";
 
 interface RevealCheckBoxProps {
+  name: string;
   label?: string;
-  children?: React.ReactNode;
-  className?: string;
-  name?: string;
-  setFormData?: (data: { name: string; value: boolean }) => void;
-  disabled?: boolean;
   checked?: boolean;
+  onChange: (checked: boolean) => void;
+  subFields?: AnyFormField[];
+  renderField?: (field: AnyFormField) => React.ReactNode;
+  disabled?: boolean;
+  className?: string;
+  error?: string;
 }
 
 const RevealCheckBox: React.FC<RevealCheckBoxProps> = ({
-  label,
-  children,
-  className,
   name,
-  setFormData,
-  disabled = false,
+  label,
   checked = false,
+  onChange,
+  subFields = [],
+  renderField,
+  disabled = false,
+  className,
+  error,
 }) => {
-  const [isChecked, setIsChecked] = useState<boolean>(checked);
-  const checkboxRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    setIsChecked(checked);
-  }, [checked]);
-
-  const handleCheckboxChange = () => {
-    if (disabled) return;
-
-    const newValue = checkboxRef.current?.checked || false;
-    setIsChecked(newValue);
-
-    if (name && setFormData) {
-      setFormData({ name, value: newValue });
-    }
-  };
-
   return (
-    <div className={`w-full space-y-2 ${className || ""}`}>
-      <label
-        className={`flex items-center transition-opacity ${
-          disabled
-            ? "opacity-50 cursor-not-allowed"
-            : "cursor-pointer hover:opacity-80"
-        }`}
-      >
-        <input
-          type="checkbox"
-          onChange={handleCheckboxChange}
-          className="checkbox checkbox-primary checkbox-sm"
-          ref={checkboxRef}
-          name={name}
-          checked={isChecked}
-          disabled={disabled}
-        />
+    <div className={`space-y-3 ${className || ""}`}>
+      <Checkbox
+        name={name}
+        label={label || ""}
+        checked={checked}
+        onChange={onChange}
+        disabled={disabled}
+        error={error}
+      />
 
-        <span className="label-text text-sm ml-2">{label}</span>
-      </label>
-
-      {/* Solo mostrar children si está marcado y no está deshabilitado */}
-      {!disabled && isChecked && (
-        <div className="pl-3 border-l-2 border-primary/40 space-y-2">
-          {children}
+      {checked && subFields.length > 0 && renderField && (
+        <div className="ml-6 pl-4 border-l-2 border-base-300 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+          {subFields.map((field) => (
+            <div key={field.name}>{renderField(field)}</div>
+          ))}
         </div>
       )}
     </div>

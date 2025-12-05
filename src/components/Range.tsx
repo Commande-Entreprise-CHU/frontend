@@ -2,7 +2,8 @@ import React, { useMemo, useEffect } from "react";
 
 interface RangeProps {
   steps: string[];
-  setFormData: (data: { name: string; value: string }) => void;
+  setFormData?: (data: { name: string; value: string }) => void;
+  onChange?: (value: string) => void;
   name: string;
   label?: string;
   required?: boolean;
@@ -14,6 +15,7 @@ interface RangeProps {
 const Range: React.FC<RangeProps> = ({
   steps,
   setFormData,
+  onChange,
   name,
   label,
   required = false,
@@ -53,39 +55,33 @@ const Range: React.FC<RangeProps> = ({
     const numValue = Number(event.target.value);
     setSliderValue(numValue);
 
-    setFormData({
-      name: name,
-      value: valueToStep[numValue] || steps[steps.length - 1],
-    });
+    const stepValue = valueToStep[numValue] || steps[steps.length - 1];
+
+    if (onChange) {
+      onChange(stepValue);
+    } else if (setFormData) {
+      setFormData({
+        name: name,
+        value: stepValue,
+      });
+    }
   };
 
-  const inputTransform = useMemo(() => {
-    return `translateX(${50 / steps.length}%)`;
-  }, [steps.length]);
-
-  const inputWidth = useMemo(() => {
-    return `${100 - 100 / (steps.length + 1)}%`;
-  }, [steps.length]);
-
-  const inputStyle = useMemo(() => {
-    return {
-      transform: inputTransform,
-      width: inputWidth,
-    };
-  }, [inputTransform, inputWidth]);
-
   return (
-    <div className="space-y-2 opacity-100">
-      <div
-        className={`text-sm font-semibold ${
-          disabled ? "opacity-50" : "text-primary opacity-80"
-        }`}
-      >
-        {label || "Sévérité de la douleur"}
-        {required && <span className="text-error ml-1">*</span>}
-      </div>
+    <div className="form-control w-full space-y-4">
+      <label className="label">
+        <span
+          className={`label-text font-medium ${disabled ? "opacity-50" : ""}`}
+        >
+          {label || "Sévérité"}
+          {required && <span className="text-error ml-1">*</span>}
+        </span>
+        <span className="label-text-alt font-bold text-primary">
+          {valueToStep[Number(sliderValue)] || steps[0]}
+        </span>
+      </label>
 
-      <div className="w-full max-w-md">
+      <div className="px-2">
         <input
           type="range"
           name={name}
@@ -96,25 +92,15 @@ const Range: React.FC<RangeProps> = ({
           className={`range range-primary range-sm ${
             disabled ? "opacity-50 cursor-not-allowed" : ""
           }`}
-          style={inputStyle}
           step={stepSize}
-          required={required}
           disabled={disabled}
         />
-
-        <div
-          className={`flex justify-between text-xs mt-3 px-0.5 ${
-            disabled ? "opacity-40" : "opacity-70"
-          }`}
-        >
+        <div className="w-full flex justify-between text-xs px-2 mt-2 text-base-content/50">
           {steps.map((step, index) => (
-            <div
-              key={step + index}
-              className="flex flex-col items-center flex-1"
-            >
-              <span>|</span>
-              <span className="mt-1 text-center">{step}</span>
-            </div>
+            <span key={index} className="flex flex-col items-center gap-1">
+              <span className="w-1 h-1 rounded-full bg-base-content/20"></span>
+              <span className="hidden sm:block">{step}</span>
+            </span>
           ))}
         </div>
       </div>
