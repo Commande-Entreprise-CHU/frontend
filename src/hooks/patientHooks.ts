@@ -19,10 +19,15 @@ export const usePatient = (id: string) => {
   });
 };
 
-export const useSearchPatients = (query: string) => {
+export const useSearchPatients = (params: {
+  name?: string;
+  sexe?: string;
+  ipp?: string;
+  q?: string;
+}) => {
   return useQuery({
-    queryKey: ["patients", "search", query],
-    queryFn: () => searchPatients(query),
+    queryKey: ["patients", "search", params],
+    queryFn: () => searchPatients(params),
   });
 };
 

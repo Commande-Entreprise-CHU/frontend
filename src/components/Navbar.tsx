@@ -10,7 +10,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <div className="navbar sticky top-0 z-50 bg-base-100/80 backdrop-blur-md shadow-sm border-b border-base-200 px-4">
+    <div className="navbar sticky top-0 h-20 z-50 bg-base-100/80 backdrop-blur-md shadow-sm border-b border-base-200 px-4">
       <div className="flex-1">
         <Link
           to="/"

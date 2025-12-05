@@ -49,13 +49,13 @@ const DynamicForm = ({
             data[field.name] = (field as any).default;
           }
         } else if (field.type === "Radio" || field.type === "RevealRadio") {
-          const defaultOpt = field.options?.find((opt) => opt.default);
+          const defaultOpt = field.options?.find((opt) => (opt as any).default);
           if (defaultOpt) {
             data[field.name] = defaultOpt.value;
           }
         } else if (field.type === "CheckboxGroup") {
           const defaultOpts = field.options
-            ?.filter((opt) => opt.default)
+            ?.filter((opt) => (opt as any).default)
             .map((opt) => opt.value);
           if (defaultOpts && defaultOpts.length > 0) {
             data[field.name] = defaultOpts;
@@ -195,7 +195,6 @@ const DynamicForm = ({
 
   const renderField = (field: AnyFormField) => {
     const commonProps = {
-      key: field.name,
       disabled: readOnly,
     };
 
@@ -206,6 +205,7 @@ const DynamicForm = ({
       case "Input":
         return (
           <Input
+            key={field.name}
             {...commonProps}
             name={field.name}
             label={field.label}
@@ -221,6 +221,7 @@ const DynamicForm = ({
       case "Radio":
         return (
           <Radio
+            key={field.name}
             {...commonProps}
             name={field.name}
             label={field.label}
@@ -234,6 +235,7 @@ const DynamicForm = ({
       case "Checkbox":
         return (
           <Checkbox
+            key={field.name}
             {...commonProps}
             name={field.name}
             label={field.label}
@@ -245,6 +247,7 @@ const DynamicForm = ({
       case "CheckboxGroup":
         return (
           <CheckboxGroup
+            key={field.name}
             {...commonProps}
             name={field.name}
             label={field.label}
@@ -257,6 +260,7 @@ const DynamicForm = ({
       case "Range":
         return (
           <Range
+            key={field.name}
             {...commonProps}
             name={field.name}
             label={field.label}
@@ -268,6 +272,7 @@ const DynamicForm = ({
       case "RevealRadio":
         return (
           <RevealRadio
+            key={field.name}
             {...commonProps}
             name={field.name}
             label={field.label}
@@ -284,6 +289,7 @@ const DynamicForm = ({
       case "RevealCheckBox":
         return (
           <RevealCheckBox
+            key={field.name}
             {...commonProps}
             name={field.name}
             label={field.label}
@@ -297,6 +303,7 @@ const DynamicForm = ({
       case "TeethSelector":
         return (
           <TeethSelector
+            key={field.name}
             {...commonProps}
             name={field.name}
             label={field.label}

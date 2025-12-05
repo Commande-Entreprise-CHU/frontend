@@ -20,9 +20,14 @@ export const fetchPatient = async (id: string): Promise<Patient> => {
   return data;
 };
 
-export const searchPatients = async (query: string): Promise<Patient[]> => {
+export const searchPatients = async (params: {
+  name?: string;
+  sexe?: string;
+  ipp?: string;
+  q?: string;
+}): Promise<Patient[]> => {
   const { data } = await axios.get(`${SERVER_URL}/api/search`, {
-    params: { q: query },
+    params,
   });
   return data;
 };

@@ -46,7 +46,6 @@ interface TeethSelectorProps {
 const TeethSelector: React.FC<TeethSelectorProps> = ({
   name,
   label,
-  required,
   options = DEFAULT_OPTIONS,
   value,
   setFormData,

@@ -15,10 +15,14 @@ function SearchPatient() {
     ipp: "",
     motifConsultation: "",
   });
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchParams, setSearchParams] = useState<{
+    name?: string;
+    sexe?: string;
+    ipp?: string;
+  }>({});
 
   const { data: resultados = [], isLoading: loading } =
-    useSearchPatients(searchQuery);
+    useSearchPatients(searchParams);
 
   const handleInputChange = (data: {
     name: string;
@@ -28,18 +32,18 @@ function SearchPatient() {
   };
 
   const handleBuscar = () => {
-    const query =
-      `${formData.name} ${formData.sexe} ${formData.ipp} ${formData.motifConsultation}`.trim();
-    if (!query) {
-      // Optional: Show a toast or less intrusive alert
-      return;
-    }
-    setSearchQuery(query);
+    setSearchParams({
+      name: formData.name,
+      sexe: formData.sexe,
+      ipp: formData.ipp,
+    });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") handleBuscar();
   };
+
+  const hasSearch = Object.values(searchParams).some((v) => !!v);
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-base-200/30 p-6 md:p-12">
@@ -110,7 +114,7 @@ function SearchPatient() {
         </Card>
 
         {/* Results Section */}
-        {searchQuery && (
+        {hasSearch && (
           <div className="space-y-4 animate-fade-in">
             <h2 className="text-xl font-semibold px-2">
               Résultats ({resultados.length})

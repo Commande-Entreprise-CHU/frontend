@@ -31,6 +31,24 @@ import {
 } from "../hooks/templateHooks";
 import type { ConsultationType } from "../endpoints/templateEndpoints";
 
+import CodeEditor from "../components/CodeEditor";
+import "prismjs/components/prism-markup";
+import "prismjs/components/prism-markup-templating";
+import "prismjs/components/prism-json";
+import "prismjs/components/prism-handlebars";
+import "prismjs/themes/prism-okaidia.css";
+
+const getNextVersion = (currentVersion: string) => {
+  if (!currentVersion) return "1";
+  const parts = currentVersion.split(".");
+  const last = parseInt(parts[parts.length - 1]);
+  if (!isNaN(last)) {
+    parts[parts.length - 1] = (last + 1).toString();
+    return parts.join(".");
+  }
+  return currentVersion + ".1";
+};
+
 // Helper to extract fields from JSON structure
 const extractFieldsFromJson = (json: any): string[] => {
   const fields: string[] = [];
@@ -154,15 +172,27 @@ export default function TemplateManager() {
   useEffect(() => {
     if (templates) {
       const activeTemplate = templates.find((t) => t.isActive);
+
+      // Calculate next version based on the latest template (templates are sorted by createdAt desc)
+      const latestVersion = templates.length > 0 ? templates[0].version : "0";
+      const nextVersion = getNextVersion(latestVersion);
+
       if (activeTemplate) {
-        setNewVersion(activeTemplate.version);
+        setNewVersion(nextVersion);
         setNewStructure(JSON.stringify(activeTemplate.structure, null, 2));
         setNewTemplateStr(activeTemplate.template);
         setSelectedTemplateId(activeTemplate.id);
       } else {
-        setNewVersion("");
-        setNewStructure("");
-        setNewTemplateStr("");
+        // No active template
+        if (templates.length > 0) {
+          setNewVersion(nextVersion);
+          setNewStructure(JSON.stringify(templates[0].structure, null, 2));
+          setNewTemplateStr(templates[0].template);
+        } else {
+          setNewVersion("1");
+          setNewStructure("");
+          setNewTemplateStr("");
+        }
         setSelectedTemplateId(null);
       }
     }
@@ -700,12 +730,18 @@ export default function TemplateManager() {
                           )}
                         </div>
                       ) : (
-                        <textarea
-                          className="textarea textarea-bordered w-full h-[500px] font-mono text-sm leading-relaxed"
-                          placeholder='{"metadata": ...}'
-                          value={newStructure}
-                          onChange={(e) => setNewStructure(e.target.value)}
-                        ></textarea>
+                        <div className="border rounded-lg overflow-hidden border-base-300 h-[500px] overflow-y-auto bg-base-100">
+                          <CodeEditor
+                            value={newStructure}
+                            onChange={(code) => setNewStructure(code)}
+                            language="json"
+                            style={{
+                              fontFamily: '"Fira code", "Fira Mono", monospace',
+                              fontSize: 14,
+                            }}
+                            className="min-h-full"
+                          />
+                        </div>
                       )}
                     </div>
                   )}
@@ -714,12 +750,18 @@ export default function TemplateManager() {
                   {activeTab === "template" && (
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
                       <div className="lg:col-span-2">
-                        <textarea
-                          className="textarea textarea-bordered w-full h-[500px] font-mono text-sm leading-relaxed"
-                          placeholder="{{#if ...}}"
-                          value={newTemplateStr}
-                          onChange={(e) => setNewTemplateStr(e.target.value)}
-                        ></textarea>
+                        <div className="border rounded-lg overflow-hidden border-base-300 h-[500px] overflow-y-auto bg-base-100">
+                          <CodeEditor
+                            value={newTemplateStr}
+                            onChange={(code) => setNewTemplateStr(code)}
+                            language="plaintext"
+                            style={{
+                              fontFamily: '"Fira code", "Fira Mono", monospace',
+                              fontSize: 14,
+                            }}
+                            className="min-h-full"
+                          />
+                        </div>
                       </div>
                       <div className="lg:col-span-1 bg-base-200/50 p-4 rounded-lg border border-base-200 overflow-y-auto max-h-[500px]">
                         <h3 className="font-bold mb-4 flex items-center gap-2">
