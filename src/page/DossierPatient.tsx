@@ -60,7 +60,7 @@ export default function DossierPatient() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto py-8 px-4 space-y-8">
+    <div className="w-full mx-auto py-8 px-4 space-y-8">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>

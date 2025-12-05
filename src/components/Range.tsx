@@ -40,14 +40,23 @@ const Range: React.FC<RangeProps> = ({
   }, [steps, stepSize]);
 
   useEffect(() => {
-    if (initialValue) {
+    if (value !== undefined) {
+      if (typeof value === "string") {
+        const index = steps.indexOf(value);
+        if (index !== -1) {
+          setSliderValue(index * stepSize);
+        }
+      } else {
+        setSliderValue(Number(value));
+      }
+    } else if (initialValue) {
       const index = steps.indexOf(initialValue);
       if (index !== -1) {
         const sliderPos = index * stepSize;
         setSliderValue(sliderPos);
       }
     }
-  }, [initialValue, steps, stepSize]);
+  }, [value, initialValue, steps, stepSize]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (disabled) return;
@@ -89,17 +98,21 @@ const Range: React.FC<RangeProps> = ({
           max={100}
           value={sliderValue}
           onChange={handleChange}
-          className={`range range-primary range-sm ${
+          className={`range w-full range-primary range-sm ${
             disabled ? "opacity-50 cursor-not-allowed" : ""
           }`}
           step={stepSize}
           disabled={disabled}
         />
-        <div className="w-full flex justify-between text-xs px-2 mt-2 text-base-content/50">
+        <div className="relative w-full h-8 px-40 mt-2 text-xs text-base-content/50">
           {steps.map((step, index) => (
-            <span key={index} className="flex flex-col items-center gap-1">
-              <span className="w-1 h-1 rounded-full bg-base-content/20"></span>
-              <span className="hidden sm:block">{step}</span>
+            <span
+              key={index}
+              className="absolute top-0 flex flex-col items-center transform -translate-x-1/2"
+              style={{ left: `${(index / (steps.length - 1)) * 100}%` }}
+            >
+              <span className="w-1 h-1 rounded-full bg-base-content/20 mb-1"></span>
+              <span className="hidden sm:block whitespace-nowrap">{step}</span>
             </span>
           ))}
         </div>

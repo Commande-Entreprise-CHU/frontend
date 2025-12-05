@@ -23,7 +23,7 @@ export default function NewPatient() {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="w-full p-4">
       <DynamicForm
         config={PatientConfig}
         initialData={{}}

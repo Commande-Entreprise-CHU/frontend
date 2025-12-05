@@ -33,17 +33,15 @@ const Radio: React.FC<RadioProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (disabled) return;
     const val = e.target.value;
-    // Try to preserve type if possible (boolean/number)
-    // This is a simple heuristic, might need refinement based on options
-    let typedVal: string | number | boolean = val;
-    if (val === "true") typedVal = true;
-    else if (val === "false") typedVal = false;
-    else if (!isNaN(Number(val)) && val !== "") typedVal = Number(val);
+
+    // Find the original option value to preserve type
+    const selectedOption = options.find((opt) => String(opt.value) === val);
+    const finalVal = selectedOption ? selectedOption.value : val;
 
     if (onChange) {
-      onChange(typedVal);
+      onChange(finalVal);
     } else if (setFormData) {
-      setFormData({ name, value: typedVal });
+      setFormData({ name, value: finalVal });
     }
   };
 

@@ -97,8 +97,8 @@ function SearchPatient() {
               setFormData={handleInputChange}
               options={[
                 { label: "Tous", value: "" },
-                { label: "Homme", value: "Homme" },
-                { label: "Femme", value: "Femme" },
+                { label: "Homme", value: "homme" },
+                { label: "Femme", value: "femme" },
               ]}
             />
 
