@@ -12,12 +12,21 @@ export default function NewPatient() {
 
   const handleSubmit = (formValues: any) => {
     createPatientMutation.mutate(formValues, {
-      onSuccess: (patient) => {
-        alert("Patient créé avec succès !");
-        navigate(`/patient/${patient.id}`);
+      onSuccess: (result) => {
+        if (result.duplicate) {
+          const confirmGo = window.confirm(
+            "Ce patient existe déjà dans la base de données. Voulez-vous accéder à son dossier ?"
+          );
+          if (confirmGo) {
+            navigate(`/patient/${result.patient.id}`);
+          }
+        } else {
+          alert("Patient créé avec succès !");
+          navigate(`/patient/${result.patient.id}`);
+        }
       },
       onError: (error: any) => {
-        alert(`Erreur lors de l’enregistrement des données: ${error.message}`);
+        alert(`Erreur lors de l'enregistrement des données: ${error.message}`);
       }
     });
   };

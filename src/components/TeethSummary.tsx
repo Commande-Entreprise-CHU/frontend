@@ -33,7 +33,7 @@ const TeethSummary: React.FC<TeethSummaryProps> = ({
 
   // Filter out empty states and find the corresponding option
   const nonEmptyStates = options.filter(
-    (opt) => summary[opt.value]?.length > 0 && opt.value !== "saine"
+    (opt) => summary[opt.value]?.length > 0 && opt.value !== "Normal"
   );
 
   if (nonEmptyStates.length === 0) {

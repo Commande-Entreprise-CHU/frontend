@@ -24,7 +24,7 @@ export default function DossierPatient() {
     if (consultationTypes && consultationTypes.length > 0 && !activeTabSlug) {
       setActiveTabSlug(consultationTypes[0].slug);
     }
-  }, [consultationTypes]);
+  }, [consultationTypes, activeTabSlug]);
 
   if (loadingPatient || loadingTypes)
     return (

@@ -5,9 +5,10 @@ import {
   createPatient,
   updateSection,
   type Patient,
+  type CreatePatientResult,
 } from "../endpoints/patientEndpoints";
 
-export type { Patient };
+export type { Patient, CreatePatientResult };
 
 // --- Hooks ---
 

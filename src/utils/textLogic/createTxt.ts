@@ -145,7 +145,7 @@ function registerHelpers() {
       const abnormalTeethMap: Record<string, string[]> = {};
 
       for (const [toothId, state] of Object.entries(teethData)) {
-        if (state && state !== "Saine") {
+        if (state && state !== "Normal") {
           if (!abnormalTeethMap[state]) {
             abnormalTeethMap[state] = [];
           }

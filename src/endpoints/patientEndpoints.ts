@@ -32,10 +32,22 @@ export const searchPatients = async (params: {
   return data;
 };
 
-export const createPatient = async (patientData: any): Promise<Patient> => {
+export interface CreatePatientResult {
+  patient: Patient;
+  duplicate: boolean;
+}
+
+export const createPatient = async (
+  patientData: any
+): Promise<CreatePatientResult> => {
   const { data } = await axios.post(`${SERVER_URL}/api/patient`, patientData);
-  if (!data.success) throw new Error(data.message || "Error creating patient");
-  return data.patient;
+  if (!data.success && !data.duplicate) {
+    throw new Error(data.message || "Error creating patient");
+  }
+  return {
+    patient: data.patient,
+    duplicate: data.duplicate || false,
+  };
 };
 
 export const updateSection = async ({

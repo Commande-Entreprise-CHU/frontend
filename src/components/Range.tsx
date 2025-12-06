@@ -104,7 +104,7 @@ const Range: React.FC<RangeProps> = ({
           step={stepSize}
           disabled={disabled}
         />
-        <div className="relative w-full h-8 px-40 mt-2 text-xs text-base-content/50">
+        <div className="relative w-full h-8 mt-2 text-xs text-base-content/50">
           {steps.map((step, index) => (
             <span
               key={index}
