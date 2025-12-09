@@ -19,6 +19,7 @@ import {
   AlertTriangle,
   Check,
   AlertCircle,
+  Download,
 } from "lucide-react";
 import {
   useConsultationTypes,
@@ -124,6 +125,7 @@ const extractVarsFromTemplate = (template: string): string[] => {
 };
 
 export default function TemplateManager() {
+  const [showDocs, setShowDocs] = useState(true);
   const [selectedType, setSelectedType] = useState<ConsultationType | null>(
     null
   );
@@ -360,6 +362,54 @@ export default function TemplateManager() {
       <h1 className="text-3xl font-bold mb-6">
         Gestion des Modèles de Consultation
       </h1>
+
+      <div className="bg-base-100 border border-base-300 rounded-xl mb-6 overflow-hidden">
+        <div
+          className="p-4 bg-base-200/50 flex items-center justify-between cursor-pointer hover:bg-base-200 transition-colors"
+          onClick={() => setShowDocs(!showDocs)}
+        >
+          <div className="flex items-center gap-2 font-medium">
+            <FileText className="w-5 h-5 text-primary" />
+            <span>Documentation & Aide</span>
+          </div>
+          {showDocs ? <ArrowUp size={18} /> : <ArrowDown size={18} />}
+        </div>
+
+        {showDocs && (
+          <div className="p-4 border-t border-base-300">
+            <p className="mb-4 text-base-content/80">
+              Voici 3 documents utiles pour comprendre comment créer des modèles
+              (à lire ou à envoyer à une IA pour générer les modèles) :
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <a
+                href="/docs/consultationData.md"
+                download
+                className="btn btn-outline btn-sm gap-2 normal-case"
+              >
+                <Download size={16} />
+                Données de Consultation
+              </a>
+              <a
+                href="/docs/consultationJson.md"
+                download
+                className="btn btn-outline btn-sm gap-2 normal-case"
+              >
+                <Download size={16} />
+                Structure JSON
+              </a>
+              <a
+                href="/docs/consultationTemplate.md"
+                download
+                className="btn btn-outline btn-sm gap-2 normal-case"
+              >
+                <Download size={16} />
+                Template Handlebars
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Left Column: Types */}
