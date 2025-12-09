@@ -38,7 +38,7 @@ import "prismjs/components/prism-markup";
 import "prismjs/components/prism-markup-templating";
 import "prismjs/components/prism-json";
 import "prismjs/components/prism-handlebars";
-import "prismjs/themes/prism-okaidia.css";
+import "prismjs/themes/prism-tomorrow.css";
 
 const getNextVersion = (currentVersion: string) => {
   if (!currentVersion) return "1";
