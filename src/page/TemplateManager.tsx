@@ -31,6 +31,7 @@ import {
   useDeleteTemplateVersion,
 } from "../hooks/templateHooks";
 import type { ConsultationType } from "../endpoints/templateEndpoints";
+import { createTxt } from "../utils/textLogic/createTxt";
 
 import CodeEditor from "../components/CodeEditor";
 import "prismjs/components/prism-markup";
@@ -164,6 +165,8 @@ export default function TemplateManager() {
     "structure"
   );
   const [showPreview, setShowPreview] = useState(false);
+  const [previewFormData, setPreviewFormData] = useState<any>({});
+  const [showTemplatePreview, setShowTemplatePreview] = useState(false);
 
   const sortedTypes = useMemo(() => {
     if (!types) return [];
@@ -356,6 +359,19 @@ export default function TemplateManager() {
       return null;
     }
   }, [newStructure]);
+
+  const templatePreviewText = useMemo(() => {
+    if (!parsedStructure || !newTemplateStr) return "";
+    try {
+      return createTxt({
+        config: parsedStructure,
+        formData: previewFormData,
+        template: newTemplateStr,
+      });
+    } catch (e) {
+      return "Erreur lors de la génération du texte : " + (e as any).message;
+    }
+  }, [parsedStructure, previewFormData, newTemplateStr]);
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -768,9 +784,10 @@ export default function TemplateManager() {
                           {parsedStructure ? (
                             <DynamicForm
                               config={parsedStructure}
-                              readOnly={true}
+                              readOnly={false}
                               showTextGeneration={false}
                               submitButtonText="Aperçu (Bouton)"
+                              onChange={(data) => setPreviewFormData(data)}
                             />
                           ) : (
                             <div className="alert alert-error">
@@ -800,17 +817,45 @@ export default function TemplateManager() {
                   {activeTab === "template" && (
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
                       <div className="lg:col-span-2">
+                        <div className="flex justify-end mb-2">
+                          <label className="label cursor-pointer gap-2 select-none">
+                            <span className="label-text font-medium">
+                              Aperçu Texte
+                            </span>
+                            <input
+                              type="checkbox"
+                              className="toggle toggle-primary toggle-sm"
+                              checked={showTemplatePreview}
+                              onChange={(e) =>
+                                setShowTemplatePreview(e.target.checked)
+                              }
+                            />
+                          </label>
+                        </div>
                         <div className="border rounded-lg overflow-hidden border-base-300 h-[500px] overflow-y-auto bg-base-100">
-                          <CodeEditor
-                            value={newTemplateStr}
-                            onChange={(code) => setNewTemplateStr(code)}
-                            language="plaintext"
-                            style={{
-                              fontFamily: '"Fira code", "Fira Mono", monospace',
-                              fontSize: 14,
-                            }}
-                            className="min-h-full"
-                          />
+                          {showTemplatePreview ? (
+                            <div className="p-4 whitespace-pre-wrap font-mono text-sm">
+                              {templatePreviewText || (
+                                <span className="text-base-content/40 italic">
+                                  Aucun texte généré. Remplissez le formulaire
+                                  dans l'onglet "Structure JSON" pour voir un
+                                  aperçu.
+                                </span>
+                              )}
+                            </div>
+                          ) : (
+                            <CodeEditor
+                              value={newTemplateStr}
+                              onChange={(code) => setNewTemplateStr(code)}
+                              language="plaintext"
+                              style={{
+                                fontFamily:
+                                  '"Fira code", "Fira Mono", monospace',
+                                fontSize: 14,
+                              }}
+                              className="min-h-full"
+                            />
+                          )}
                         </div>
                       </div>
                       <div className="lg:col-span-1 bg-base-200/50 p-4 rounded-lg border border-base-200 overflow-y-auto max-h-[500px]">

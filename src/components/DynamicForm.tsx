@@ -18,6 +18,7 @@ interface DynamicFormProps {
   initialData?: Record<string, any>;
   readOnly?: boolean;
   onSubmit?: (formValues: any) => void;
+  onChange?: (formValues: any) => void;
   showTextGeneration?: boolean;
   submitButtonText?: string;
 }
@@ -28,6 +29,7 @@ const DynamicForm = ({
   initialData,
   readOnly = false,
   onSubmit,
+  onChange,
   showTextGeneration = true,
   submitButtonText = "Sauvegarder",
 }: DynamicFormProps) => {
@@ -92,6 +94,9 @@ const DynamicForm = ({
   const handleFieldChange = (name: string, value: any) => {
     setFormData((prev) => {
       const newData = { ...prev, [name]: value };
+      if (onChange) {
+        onChange(newData);
+      }
       return newData;
     });
 
