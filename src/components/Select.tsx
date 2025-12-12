@@ -5,7 +5,11 @@ interface Option {
   label: string;
 }
 
-interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "onChange" | "size"> {
+interface SelectProps
+  extends Omit<
+    React.SelectHTMLAttributes<HTMLSelectElement>,
+    "onChange" | "size"
+  > {
   label?: string;
   options: Option[];
   value?: string | number;

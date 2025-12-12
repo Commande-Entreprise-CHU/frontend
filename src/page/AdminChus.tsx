@@ -138,7 +138,10 @@ const AdminChus: React.FC = () => {
             <Button variant="ghost" onClick={() => setIsModalOpen(false)}>
               Annuler
             </Button>
-            <Button onClick={handleSubmit} loading={createChu.isPending || updateChu.isPending}>
+            <Button
+              onClick={handleSubmit}
+              loading={createChu.isPending || updateChu.isPending}
+            >
               Enregistrer
             </Button>
           </>
