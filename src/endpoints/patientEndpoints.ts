@@ -1,7 +1,4 @@
-import axios from "axios";
-
-const SERVER_URL =
-  (import.meta.env.VITE_SERVER_URL as string) || "http://localhost:5001";
+import api from "../utils/api";
 
 export interface Patient {
   id: string;
@@ -16,7 +13,7 @@ export interface Patient {
 }
 
 export const fetchPatient = async (id: string): Promise<Patient> => {
-  const { data } = await axios.get(`${SERVER_URL}/api/patient/${id}`);
+  const { data } = await api.get(`/api/patient/${id}`);
   return data;
 };
 
@@ -26,7 +23,7 @@ export const searchPatients = async (params: {
   ipp?: string;
   q?: string;
 }): Promise<Patient[]> => {
-  const { data } = await axios.get(`${SERVER_URL}/api/search`, {
+  const { data } = await api.get(`/api/search`, {
     params,
   });
   return data;
@@ -40,7 +37,7 @@ export interface CreatePatientResult {
 export const createPatient = async (
   patientData: any
 ): Promise<CreatePatientResult> => {
-  const { data } = await axios.post(`${SERVER_URL}/api/patient`, patientData);
+  const { data } = await api.post(`/api/patient`, patientData);
   if (!data.success && !data.duplicate) {
     throw new Error(data.message || "Error creating patient");
   }
@@ -59,7 +56,7 @@ export const updateSection = async ({
   values: any;
   consultationTypeId: string;
 }): Promise<Patient> => {
-  const { data } = await axios.put(`${SERVER_URL}/api/patient/${id}`, {
+  const { data } = await api.put(`/api/patient/${id}`, {
     values,
     consultationTypeId,
   });

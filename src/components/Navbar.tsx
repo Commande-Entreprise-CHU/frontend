@@ -1,9 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import ThemeController from "./ThemeController";
-import { Home, UserPlus, Search, FileText } from "lucide-react";
+import { Home, UserPlus, Search, FileText, LogOut } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar: React.FC = () => {
   const location = useLocation();
+  const { logout, user } = useAuth();
 
   const isActive = (path: string) => {
     return location.pathname === path ? "btn-active" : "";
@@ -27,6 +29,9 @@ const Navbar: React.FC = () => {
         </Link>
       </div>
       <div className="flex-none flex items-center gap-1">
+        <div className="mr-4 text-sm font-medium hidden lg:block">
+          {user?.username}
+        </div>
         <Link to="/" className={`btn btn-ghost btn-sm gap-2 ${isActive("/")}`}>
           <Home size={18} />
           <span className="hidden md:inline">Accueil</span>
@@ -53,9 +58,27 @@ const Navbar: React.FC = () => {
           <span className="hidden md:inline">Modèles</span>
         </Link>
 
+        {user?.role === "admin" && (
+          <Link
+            to="/admin/users"
+            className={`btn btn-ghost btn-sm gap-2 ${isActive("/admin/users")}`}
+          >
+            <UserPlus size={18} />
+            <span className="hidden md:inline">Admin</span>
+          </Link>
+        )}
+
         <div className="h-6 w-px bg-base-300 mx-2"></div>
 
         <ThemeController />
+
+        <button
+          onClick={logout}
+          className="btn btn-ghost btn-sm gap-2 text-error ml-2"
+        >
+          <LogOut size={18} />
+          <span className="hidden md:inline">Déconnexion</span>
+        </button>
       </div>
     </div>
   );

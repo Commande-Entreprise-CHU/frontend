@@ -6,25 +6,90 @@ import NewPatient from "./page/forms/NewPatient";
 import SearchPatient from "./page/SearchPatient";
 import TemplateManager from "./page/TemplateManager";
 import GenericForm from "./page/forms/GenericForm";
+import Login from "./page/Login";
+import Register from "./page/Register";
+import AdminUsers from "./page/AdminUsers";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
-    <Router>
-      <div className="bg-base-100 prose max-w-full w-full min-h-screen">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/search" element={<SearchPatient />} />
-          <Route path="/templates" element={<TemplateManager />} />
+    <AuthProvider>
+      <Router>
+        <div className="bg-base-100 prose max-w-full w-full min-h-screen">
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-          <Route path="/patient/new" element={<NewPatient />} />
-          {/* Dossier del paciente */}
-
-          <Route path="/patient/:id" element={<DossierPatient />} />
-          <Route path="/patient/:id/form/:slug" element={<GenericForm />} />
-        </Routes>
-      </div>
-    </Router>
+            <Route element={<ProtectedRoute />}>
+              <Route
+                path="/"
+                element={
+                  <>
+                    <Navbar />
+                    <Home />
+                  </>
+                }
+              />
+              <Route
+                path="/search"
+                element={
+                  <>
+                    <Navbar />
+                    <SearchPatient />
+                  </>
+                }
+              />
+              <Route
+                path="/templates"
+                element={
+                  <>
+                    <Navbar />
+                    <TemplateManager />
+                  </>
+                }
+              />
+              <Route
+                path="/admin/users"
+                element={
+                  <>
+                    <Navbar />
+                    <AdminUsers />
+                  </>
+                }
+              />
+              <Route
+                path="/patient/new"
+                element={
+                  <>
+                    <Navbar />
+                    <NewPatient />
+                  </>
+                }
+              />
+              <Route
+                path="/patient/:id"
+                element={
+                  <>
+                    <Navbar />
+                    <DossierPatient />
+                  </>
+                }
+              />
+              <Route
+                path="/patient/:id/form/:slug"
+                element={
+                  <>
+                    <Navbar />
+                    <GenericForm />
+                  </>
+                }
+              />
+            </Route>
+          </Routes>
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 
