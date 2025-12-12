@@ -20,7 +20,7 @@ const Login: React.FC = () => {
       {
         onSuccess: (data) => {
           if (data.success) {
-            login(data.token, data.user);
+            login(data.user);
             navigate("/");
           } else {
             setError(data.message || "Login failed");

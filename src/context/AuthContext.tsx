@@ -1,4 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  logout as logoutRequest,
+  me as meRequest,
+} from "../endpoints/authEndpoints";
 
 interface User {
   id: string;
@@ -12,7 +17,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   token: string | null;
-  login: (token: string, user: User) => void;
+  login: (user: User) => void;
   logout: () => void;
   isAuthenticated: boolean;
   loading: boolean;
@@ -23,38 +28,36 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
+  const meQuery = useQuery({
+    queryKey: ["auth", "me"],
+    queryFn: meRequest,
+    retry: false,
+  });
 
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
-    }
-    setLoading(false);
-  }, []);
+  const user =
+    meQuery.data && meQuery.data.success ? (meQuery.data.user as User) : null;
+  const loading = meQuery.isLoading;
 
-  const login = (newToken: string, newUser: User) => {
-    localStorage.setItem("token", newToken);
-    localStorage.setItem("user", JSON.stringify(newUser));
-    setToken(newToken);
-    setUser(newUser);
+  const logoutMutation = useMutation({
+    mutationFn: logoutRequest,
+    onSettled: () => {
+      queryClient.setQueryData(["auth", "me"], { success: false });
+    },
+  });
+
+  const login = (newUser: User) => {
+    queryClient.setQueryData(["auth", "me"], { success: true, user: newUser });
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setToken(null);
-    setUser(null);
+    logoutMutation.mutate();
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, token, login, logout, isAuthenticated: !!token, loading }}
+      value={{ user, token: null, login, logout, isAuthenticated: !!user, loading }}
     >
       {children}
     </AuthContext.Provider>
