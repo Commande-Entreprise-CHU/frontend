@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useChus } from "../hooks/useChus";
+import { useRegister } from "../hooks/useAuthQueries";
 
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -7,40 +9,36 @@ const Register: React.FC = () => {
     password: "",
     nom: "",
     prenom: "",
+    chuId: "",
   });
+  const { data: chus } = useChus();
+  const registerMutation = useRegister();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
-    try {
-      const response = await fetch("http://localhost:5001/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setSuccess(data.message);
-        setTimeout(() => navigate("/login"), 3000);
-      } else {
-        setError(data.message || "Registration failed");
-      }
-    } catch (err) {
-      setError("An error occurred. Please try again.");
-    }
+    registerMutation.mutate(formData, {
+      onSuccess: (data) => {
+        if (data.success) {
+          setSuccess(data.message);
+          setTimeout(() => navigate("/login"), 3000);
+        } else {
+          setError(data.message || "Registration failed");
+        }
+      },
+      onError: () => {
+        setError("An error occurred. Please try again.");
+      },
+    });
   };
 
   return (
@@ -86,6 +84,26 @@ const Register: React.FC = () => {
                 onChange={handleChange}
                 required
               />
+            </div>
+
+            <div className="form-control w-full max-w-xs mt-2">
+              <label className="label">
+                <span className="label-text">CHU</span>
+              </label>
+              <select
+                name="chuId"
+                className="select select-bordered w-full max-w-xs"
+                value={formData.chuId}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Sélectionnez votre CHU</option>
+                {chus?.map((chu) => (
+                  <option key={chu.id} value={chu.id}>
+                    {chu.name} ({chu.city})
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="form-control w-full max-w-xs mt-2">

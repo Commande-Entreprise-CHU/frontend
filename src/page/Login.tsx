@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useLogin } from "../hooks/useAuthQueries";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -8,31 +9,28 @@ const Login: React.FC = () => {
   const [error, setError] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
+  const loginMutation = useLogin();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    try {
-      const response = await fetch("http://localhost:5001/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    loginMutation.mutate(
+      { email, password },
+      {
+        onSuccess: (data) => {
+          if (data.success) {
+            login(data.token, data.user);
+            navigate("/");
+          } else {
+            setError(data.message || "Login failed");
+          }
         },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        login(data.token, data.user);
-        navigate("/");
-      } else {
-        setError(data.message || "Login failed");
+        onError: () => {
+          setError("An error occurred. Please try again.");
+        },
       }
-    } catch (err) {
-      setError("An error occurred. Please try again.");
-    }
+    );
   };
 
   return (

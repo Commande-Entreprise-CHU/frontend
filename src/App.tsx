@@ -9,6 +9,7 @@ import GenericForm from "./page/forms/GenericForm";
 import Login from "./page/Login";
 import Register from "./page/Register";
 import AdminUsers from "./page/AdminUsers";
+import AdminChus from "./page/AdminChus";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -55,6 +56,15 @@ function App() {
                   <>
                     <Navbar />
                     <AdminUsers />
+                  </>
+                }
+              />
+              <Route
+                path="/admin/chus"
+                element={
+                  <>
+                    <Navbar />
+                    <AdminChus />
                   </>
                 }
               />
