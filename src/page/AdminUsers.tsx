@@ -1,6 +1,10 @@
 import React from "react";
 import { Check, X } from "lucide-react";
-import { useUsers, useUpdateUserStatus, useUpdateUserChu } from "../hooks/useAdmin";
+import {
+  useUsers,
+  useUpdateUserStatus,
+  useUpdateUserChu,
+} from "../hooks/useAdmin";
 import { useChus } from "../hooks/useChus";
 
 const AdminUsers: React.FC = () => {
@@ -17,7 +21,8 @@ const AdminUsers: React.FC = () => {
     updateUserChu.mutate({ userId, chuId });
   };
 
-  if (usersLoading || chusLoading) return <div className="p-4">Chargement...</div>;
+  if (usersLoading || chusLoading)
+    return <div className="p-4">Chargement...</div>;
 
   return (
     <div className="container mx-auto p-6">
@@ -51,7 +56,9 @@ const AdminUsers: React.FC = () => {
                       <select
                         className="select select-bordered select-sm w-full max-w-xs"
                         value={user.chuId || ""}
-                        onChange={(e) => handleChuChange(user.id, e.target.value)}
+                        onChange={(e) =>
+                          handleChuChange(user.id, e.target.value)
+                        }
                       >
                         <option value="">Aucun CHU</option>
                         {chus?.map((chu) => (

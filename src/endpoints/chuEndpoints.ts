@@ -16,7 +16,10 @@ export const createChu = async (chu: Omit<Chu, "id">): Promise<Chu> => {
   return data;
 };
 
-export const updateChu = async (id: string, chu: Omit<Chu, "id">): Promise<Chu> => {
+export const updateChu = async (
+  id: string,
+  chu: Omit<Chu, "id">
+): Promise<Chu> => {
   const { data } = await api.put(`/api/chus/${id}`, chu);
   return data;
 };

@@ -62,14 +62,18 @@ const Navbar: React.FC = () => {
           <>
             <Link
               to="/admin/users"
-              className={`btn btn-ghost btn-sm gap-2 ${isActive("/admin/users")}`}
+              className={`btn btn-ghost btn-sm gap-2 ${isActive(
+                "/admin/users"
+              )}`}
             >
               <UserPlus size={18} />
               <span className="hidden md:inline">Utilisateurs</span>
             </Link>
             <Link
               to="/admin/chus"
-              className={`btn btn-ghost btn-sm gap-2 ${isActive("/admin/chus")}`}
+              className={`btn btn-ghost btn-sm gap-2 ${isActive(
+                "/admin/chus"
+              )}`}
             >
               <FileText size={18} />
               <span className="hidden md:inline">CHUs</span>

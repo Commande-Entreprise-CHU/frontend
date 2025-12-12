@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { Plus, Trash2, Edit } from "lucide-react";
-import { useChus, useCreateChu, useUpdateChu, useDeleteChu } from "../hooks/useChus";
+import {
+  useChus,
+  useCreateChu,
+  useUpdateChu,
+  useDeleteChu,
+} from "../hooks/useChus";
 import { type Chu } from "../endpoints/chuEndpoints";
 
 const AdminChus: React.FC = () => {
