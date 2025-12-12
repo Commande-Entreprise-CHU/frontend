@@ -1,11 +1,15 @@
-import React from "react";
-import { Check, X } from "lucide-react";
+import React, { useMemo } from "react";
+import { Check, X, UserCog } from "lucide-react";
 import {
   useUsers,
   useUpdateUserStatus,
   useUpdateUserChu,
 } from "../hooks/useAdmin";
 import { useChus } from "../hooks/useChus";
+import Table from "../components/Table";
+import Card from "../components/Card";
+import Select from "../components/Select";
+import Button from "../components/Button";
 
 const AdminUsers: React.FC = () => {
   const { data: users, isLoading: usersLoading } = useUsers();
@@ -21,87 +25,119 @@ const AdminUsers: React.FC = () => {
     updateUserChu.mutate({ userId, chuId });
   };
 
-  if (usersLoading || chusLoading)
-    return <div className="p-4">Chargement...</div>;
+  const chuOptions = useMemo(() => {
+    if (!chus) return [];
+    return [
+      { value: "", label: "Aucun CHU" },
+      ...chus.map((chu) => ({
+        value: chu.id,
+        label: `${chu.name} (${chu.city})`,
+      })),
+    ];
+  }, [chus]);
+
+  const columns = useMemo(
+    () => [
+      {
+        header: "Nom",
+        accessor: (user: any) => (
+          <div className="font-bold">
+            {user.nom} {user.prenom}
+          </div>
+        ),
+      },
+      {
+        header: "Email",
+        accessor: "email" as const,
+      },
+      {
+        header: "Role",
+        accessor: (user: any) => (
+          <span className="badge badge-ghost">{user.role}</span>
+        ),
+      },
+      {
+        header: "CHU",
+        accessor: (user: any) => (
+          <div className="w-full max-w-xs">
+            <Select
+              options={chuOptions}
+              value={user.chuId || ""}
+              onChange={(val) => handleChuChange(user.id, val)}
+              size="sm"
+              fullWidth
+            />
+          </div>
+        ),
+      },
+      {
+        header: "Statut",
+        accessor: (user: any) =>
+          user.isActive ? (
+            <span className="badge badge-success gap-1 text-white">
+              <Check size={12} /> Actif
+            </span>
+          ) : (
+            <span className="badge badge-warning gap-1 text-white">
+              <X size={12} /> En attente
+            </span>
+          ),
+      },
+      {
+        header: "Actions",
+        accessor: (user: any) => (
+          <div className="flex gap-2">
+            {!user.isActive ? (
+              <Button
+                variant="success"
+                size="xs"
+                onClick={() => handleStatusChange(user.id, true)}
+                startIcon={Check}
+                className="text-white"
+              >
+                Valider
+              </Button>
+            ) : (
+              <Button
+                variant="warning"
+                size="xs"
+                onClick={() => handleStatusChange(user.id, false)}
+                startIcon={X}
+                className="text-white"
+              >
+                Révoquer
+              </Button>
+            )}
+          </div>
+        ),
+      },
+    ],
+    [chuOptions]
+  );
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Gestion des Utilisateurs</h1>
-
-      <div className="card bg-base-100 shadow-xl">
-        <div className="card-body">
-          <div className="overflow-x-auto">
-            <table className="table w-full">
-              <thead>
-                <tr>
-                  <th>Nom</th>
-                  <th>Email</th>
-                  <th>Role</th>
-                  <th>CHU</th>
-                  <th>Statut</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users?.map((user) => (
-                  <tr key={user.id}>
-                    <td>
-                      <div className="font-bold">
-                        {user.nom} {user.prenom}
-                      </div>
-                    </td>
-                    <td>{user.email}</td>
-                    <td>{user.role}</td>
-                    <td>
-                      <select
-                        className="select select-bordered select-sm w-full max-w-xs"
-                        value={user.chuId || ""}
-                        onChange={(e) =>
-                          handleChuChange(user.id, e.target.value)
-                        }
-                      >
-                        <option value="">Aucun CHU</option>
-                        {chus?.map((chu) => (
-                          <option key={chu.id} value={chu.id}>
-                            {chu.name} ({chu.city})
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td>
-                      {user.isActive ? (
-                        <span className="badge badge-success">Actif</span>
-                      ) : (
-                        <span className="badge badge-warning">En attente</span>
-                      )}
-                    </td>
-                    <td>
-                      <div className="flex gap-2">
-                        {!user.isActive && (
-                          <button
-                            onClick={() => handleStatusChange(user.id, true)}
-                            className="btn btn-success btn-xs text-white"
-                          >
-                            <Check size={14} /> Valider
-                          </button>
-                        )}
-                        {user.isActive && (
-                          <button
-                            onClick={() => handleStatusChange(user.id, false)}
-                            className="btn btn-warning btn-xs text-white"
-                          >
-                            <X size={14} /> Révoquer
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="flex items-center gap-3">
+        <div className="p-3 bg-primary/10 rounded-xl text-primary">
+          <UserCog size={24} />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold">Gestion des Utilisateurs</h1>
+          <p className="text-base-content/60">
+            Gérez les accès et les affectations aux CHUs
+          </p>
         </div>
       </div>
+
+      <Card className="shadow-lg">
+        <Table
+          columns={columns}
+          data={users || []}
+          keyField="id"
+          isLoading={usersLoading || chusLoading}
+          emptyMessage="Aucun utilisateur trouvé."
+        />
+      </Card>
     </div>
   );
 };

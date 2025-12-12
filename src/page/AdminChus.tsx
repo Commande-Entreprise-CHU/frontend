@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Plus, Trash2, Edit } from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { Plus, Trash2, Edit, Building2 } from "lucide-react";
 import {
   useChus,
   useCreateChu,
@@ -7,6 +7,12 @@ import {
   useDeleteChu,
 } from "../hooks/useChus";
 import { type Chu } from "../endpoints/chuEndpoints";
+import Table from "../components/Table";
+import Card from "../components/Card";
+import Modal from "../components/Modal";
+import Input from "../components/Input";
+import Button from "../components/Button";
+import IconButton from "../components/IconButton";
 
 const AdminChus: React.FC = () => {
   const { data: chus, isLoading } = useChus();
@@ -54,108 +60,109 @@ const AdminChus: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  if (isLoading) return <div className="p-4">Chargement...</div>;
+  const handleInputChange = (data: { name: string; value: string | null }) => {
+    setFormData((prev) => ({ ...prev, [data.name]: data.value || "" }));
+  };
+
+  const columns = useMemo(
+    () => [
+      {
+        header: "Nom",
+        accessor: "name" as const,
+      },
+      {
+        header: "Ville",
+        accessor: "city" as const,
+      },
+      {
+        header: "Actions",
+        accessor: (chu: Chu) => (
+          <div className="flex gap-2">
+            <IconButton
+              icon={Edit}
+              variant="ghost"
+              size="xs"
+              onClick={() => openModal(chu)}
+              tooltip="Modifier"
+            />
+            <IconButton
+              icon={Trash2}
+              variant="ghost"
+              size="xs"
+              colorClass="text-error"
+              onClick={() => handleDelete(chu.id)}
+              tooltip="Supprimer"
+            />
+          </div>
+        ),
+      },
+    ],
+    []
+  );
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Gestion des CHUs</h1>
-        <button onClick={() => openModal()} className="btn btn-primary gap-2">
-          <Plus size={20} /> Nouveau CHU
-        </button>
-      </div>
-
-      <div className="card bg-base-100 shadow-xl">
-        <div className="card-body">
-          <div className="overflow-x-auto">
-            <table className="table w-full">
-              <thead>
-                <tr>
-                  <th>Nom</th>
-                  <th>Ville</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {chus?.map((chu) => (
-                  <tr key={chu.id}>
-                    <td>{chu.name}</td>
-                    <td>{chu.city}</td>
-                    <td>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => openModal(chu)}
-                          className="btn btn-ghost btn-xs"
-                        >
-                          <Edit size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(chu.id)}
-                          className="btn btn-ghost btn-xs text-error"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-primary/10 rounded-xl text-primary">
+            <Building2 size={24} />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold">Gestion des CHUs</h1>
+            <p className="text-base-content/60">
+              Ajoutez et modifiez les établissements
+            </p>
           </div>
         </div>
+        <Button onClick={() => openModal()} startIcon={Plus}>
+          Nouveau CHU
+        </Button>
       </div>
 
-      {isModalOpen && (
-        <div className="modal modal-open">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg mb-4">
-              {editingChu ? "Modifier le CHU" : "Nouveau CHU"}
-            </h3>
-            <form onSubmit={handleSubmit}>
-              <div className="form-control w-full mb-4">
-                <label className="label">
-                  <span className="label-text">Nom</span>
-                </label>
-                <input
-                  type="text"
-                  className="input input-bordered w-full"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div className="form-control w-full mb-6">
-                <label className="label">
-                  <span className="label-text">Ville</span>
-                </label>
-                <input
-                  type="text"
-                  className="input input-bordered w-full"
-                  value={formData.city}
-                  onChange={(e) =>
-                    setFormData({ ...formData, city: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div className="modal-action">
-                <button
-                  type="button"
-                  className="btn"
-                  onClick={() => setIsModalOpen(false)}
-                >
-                  Annuler
-                </button>
-                <button type="submit" className="btn btn-primary">
-                  Enregistrer
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <Card className="shadow-lg">
+        <Table
+          columns={columns}
+          data={chus || []}
+          keyField="id"
+          isLoading={isLoading}
+          emptyMessage="Aucun CHU trouvé."
+        />
+      </Card>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={editingChu ? "Modifier le CHU" : "Nouveau CHU"}
+        actions={
+          <>
+            <Button variant="ghost" onClick={() => setIsModalOpen(false)}>
+              Annuler
+            </Button>
+            <Button onClick={handleSubmit} loading={createChu.isPending || updateChu.isPending}>
+              Enregistrer
+            </Button>
+          </>
+        }
+      >
+        <form id="chu-form" onSubmit={handleSubmit} className="space-y-4">
+          <Input
+            label="Nom"
+            name="name"
+            value={formData.name}
+            setFormData={handleInputChange}
+            required
+            placeholder="Ex: CHU Nantes"
+          />
+          <Input
+            label="Ville"
+            name="city"
+            value={formData.city}
+            setFormData={handleInputChange}
+            required
+            placeholder="Ex: Nantes"
+          />
+        </form>
+      </Modal>
     </div>
   );
 };
