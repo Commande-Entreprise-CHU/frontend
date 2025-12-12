@@ -1,9 +1,7 @@
 import React, { createContext, useContext } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  logout as logoutRequest,
-  me as meRequest,
-} from "../endpoints/authEndpoints";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { logout as logoutRequest } from "../endpoints/authEndpoints";
+import { useMe } from "../hooks/useAuthQueries";
 
 interface User {
   id: string;
@@ -16,7 +14,6 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  token: string | null;
   login: (user: User) => void;
   logout: () => void;
   isAuthenticated: boolean;
@@ -30,11 +27,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const queryClient = useQueryClient();
 
-  const meQuery = useQuery({
-    queryKey: ["auth", "me"],
-    queryFn: meRequest,
-    retry: false,
-  });
+  const meQuery = useMe();
 
   const user =
     meQuery.data && meQuery.data.success ? (meQuery.data.user as User) : null;
@@ -57,7 +50,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <AuthContext.Provider
-      value={{ user, token: null, login, logout, isAuthenticated: !!user, loading }}
+      value={{ user, login, logout, isAuthenticated: !!user, loading }}
     >
       {children}
     </AuthContext.Provider>
