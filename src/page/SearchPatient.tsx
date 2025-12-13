@@ -5,8 +5,9 @@ import Card from "../components/Card";
 import Button from "../components/Button";
 import PageHeader from "../components/PageHeader";
 import PatientCard from "../components/PatientCard";
-import { Search, User, Hash } from "lucide-react";
+import { Search, User, Hash, Clock } from "lucide-react";
 import { useSearchPatients } from "../hooks/patientHooks";
+import { useMyRecentPatients } from "../hooks/statsHooks";
 
 function SearchPatient() {
   const [formData, setFormData] = useState({
@@ -23,6 +24,8 @@ function SearchPatient() {
 
   const { data: resultados = [], isLoading: loading } =
     useSearchPatients(searchParams);
+  const { data: recentPatients = [], isLoading: loadingRecent } =
+    useMyRecentPatients();
 
   const handleInputChange = (data: {
     name: string;
@@ -134,6 +137,45 @@ function SearchPatient() {
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {/* Recent Patients Section - shown when no search performed */}
+        {!hasSearch && (
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold px-2 flex items-center gap-2">
+              <Clock size={20} className="text-primary" />
+              Patients Récents
+            </h2>
+
+            {loadingRecent ? (
+              <div className="flex justify-center p-8">
+                <span className="loading loading-spinner text-primary"></span>
+              </div>
+            ) : recentPatients.length > 0 ? (
+              <div className="grid grid-cols-1 gap-4">
+                {recentPatients.map((patient) => (
+                  <PatientCard
+                    key={patient.id}
+                    id={patient.id}
+                    name={patient.name}
+                    prenom={patient.prenom}
+                    ipp={patient.ipp}
+                    dob={patient.date}
+                    showSexe={false}
+                    badge={{
+                      label: patient.action === "created" ? "Créé" : "Consulté",
+                      variant: patient.action === "created" ? "success" : "info",
+                    }}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 text-base-content/50 bg-base-100 rounded-xl border border-dashed border-base-300">
+                <Clock size={48} className="mx-auto mb-4 opacity-20" />
+                <p>Aucun patient récent.</p>
+              </div>
+            )}
           </div>
         )}
       </div>
