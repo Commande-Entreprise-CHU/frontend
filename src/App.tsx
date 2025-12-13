@@ -25,6 +25,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
 
+              {/* Standard authenticated routes - all roles */}
               <Route element={<ProtectedRoute />}>
                 <Route
                   path="/"
@@ -41,25 +42,6 @@ function App() {
                     <>
                       <Navbar />
                       <SearchPatient />
-                    </>
-                  }
-                />
-                <Route
-                  path="/templates"
-                  element={
-                    <>
-                      <Navbar />
-                      <TemplateManager />
-                    </>
-                  }
-                />
-                {/* Admin Routes */}
-                <Route
-                  path="/admin"
-                  element={
-                    <>
-                      <Navbar />
-                      <AdminDashboard />
                     </>
                   }
                 />
@@ -91,6 +73,32 @@ function App() {
                   }
                 />
               </Route>
+
+              {/* Master Admin only routes */}
+              <Route element={<ProtectedRoute allowedRoles={["master_admin"]} />}>
+                <Route
+                  path="/templates"
+                  element={
+                    <>
+                      <Navbar />
+                      <TemplateManager />
+                    </>
+                  }
+                />
+              </Route>
+
+              {/* Admin routes - Master Admin and CHU Admin */}
+              <Route element={<ProtectedRoute requireAdmin />}>
+                <Route
+                  path="/admin"
+                  element={
+                    <>
+                      <Navbar />
+                      <AdminDashboard />
+                    </>
+                  }
+                />
+              </Route>
             </Routes>
           </div>
         </Router>
@@ -100,4 +108,3 @@ function App() {
 }
 
 export default App;
-

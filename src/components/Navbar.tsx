@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 
 const Navbar: React.FC = () => {
   const location = useLocation();
-  const { logout, user } = useAuth();
+  const { logout, user, isMasterAdmin, isAdmin } = useAuth();
 
   const isActive = (path: string) => {
     return location.pathname === path ? "btn-active" : "";
@@ -50,15 +50,20 @@ const Navbar: React.FC = () => {
           <Search size={18} />
           <span className="hidden md:inline">Consultation</span>
         </Link>
-        <Link
-          to="/templates"
-          className={`btn btn-ghost btn-sm gap-2 ${isActive("/templates")}`}
-        >
-          <FileText size={18} />
-          <span className="hidden md:inline">Modèles</span>
-        </Link>
+        
+        {/* Modèles - Master Admin only */}
+        {isMasterAdmin && (
+          <Link
+            to="/templates"
+            className={`btn btn-ghost btn-sm gap-2 ${isActive("/templates")}`}
+          >
+            <FileText size={18} />
+            <span className="hidden md:inline">Modèles</span>
+          </Link>
+        )}
 
-        {user?.role === "admin" && (
+        {/* Administration - Master Admin and CHU Admin */}
+        {isAdmin && (
           <Link
             to="/admin"
             className={`btn btn-ghost btn-sm gap-2 ${isActive("/admin")}`}
@@ -85,3 +90,4 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
+

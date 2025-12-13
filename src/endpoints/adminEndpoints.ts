@@ -1,11 +1,14 @@
 import api from "../utils/api";
 
+// User roles in the system
+export type UserRole = "master_admin" | "chu_admin" | "doctor";
+
 export interface User {
   id: string;
   email: string;
   nom: string;
   prenom: string;
-  role: string;
+  role: UserRole;
   isActive: boolean;
   chuId: string | null;
   createdAt: string;
@@ -35,3 +38,14 @@ export const updateUserChu = async (
   });
   return data;
 };
+
+export const updateUserRole = async (
+  userId: string,
+  role: UserRole
+): Promise<User> => {
+  const { data } = await api.patch(`/api/admin/users/${userId}/role`, {
+    role,
+  });
+  return data;
+};
+

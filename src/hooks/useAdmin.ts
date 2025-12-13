@@ -3,7 +3,9 @@ import {
   fetchUsers,
   updateUserStatus,
   updateUserChu,
+  updateUserRole,
 } from "../endpoints/adminEndpoints";
+import type { UserRole } from "../endpoints/adminEndpoints";
 
 export const useUsers = () => {
   return useQuery({
@@ -33,3 +35,15 @@ export const useUpdateUserChu = () => {
     },
   });
 };
+
+export const useUpdateUserRole = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ userId, role }: { userId: string; role: UserRole }) =>
+      updateUserRole(userId, role),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+  });
+};
+

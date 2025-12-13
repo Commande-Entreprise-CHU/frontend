@@ -1,14 +1,17 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useMemo } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { logout as logoutRequest } from "../endpoints/authEndpoints";
 import { useMe } from "../hooks/useAuthQueries";
+
+// User roles in the system
+export type UserRole = "master_admin" | "chu_admin" | "doctor";
 
 interface User {
   id: string;
   email: string;
   nom: string;
   prenom: string;
-  role: string;
+  role: UserRole;
   chuId?: string;
 }
 
@@ -18,6 +21,11 @@ interface AuthContextType {
   logout: () => void;
   isAuthenticated: boolean;
   loading: boolean;
+  // Role helper methods
+  isMasterAdmin: boolean;
+  isChuAdmin: boolean;
+  isAdmin: boolean;
+  canManageUsers: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -48,9 +56,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     logoutMutation.mutate();
   };
 
+  // Role helper values
+  const roleHelpers = useMemo(() => ({
+    isMasterAdmin: user?.role === "master_admin",
+    isChuAdmin: user?.role === "chu_admin",
+    isAdmin: user?.role === "master_admin" || user?.role === "chu_admin",
+    canManageUsers: user?.role === "master_admin" || user?.role === "chu_admin",
+  }), [user?.role]);
+
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, isAuthenticated: !!user, loading }}
+      value={{ 
+        user, 
+        login, 
+        logout, 
+        isAuthenticated: !!user, 
+        loading,
+        ...roleHelpers,
+      }}
     >
       {children}
     </AuthContext.Provider>
