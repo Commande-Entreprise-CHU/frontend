@@ -1,20 +1,24 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import DynamicForm from "../../components/DynamicForm";
+import PageHeader from "../../components/PageHeader";
+import { FileText } from "lucide-react";
 import { usePatient, useUpdatePatientSection } from "../../hooks/patientHooks";
 import { useActiveTemplateByType } from "../../hooks/templateHooks";
-import type { FormConfig } from "../../types";
+import { useToast } from "../../context/ToastContext";
 
 interface GenericFormProps {
   patientId?: string;
   formSlug?: string;
   onSuccess?: () => void;
+  hideHeader?: boolean;
 }
 
 export default function GenericForm({
   patientId: propId,
   formSlug: propSlug,
   onSuccess,
+  hideHeader = false,
 }: GenericFormProps = {}) {
   const params = useParams();
   const navigate = useNavigate();
@@ -74,6 +78,8 @@ export default function GenericForm({
     sexe: patient.sexe,
   };
 
+  const { showToast } = useToast();
+
   const handleSubmit = (formValues: any) => {
     if (!id || !consultationTypeId) return;
 
@@ -85,7 +91,7 @@ export default function GenericForm({
       },
       {
         onSuccess: () => {
-          alert("Consultation enregistrée avec succès !");
+          showToast("Consultation enregistrée avec succès !", "success");
           if (onSuccess) {
             onSuccess();
           } else {
@@ -94,7 +100,7 @@ export default function GenericForm({
           }
         },
         onError: () => {
-          alert("Erreur lors de l’enregistrement des données.");
+          showToast("Erreur lors de l’enregistrement des données.", "error");
         },
       }
     );
@@ -102,7 +108,13 @@ export default function GenericForm({
 
   return (
     <div className="w-full py-6 px-4">
-      <h1 className="text-2xl font-bold mb-4 text-center">Consultation</h1>
+      {!hideHeader && (
+        <PageHeader
+          icon={FileText}
+          title="Consultation"
+          subtitle={slug ? `Type: ${slug}` : "Détails de la consultation"}
+        />
+      )}
       <DynamicForm
         config={config}
         templateString={templateString}

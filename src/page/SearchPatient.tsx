@@ -2,6 +2,8 @@ import { useState } from "react";
 import Input from "../components/Input";
 import Radio from "../components/Radio";
 import Card from "../components/Card";
+import Button from "../components/Button";
+import PageHeader from "../components/PageHeader";
 import { Search, User, FileText, Hash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSearchPatients } from "../hooks/patientHooks";
@@ -49,32 +51,26 @@ function SearchPatient() {
     <div className="min-h-[calc(100vh-4rem)] bg-base-200/30 p-6 md:p-12">
       <div className="w-full mx-auto space-y-8">
         {/* Header */}
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold text-base-content">
-            Recherche de Patient
-          </h1>
-          <p className="text-base-content/60">
-            Retrouvez un dossier patient en utilisant les filtres ci-dessous
-          </p>
-        </div>
+        <PageHeader
+          icon={Search}
+          title="Recherche de Patient"
+          subtitle="Retrouvez un dossier patient en utilisant les filtres ci-dessous"
+        />
 
         {/* Search Form */}
         <Card
           className="shadow-lg"
           bodyClassName="p-6 md:p-8"
           actions={
-            <button
-              className="btn btn-primary w-full md:w-auto gap-2"
+            <Button
+              variant="primary"
               onClick={handleBuscar}
-              disabled={loading}
+              loading={loading}
+              startIcon={Search}
+              className="w-full md:w-auto"
             >
-              {loading ? (
-                <span className="loading loading-spinner loading-sm"></span>
-              ) : (
-                <Search size={20} />
-              )}
               Rechercher
-            </button>
+            </Button>
           }
         >
           <div

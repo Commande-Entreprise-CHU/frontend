@@ -10,19 +10,37 @@ import Table from "../components/Table";
 import Card from "../components/Card";
 import Select from "../components/Select";
 import Button from "../components/Button";
+import PageHeader from "../components/PageHeader";
+import { useToast } from "../context/ToastContext";
+interface AdminUsersProps {
+  isSubComponent?: boolean;
+}
 
-const AdminUsers: React.FC = () => {
+export default function AdminUsers({ isSubComponent = false }: AdminUsersProps) {
   const { data: users, isLoading: usersLoading } = useUsers();
   const { data: chus, isLoading: chusLoading } = useChus();
+  const { showToast } = useToast();
   const updateUserStatus = useUpdateUserStatus();
   const updateUserChu = useUpdateUserChu();
 
   const handleStatusChange = (userId: string, isActive: boolean) => {
-    updateUserStatus.mutate({ userId, isActive });
+    updateUserStatus.mutate(
+      { userId, isActive },
+      {
+        onSuccess: () => showToast("Statut utilisateur mis à jour", "success"),
+        onError: () => showToast("Erreur lors de la mise à jour du statut", "error"),
+      }
+    );
   };
 
   const handleChuChange = (userId: string, chuId: string) => {
-    updateUserChu.mutate({ userId, chuId });
+    updateUserChu.mutate(
+      { userId, chuId },
+      {
+        onSuccess: () => showToast("Affection CHU mise à jour", "success"),
+        onError: () => showToast("Erreur lors de la mise à jour du CHU", "error"),
+      }
+    );
   };
 
   const chuOptions = useMemo(() => {
@@ -90,7 +108,7 @@ const AdminUsers: React.FC = () => {
             {!user.isActive ? (
               <Button
                 variant="success"
-                size="xs"
+                size="sm"
                 onClick={() => handleStatusChange(user.id, true)}
                 startIcon={Check}
                 className="text-white"
@@ -100,7 +118,7 @@ const AdminUsers: React.FC = () => {
             ) : (
               <Button
                 variant="warning"
-                size="xs"
+                size="sm"
                 onClick={() => handleStatusChange(user.id, false)}
                 startIcon={X}
                 className="text-white"
@@ -116,18 +134,14 @@ const AdminUsers: React.FC = () => {
   );
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="p-3 bg-primary/10 rounded-xl text-primary">
-          <UserCog size={24} />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold">Gestion des Utilisateurs</h1>
-          <p className="text-base-content/60">
-            Gérez les accès et les affectations aux CHUs
-          </p>
-        </div>
-      </div>
+    <div className={isSubComponent ? "space-y-4" : "container mx-auto p-6 space-y-6"}>
+      {!isSubComponent && (
+        <PageHeader
+          icon={UserCog}
+          title="Gestion des Utilisateurs"
+          subtitle="Gérez les accès et les affectations aux CHUs"
+        />
+      )}
 
       <Card className="shadow-lg">
         <Table
@@ -142,4 +156,4 @@ const AdminUsers: React.FC = () => {
   );
 };
 
-export default AdminUsers;
+

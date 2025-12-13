@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import ThemeController from "./ThemeController";
-import { Home, UserPlus, Search, FileText, LogOut } from "lucide-react";
+import { Home, UserPlus, Search, FileText, LogOut, Shield } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar: React.FC = () => {
@@ -12,7 +12,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <div className="navbar sticky top-0 h-20 z-50 bg-base-100/80 backdrop-blur-md shadow-sm border-b border-base-200 px-4">
+    <div className="navbar sticky top-0 h-20 z-10 bg-base-100/80 backdrop-blur-md shadow-sm border-b border-base-200 px-4">
       <div className="flex-1">
         <Link
           to="/"
@@ -59,26 +59,13 @@ const Navbar: React.FC = () => {
         </Link>
 
         {user?.role === "admin" && (
-          <>
-            <Link
-              to="/admin/users"
-              className={`btn btn-ghost btn-sm gap-2 ${isActive(
-                "/admin/users"
-              )}`}
-            >
-              <UserPlus size={18} />
-              <span className="hidden md:inline">Utilisateurs</span>
-            </Link>
-            <Link
-              to="/admin/chus"
-              className={`btn btn-ghost btn-sm gap-2 ${isActive(
-                "/admin/chus"
-              )}`}
-            >
-              <FileText size={18} />
-              <span className="hidden md:inline">CHUs</span>
-            </Link>
-          </>
+          <Link
+            to="/admin"
+            className={`btn btn-ghost btn-sm gap-2 ${isActive("/admin")}`}
+          >
+            <Shield size={18} />
+            <span className="hidden md:inline">Administration</span>
+          </Link>
         )}
 
         <div className="h-6 w-px bg-base-300 mx-2"></div>

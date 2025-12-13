@@ -4,6 +4,7 @@ import Button from "../components/Button";
 import Input from "../components/Input";
 import Card from "../components/Card";
 import IconButton from "../components/IconButton";
+import PageHeader from "../components/PageHeader";
 import {
   Edit,
   Trash2,
@@ -30,6 +31,7 @@ import {
   useSetActiveTemplate,
   useDeleteTemplateVersion,
 } from "../hooks/templateHooks";
+import { useToast } from "../context/ToastContext";
 import type { ConsultationType } from "../endpoints/templateEndpoints";
 import { createTxt } from "../utils/textLogic/createTxt";
 
@@ -285,6 +287,7 @@ export default function TemplateManager() {
   };
 
   const { mutate: createTemplate } = useCreateTemplateVersion();
+  const { showToast } = useToast();
 
   const handleCreateTemplate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -294,7 +297,7 @@ export default function TemplateManager() {
     try {
       structureJson = JSON.parse(newStructure);
     } catch (e) {
-      alert("Invalid JSON structure");
+      showToast("Structure JSON invalide", "error");
       return;
     }
 
@@ -310,7 +313,7 @@ export default function TemplateManager() {
           setNewVersion("");
           setNewStructure("");
           setNewTemplateStr("");
-          alert("Version créée avec succès !");
+          showToast("Version créée avec succès !", "success");
         },
       }
     );
@@ -375,9 +378,11 @@ export default function TemplateManager() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">
-        Gestion des Modèles de Consultation
-      </h1>
+      <PageHeader
+        icon={FileCode}
+        title="Gestion des Modèles"
+        subtitle="Créez et modifiez les types de consultation et leurs versions"
+      />
 
       <div className="bg-base-100 border border-base-300 rounded-xl mb-6 overflow-hidden">
         <div
@@ -514,34 +519,38 @@ export default function TemplateManager() {
                           }}
                         />
                         <div className="flex flex-col gap-0.5">
-                          <button
-                            className={`btn btn-[10px] min-h-0 h-3.5 btn-ghost px-0 leading-none ${
+                          <IconButton
+                            icon={ArrowUp}
+                            variant="ghost"
+                            size="xs"
+                            iconSize={12}
+                            disabled={index === 0}
+                            className={
                               selectedType?.id === type.id
                                 ? "text-primary-content hover:bg-primary-focus"
                                 : ""
-                            }`}
-                            disabled={index === 0}
+                            }
                             onClick={(e) => {
                               e.stopPropagation();
                               handleMoveType(index, "up");
                             }}
-                          >
-                            <ArrowUp size={10} />
-                          </button>
-                          <button
-                            className={`btn btn-[10px] min-h-0 h-3.5 btn-ghost px-0 leading-none ${
+                          />
+                          <IconButton
+                            icon={ArrowDown}
+                            variant="ghost"
+                            size="xs"
+                            iconSize={12}
+                            disabled={index === sortedTypes.length - 1}
+                            className={
                               selectedType?.id === type.id
                                 ? "text-primary-content hover:bg-primary-focus"
                                 : ""
-                            }`}
-                            disabled={index === sortedTypes.length - 1}
+                            }
                             onClick={(e) => {
                               e.stopPropagation();
                               handleMoveType(index, "down");
                             }}
-                          >
-                            <ArrowDown size={10} />
-                          </button>
+                          />
                         </div>
                       </div>
                     </div>

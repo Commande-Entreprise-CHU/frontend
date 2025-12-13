@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import Tabs from "../components/Tabs";
 import { useParams } from "react-router-dom";
 import { usePatient } from "../hooks/patientHooks";
 import { useConsultationTypes } from "../hooks/templateHooks";
 import GenericForm from "./forms/GenericForm";
 import Card from "../components/Card";
+import PageHeader from "../components/PageHeader";
 import { formatDate } from "../utils/date";
 import { User, Calendar, Activity, AlertCircle } from "lucide-react";
 
@@ -62,20 +64,16 @@ export default function DossierPatient() {
   return (
     <div className="w-full mx-auto py-8 px-4 space-y-8">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-base-content flex items-center gap-3">
-            <User className="text-primary" size={32} />
-            {patient.name} {patient.prenom}
-          </h1>
-          <p className="text-base-content/60 mt-1 ml-11">
-            Dossier médical informatisé
-          </p>
-        </div>
-        <div className="badge badge-primary badge-lg p-4 font-mono">
-          IPP: {patient.ipp || "—"}
-        </div>
-      </div>
+      <PageHeader
+        icon={User}
+        title={`${patient.name} ${patient.prenom}`}
+        subtitle="Dossier médical informatisé"
+        actions={
+          <div className="badge badge-primary badge-lg p-4 font-mono">
+            IPP: {patient.ipp || "—"}
+          </div>
+        }
+      />
 
       {/* Patient Info Card */}
       <Card
@@ -120,40 +118,25 @@ export default function DossierPatient() {
 
       {/* Consultations Tabs */}
       <div className="space-y-6">
-        <div className="tabs tabs-boxed bg-base-200/50 p-1 gap-1 overflow-x-auto flex-nowrap justify-start">
-          {sortedTypes.map((type, index) => {
-            const isActive = activeTabSlug === type.slug;
-            const completed = isCompleted(type.slug);
-            const allowed = canOpen(index);
-
-            return (
-              <button
-                key={type.id}
-                type="button"
-                onClick={() => allowed && setActiveTabSlug(type.slug)}
-                className={`
-                  tab tab-lg h-12 px-6 rounded-lg transition-all duration-200 flex-nowrap whitespace-nowrap gap-2
-                  ${
-                    isActive
-                      ? "tab-active bg-base-100 shadow-sm text-primary font-bold border border-base-200"
-                      : "hover:bg-base-200"
-                  }
-                  ${!isActive && completed ? "text-success" : ""}
-                  ${
-                    !allowed
-                      ? "opacity-50 cursor-not-allowed"
-                      : "cursor-pointer"
-                  }
-                `}
-              >
-                {completed && (
-                  <span className="w-2 h-2 rounded-full bg-success"></span>
-                )}
-                {type.name}
-              </button>
-            );
-          })}
-        </div>
+        <Tabs
+          activeTab={activeTabSlug}
+          onChange={(slug) => {
+             const type = sortedTypes.find(t => t.slug === slug);
+             if (type) {
+                const index = sortedTypes.indexOf(type);
+                if (canOpen(index)) {
+                  setActiveTabSlug(slug);
+                }
+             }
+          }}
+          tabs={sortedTypes.map((type, index) => ({
+            id: type.slug,
+            label: type.name,
+            icon: type.slug === "prescription" ? FileText : undefined,
+            disabled: !canOpen(index),
+            completed: isCompleted(type.slug),
+          }))}
+        />
 
         {/* Active Tab Content */}
         <Card className="min-h-[400px] rounded-2xl" bodyClassName="p-6">
@@ -162,6 +145,7 @@ export default function DossierPatient() {
               key={activeTabSlug}
               patientId={id || ""}
               formSlug={activeTabSlug}
+              hideHeader={true}
             />
           )}
         </Card>

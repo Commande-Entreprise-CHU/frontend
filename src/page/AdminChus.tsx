@@ -13,12 +13,19 @@ import Modal from "../components/Modal";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import IconButton from "../components/IconButton";
+import PageHeader from "../components/PageHeader";
+import { useToast } from "../context/ToastContext";
+interface AdminChusProps {
+  isSubComponent?: boolean;
+}
 
-const AdminChus: React.FC = () => {
+export default function AdminChus({ isSubComponent = false }: AdminChusProps) {
   const { data: chus, isLoading } = useChus();
   const createChu = useCreateChu();
   const updateChu = useUpdateChu();
   const deleteChu = useDeleteChu();
+
+  const { showToast } = useToast();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingChu, setEditingChu] = useState<Chu | null>(null);
@@ -28,24 +35,33 @@ const AdminChus: React.FC = () => {
     e.preventDefault();
     try {
       if (editingChu) {
-        await updateChu.mutateAsync({ id: editingChu.id, chu: formData });
+        await updateChu.mutateAsync(
+          { id: editingChu.id, chu: formData },
+          {
+            onSuccess: () => showToast("CHU modifié avec succès", "success"),
+          }
+        );
       } else {
-        await createChu.mutateAsync(formData);
+        await createChu.mutateAsync(formData, {
+          onSuccess: () => showToast("CHU créé avec succès", "success"),
+        });
       }
       setIsModalOpen(false);
       setEditingChu(null);
       setFormData({ name: "", city: "" });
     } catch (error) {
-      console.error("Error saving CHU:", error);
+      showToast("Erreur lors de l'enregistrement du CHU", "error");
     }
   };
 
   const handleDelete = async (id: string) => {
     if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce CHU ?")) return;
     try {
-      await deleteChu.mutateAsync(id);
+      await deleteChu.mutateAsync(id, {
+        onSuccess: () => showToast("CHU supprimé avec succès", "success"),
+      });
     } catch (error) {
-      console.error("Error deleting CHU:", error);
+      showToast("Erreur lors de la suppression du CHU", "error");
     }
   };
 
@@ -81,14 +97,14 @@ const AdminChus: React.FC = () => {
             <IconButton
               icon={Edit}
               variant="ghost"
-              size="xs"
+              size="sm"
               onClick={() => openModal(chu)}
               tooltip="Modifier"
             />
             <IconButton
               icon={Trash2}
               variant="ghost"
-              size="xs"
+              size="sm"
               colorClass="text-error"
               onClick={() => handleDelete(chu.id)}
               tooltip="Supprimer"
@@ -101,23 +117,27 @@ const AdminChus: React.FC = () => {
   );
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-primary/10 rounded-xl text-primary">
-            <Building2 size={24} />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">Gestion des CHUs</h1>
-            <p className="text-base-content/60">
-              Ajoutez et modifiez les établissements
-            </p>
-          </div>
+    <div className={isSubComponent ? "space-y-4" : "container mx-auto p-6 space-y-6"}>
+      {!isSubComponent && (
+        <PageHeader
+          icon={Building2}
+          title="Gestion des CHUs"
+          subtitle="Ajoutez et modifiez les établissements"
+          actions={
+            <Button onClick={() => openModal()} startIcon={Plus}>
+              Nouveau CHU
+            </Button>
+          }
+        />
+      )}
+
+      {isSubComponent && (
+        <div className="flex justify-end mb-4">
+           <Button onClick={() => openModal()} startIcon={Plus} size="sm">
+              Nouveau CHU
+            </Button>
         </div>
-        <Button onClick={() => openModal()} startIcon={Plus}>
-          Nouveau CHU
-        </Button>
-      </div>
+      )}
 
       <Card className="shadow-lg">
         <Table
@@ -170,4 +190,4 @@ const AdminChus: React.FC = () => {
   );
 };
 
-export default AdminChus;
+
