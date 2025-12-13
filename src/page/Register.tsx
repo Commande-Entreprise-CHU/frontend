@@ -7,6 +7,7 @@ import { useRegister } from "../hooks/useAuthQueries";
 interface FormData {
   email: string;
   password: string;
+  confirmPassword: string;
   nom: string;
   prenom: string;
   chuId: string;
@@ -15,6 +16,7 @@ interface FormData {
 interface ValidationErrors {
   email?: string[];
   password?: string[];
+  confirmPassword?: string[];
   nom?: string[];
   prenom?: string[];
   chuId?: string[];
@@ -53,6 +55,10 @@ const validateForm = (formData: FormData): ValidationErrors => {
 
   const passwordErrors = validatePassword(formData.password);
   if (passwordErrors.length) errors.password = passwordErrors;
+
+  if (formData.password !== formData.confirmPassword) {
+    errors.confirmPassword = ["Les mots de passe ne correspondent pas"];
+  }
 
   if (!formData.nom?.trim()) errors.nom = ["Le nom est requis"];
   if (!formData.prenom?.trim()) errors.prenom = ["Le prénom est requis"];
@@ -94,6 +100,7 @@ const Register: FC = () => {
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
+    confirmPassword: "",
     nom: "",
     prenom: "",
     chuId: "",
@@ -250,6 +257,23 @@ const Register: FC = () => {
               />
               <PasswordStrengthIndicator password={formData.password} />
               {!formData.password && <FieldError errors={fieldErrors.password} />}
+            </div>
+
+            {/* Confirmer le mot de passe */}
+            <div className="form-control w-full max-w-xs mt-2">
+              <label className="label">
+                <span className="label-text">Confirmer le mot de passe</span>
+              </label>
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="********"
+                className={inputClassName(!!fieldErrors.confirmPassword)}
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+              />
+              <FieldError errors={fieldErrors.confirmPassword} />
             </div>
 
             {/* Submit */}

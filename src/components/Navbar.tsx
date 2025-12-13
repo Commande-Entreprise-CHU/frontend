@@ -16,7 +16,7 @@ const Navbar: React.FC = () => {
       <div className="flex-1">
         <Link
           to="/"
-          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+          className="flex items-center gap-2 hover:opacity-80 transition-opacity no-underline"
         >
           <img
             src="/CHU.png"

@@ -49,7 +49,7 @@ function SearchPatient() {
   const hasSearch = Object.values(searchParams).some((v) => !!v);
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-base-200/30 p-6 md:p-12">
+    <div className="min-h-[calc(100vh-4rem)] p-6 md:p-12">
       <div className="w-full mx-auto space-y-8">
         {/* Header */}
         <PageHeader
