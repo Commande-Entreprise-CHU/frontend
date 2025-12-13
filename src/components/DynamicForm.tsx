@@ -90,6 +90,7 @@ const DynamicForm = ({
   const [generatedText, setGeneratedText] = useState("");
   const [isCopied, setIsCopied] = useState(false);
   const [missingFields, setMissingFields] = useState<string[]>([]);
+  const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
 
   const handleFieldChange = (name: string, value: any) => {
     setFormData((prev) => {
@@ -172,13 +173,17 @@ const DynamicForm = ({
     return missing;
   }, []);
 
+  // Only validate after user has attempted to submit
   useEffect(() => {
-    const missing = validateFields(config.sections || [], formData);
-    setMissingFields(missing);
-  }, [formData, config, validateFields]);
+    if (hasAttemptedSubmit) {
+      const missing = validateFields(config.sections || [], formData);
+      setMissingFields(missing);
+    }
+  }, [formData, config, validateFields, hasAttemptedSubmit]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setHasAttemptedSubmit(true);
 
     const missing = validateFields(config.sections || [], formData);
     setMissingFields(missing);
