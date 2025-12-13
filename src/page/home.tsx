@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 import { UserPlus, Search, ArrowRight, LayoutDashboard, Users, FileText } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import Card from "../components/Card";
-import { useStats } from "../hooks/statsHooks";
+import PatientCard from "../components/PatientCard";
+import { useStats, useMyRecentPatients } from "../hooks/statsHooks";
 
 const Home: React.FC = () => {
   const { data: stats, isLoading: loadingStats } = useStats();
+  const { data: recentPatients, isLoading: loadingRecent } = useMyRecentPatients();
 
   return (
     <div className="container mx-auto p-6 space-y-8">
@@ -75,6 +77,38 @@ const Home: React.FC = () => {
         />
         {/* Placeholder or other stats could go here */}
       </div>
+
+      {/* My Recent Patients */}
+      <Card title="Mes Derniers Patients">
+        {loadingRecent ? (
+          <div className="flex justify-center p-8">
+            <span className="loading loading-spinner text-primary"></span>
+          </div>
+        ) : recentPatients && recentPatients.length > 0 ? (
+          <div className="grid grid-cols-1 gap-3">
+            {recentPatients.map((patient) => (
+              <PatientCard
+                key={patient.id}
+                id={patient.id}
+                name={patient.name}
+                prenom={patient.prenom}
+                ipp={patient.ipp}
+                dob={patient.date}
+                showSexe={false}
+                badge={{
+                  label: patient.action === "created" ? "Créé" : "Consulté",
+                  variant: patient.action === "created" ? "success" : "info",
+                }}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center h-32 text-base-content/40">
+            <Users size={24} className="mb-2 opacity-50" />
+            <p>Aucun patient récent</p>
+          </div>
+        )}
+      </Card>
 
       <div className="text-center text-xs text-base-content/30 font-mono mt-12">
         CHU Nantes • v0.1.0

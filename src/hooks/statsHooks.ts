@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchStats, fetchRecentActivity } from "../endpoints/statsEndpoints";
+import { fetchStats, fetchRecentActivity, fetchMyRecentPatients } from "../endpoints/statsEndpoints";
 
 export const useStats = () => {
   return useQuery({
@@ -14,5 +14,13 @@ export const useRecentActivity = () => {
     queryKey: ["dashboard", "activity"],
     queryFn: fetchRecentActivity,
     refetchInterval: 30000,
+  });
+};
+
+export const useMyRecentPatients = () => {
+  return useQuery({
+    queryKey: ["dashboard", "my-recent-patients"],
+    queryFn: fetchMyRecentPatients,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };

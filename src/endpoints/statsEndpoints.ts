@@ -27,3 +27,19 @@ export const fetchRecentActivity = async (): Promise<AuditLog[]> => {
   // Assuming /api/audit returns { success: true, logs: [...] }
   return data.logs ? data.logs.slice(0, 10) : [];
 };
+
+export interface RecentPatient {
+  id: string;
+  name: string;
+  prenom: string;
+  ipp: string;
+  dob: string;
+  sexe: string;
+  date: string;
+  action: "created" | "consulted";
+}
+
+export const fetchMyRecentPatients = async (): Promise<RecentPatient[]> => {
+  const { data } = await api.get("/api/stats/user/recent-patients");
+  return data.patients;
+};

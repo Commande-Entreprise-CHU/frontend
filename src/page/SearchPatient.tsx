@@ -4,13 +4,11 @@ import Radio from "../components/Radio";
 import Card from "../components/Card";
 import Button from "../components/Button";
 import PageHeader from "../components/PageHeader";
-import { Search, User, FileText, Hash } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import PatientCard from "../components/PatientCard";
+import { Search, User, Hash } from "lucide-react";
 import { useSearchPatients } from "../hooks/patientHooks";
-import { formatDate } from "../utils/date";
 
 function SearchPatient() {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     sexe: "",
@@ -117,37 +115,16 @@ function SearchPatient() {
             </h2>
 
             <div className="grid grid-cols-1 gap-4">
-              {resultados.map((patient: any) => (
-                <Card
+            {resultados.map((patient: any) => (
+                <PatientCard
                   key={patient.id}
-                  onClick={() => navigate(`/patient/${patient.id}`)}
-                  className="shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group"
-                  bodyClassName="p-6 flex-row items-center justify-between gap-4"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg group-hover:bg-primary group-hover:text-primary-content transition-colors">
-                      {patient.name.charAt(0)}
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg group-hover:text-primary transition-colors">
-                        {patient.name} {patient.prenom}
-                      </h3>
-                      <div className="flex items-center gap-4 text-sm text-base-content/60 mt-1">
-                        <span className="flex items-center gap-1">
-                          <Hash size={14} /> {patient.ipp || "N/A"}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <User size={14} /> {patient.sexe}
-                        </span>
-                        <span>Né(e) le {formatDate(patient.dob)}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="hidden md:flex items-center text-base-content/40 group-hover:translate-x-1 transition-transform">
-                    <FileText size={24} />
-                  </div>
-                </Card>
+                  id={patient.id}
+                  name={patient.name}
+                  prenom={patient.prenom}
+                  ipp={patient.ipp}
+                  sexe={patient.sexe}
+                  dob={patient.dob}
+                />
               ))}
 
               {resultados.length === 0 && !loading && (
