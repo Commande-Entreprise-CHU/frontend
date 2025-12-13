@@ -4,6 +4,7 @@ import {
   searchPatients,
   createPatient,
   updateSection,
+  deletePatient as deletePatientEndpoint,
   type Patient,
   type CreatePatientResult,
 } from "../endpoints/patientEndpoints";
@@ -48,6 +49,16 @@ export const useUpdatePatientSection = () => {
     mutationFn: updateSection,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["patient", data.id] });
+    },
+  });
+};
+
+export const useDeletePatient = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deletePatientEndpoint,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["patients"] });
     },
   });
 };

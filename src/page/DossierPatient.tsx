@@ -1,16 +1,24 @@
 import { useState, useEffect } from "react";
 import Tabs from "../components/Tabs";
-import { useParams } from "react-router-dom";
-import { usePatient } from "../hooks/patientHooks";
+import { useNavigate, useParams } from "react-router-dom";
+import { usePatient, useDeletePatient } from "../hooks/patientHooks";
 import { useConsultationTypes } from "../hooks/templateHooks";
+import { useToast } from "../context/ToastContext";
 import GenericForm from "./forms/GenericForm";
 import Card from "../components/Card";
 import PageHeader from "../components/PageHeader";
+import Button from "../components/Button";
+import ConfirmationModal from "../components/ConfirmationModal";
 import { formatDate } from "../utils/date";
-import { User, Calendar, Activity, AlertCircle } from "lucide-react";
+import { User, Calendar, Activity, AlertCircle, Trash2, FileText } from "lucide-react";
 
 export default function DossierPatient() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { showToast } = useToast();
+  const { mutate: deletePatient, isPending: isDeleting } = useDeletePatient();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   const {
     data: patient,
     isLoading: loadingPatient,
@@ -18,8 +26,24 @@ export default function DossierPatient() {
   } = usePatient(id || "");
   const { data: consultationTypes, isLoading: loadingTypes } =
     useConsultationTypes();
-
+  
   const [activeTabSlug, setActiveTabSlug] = useState<string | null>(null);
+
+  const handleDelete = () => {
+    if (id) {
+      deletePatient(id, {
+        onSuccess: () => {
+          showToast("Patient archivé avec succès", "success");
+          setIsDeleteModalOpen(false);
+          navigate("/");
+        },
+        onError: () => {
+          showToast("Erreur lors de l'archivage du patient", "error");
+          setIsDeleteModalOpen(false);
+        },
+      });
+    }
+  };
 
   // Set default active tab once types are loaded
   useEffect(() => {
@@ -69,10 +93,31 @@ export default function DossierPatient() {
         title={`${patient.name} ${patient.prenom}`}
         subtitle="Dossier médical informatisé"
         actions={
-          <div className="badge badge-primary badge-lg p-4 font-mono">
-            IPP: {patient.ipp || "—"}
+          <div className="flex items-center gap-3">
+             <div className="badge badge-primary badge-lg p-4 font-mono">
+              IPP: {patient.ipp || "—"}
+            </div>
+            <Button 
+              variant="error" 
+              onClick={() => setIsDeleteModalOpen(true)}
+              className="btn-sm"
+            >
+              <Trash2 size={16} className="mr-2" />
+              Archiver
+            </Button>
           </div>
         }
+      />
+      
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDelete}
+        title="Archiver le patient"
+        message="Êtes-vous sûr de vouloir archiver ce patient ? Cette action supprimera l'accès au dossier mais les données seront conservées."
+        confirmText="Archiver"
+        variant="danger"
+        isLoading={isDeleting}
       />
 
       {/* Patient Info Card */}

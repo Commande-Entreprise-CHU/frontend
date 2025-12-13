@@ -63,3 +63,8 @@ export const updateSection = async ({
   if (!data.success) throw new Error(data.message || "Error updating section");
   return data.patient;
 };
+
+export const deletePatient = async (id: string): Promise<void> => {
+  const { data } = await api.delete(`/api/patient/${id}`);
+  if (!data.success) throw new Error(data.message || "Error deleting patient");
+};
