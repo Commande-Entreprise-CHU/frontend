@@ -9,8 +9,9 @@ import Card from "../components/Card";
 import PageHeader from "../components/PageHeader";
 import Button from "../components/Button";
 import ConfirmationModal from "../components/ConfirmationModal";
+import EditPatientModal from "../components/EditPatientModal";
 import { formatDate } from "../utils/date";
-import { User, Calendar, Activity, AlertCircle, Trash2, FileText } from "lucide-react";
+import { User, Calendar, Activity, AlertCircle, Trash2, FileText, Pencil } from "lucide-react";
 
 export default function DossierPatient() {
   const { id } = useParams();
@@ -18,6 +19,7 @@ export default function DossierPatient() {
   const { showToast } = useToast();
   const { mutate: deletePatient, isPending: isDeleting } = useDeletePatient();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const {
     data: patient,
@@ -94,9 +96,17 @@ export default function DossierPatient() {
         subtitle="Dossier médical informatisé"
         actions={
           <div className="flex items-center gap-3">
-             <div className="badge badge-primary badge-lg p-4 font-mono">
+            <div className="badge badge-primary badge-lg p-4 font-mono">
               IPP: {patient.ipp || "—"}
             </div>
+            <Button
+              variant="ghost"
+              onClick={() => setIsEditModalOpen(true)}
+              className="btn-sm"
+            >
+              <Pencil size={16} className="mr-2" />
+              Modifier
+            </Button>
             <Button 
               variant="error" 
               onClick={() => setIsDeleteModalOpen(true)}
@@ -119,6 +129,14 @@ export default function DossierPatient() {
         variant="danger"
         isLoading={isDeleting}
       />
+
+      {patient && (
+        <EditPatientModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          patient={patient}
+        />
+      )}
 
       {/* Patient Info Card */}
       <Card
@@ -164,7 +182,7 @@ export default function DossierPatient() {
       {/* Consultations Tabs */}
       <div className="space-y-6">
         <Tabs
-          activeTab={activeTabSlug}
+          activeTab={activeTabSlug || ""}
           onChange={(slug) => {
              const type = sortedTypes.find(t => t.slug === slug);
              if (type) {

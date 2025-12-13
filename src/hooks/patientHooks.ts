@@ -4,6 +4,7 @@ import {
   searchPatients,
   createPatient,
   updateSection,
+  updatePatientCore,
   deletePatient as deletePatientEndpoint,
   type Patient,
   type CreatePatientResult,
@@ -49,6 +50,18 @@ export const useUpdatePatientSection = () => {
     mutationFn: updateSection,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["patient", data.id] });
+    },
+  });
+};
+
+export const useUpdatePatientCore = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<Patient> }) =>
+      updatePatientCore(id, data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["patient", data.id] });
+      queryClient.invalidateQueries({ queryKey: ["patients"] });
     },
   });
 };

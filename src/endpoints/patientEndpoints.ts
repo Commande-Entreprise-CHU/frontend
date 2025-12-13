@@ -64,6 +64,17 @@ export const updateSection = async ({
   return data.patient;
 };
 
+export const updatePatientCore = async (
+  id: string,
+  data: Partial<Patient>
+): Promise<Patient> => {
+  const response = await api.put(`/api/patient/${id}/core`, data);
+  if (!response.data.success) {
+    throw new Error(response.data.message || "Error updating patient");
+  }
+  return response.data.patient;
+};
+
 export const deletePatient = async (id: string): Promise<void> => {
   const { data } = await api.delete(`/api/patient/${id}`);
   if (!data.success) throw new Error(data.message || "Error deleting patient");

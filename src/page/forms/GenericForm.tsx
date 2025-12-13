@@ -6,6 +6,7 @@ import { FileText } from "lucide-react";
 import { usePatient, useUpdatePatientSection } from "../../hooks/patientHooks";
 import { useActiveTemplateByType } from "../../hooks/templateHooks";
 import { useToast } from "../../context/ToastContext";
+import type { FormConfig } from "../../types";
 
 interface GenericFormProps {
   patientId?: string;
