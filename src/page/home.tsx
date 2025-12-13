@@ -1,10 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { UserPlus, Search, Edit3, ArrowRight, LayoutDashboard } from "lucide-react";
+import { UserPlus, Search, ArrowRight, LayoutDashboard, Users, FileText } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import Card from "../components/Card";
+import { useStats } from "../hooks/statsHooks";
 
 const Home: React.FC = () => {
+  const { data: stats, isLoading: loadingStats } = useStats();
+
   return (
     <div className="container mx-auto p-6 space-y-8">
       <PageHeader
@@ -53,42 +56,50 @@ const Home: React.FC = () => {
           </Card>
         </Link>
 
-        {/* Modification Card */}
-        <Link to="/search?edit=true" className="group h-full">
-          <Card 
-            className="h-full hover:shadow-lg transition-all duration-200 border-base-300 hover:border-accent/50 group-hover:-translate-y-1 block"
-            bodyClassName="p-6 h-full flex flex-col"
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div className="p-3 bg-accent/10 rounded-xl text-accent group-hover:bg-accent group-hover:text-white transition-colors">
-                <Edit3 size={24} />
-              </div>
-              <ArrowRight className="text-base-content/30 group-hover:text-accent group-hover:translate-x-1 transition-all" />
-            </div>
-            <h3 className="font-bold text-xl mb-2 group-hover:text-accent transition-colors">Modifier Dossier</h3>
-            <p className="text-base-content/60">
-              Mettre à jour les informations administratives d'un patient.
-            </p>
-          </Card>
-        </Link>
       </div>
 
-      {/* Quick Stats / Recent Activity Placeholder (Future enhancement) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-        <Card title="Aperçu Rapide" bodyClassName="p-6">
-          <div className="flex items-center justify-center h-32 text-base-content/40 border-2 border-dashed border-base-200 rounded-lg">
-            Statistiques à venir...
-          </div>
-        </Card>
-        <Card title="Activité Récente" bodyClassName="p-6">
-           <div className="flex items-center justify-center h-32 text-base-content/40 border-2 border-dashed border-base-200 rounded-lg">
-            Historique à venir...
-          </div>
-        </Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+        <StatsCard
+          title="Patients"
+          value={stats?.patients || 0}
+          icon={Users}
+          color="primary"
+          loading={loadingStats}
+        />
+        <StatsCard
+          title="Consultations"
+          value={stats?.consultations || 0}
+          icon={FileText}
+          color="secondary"
+          loading={loadingStats}
+        />
+        {/* Placeholder or other stats could go here */}
       </div>
 
       <div className="text-center text-xs text-base-content/30 font-mono mt-12">
         CHU Nantes • v0.1.0
+      </div>
+    </div>
+  );
+};
+
+interface StatsCardProps {
+  title: string;
+  value: number;
+  icon: React.ElementType;
+  color: "primary" | "secondary" | "accent" | "info" | "success" | "warning" | "error";
+  loading?: boolean;
+}
+
+const StatsCard = ({ title, value, icon: Icon, color, loading }: StatsCardProps) => {
+  return (
+    <div className={`stat bg-base-100 shadow rounded-box border border-base-200`}>
+      <div className={`stat-figure text-${color}`}>
+        <Icon size={32} />
+      </div>
+      <div className="stat-title">{title}</div>
+      <div className={`stat-value text-${color}`}>
+        {loading ? <span className="loading loading-spinner loading-sm"></span> : value}
       </div>
     </div>
   );
