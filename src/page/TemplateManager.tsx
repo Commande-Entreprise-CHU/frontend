@@ -368,8 +368,19 @@ export default function TemplateManager() {
     const missingInTemplate = jsonFields.filter(
       (f) => !templateVars.includes(f)
     );
+    const AUTOMATIC_VARS = [
+      "nom",
+      "prenom",
+      "dateNaissance",
+      "ipp",
+      "sexe",
+      "chirurgienNom",
+      "chirurgienPrenom",
+      "chu",
+    ];
+
     const missingInStructure = templateVars.filter(
-      (v) => !jsonFields.includes(v)
+      (v) => !jsonFields.includes(v) && !AUTOMATIC_VARS.includes(v)
     );
 
     return { missingInTemplate, missingInStructure };

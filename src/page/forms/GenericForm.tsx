@@ -6,6 +6,7 @@ import { FileText } from "lucide-react";
 import { usePatient, useUpdatePatientSection } from "../../hooks/patientHooks";
 import { useActiveTemplateByType } from "../../hooks/templateHooks";
 import { useToast } from "../../context/ToastContext";
+import { useAuth } from "../../context/AuthContext";
 import type { FormConfig } from "../../types";
 
 interface GenericFormProps {
@@ -35,6 +36,7 @@ export default function GenericForm({
   } = useActiveTemplateByType(slug || "");
   const updateSectionMutation = useUpdatePatientSection();
   const { showToast } = useToast();
+  const { user } = useAuth();
 
   const [config, setConfig] = useState<FormConfig | null>(null);
   const [templateString, setTemplateString] = useState<string>("");
@@ -73,11 +75,15 @@ export default function GenericForm({
   const initialData = {
     ...existingData,
     // Always inject patient demographics
-    name: patient.name,
+    nom: patient.name,
     prenom: patient.prenom,
-    dob: patient.dob,
+    dateNaissance: patient.dob,
     ipp: patient.ipp,
     sexe: patient.sexe,
+    // Inject surgeon info
+    chirurgienNom: user?.nom || "",
+    chirurgienPrenom: user?.prenom || "",
+    chu: user?.chu || "",
   };
 
 

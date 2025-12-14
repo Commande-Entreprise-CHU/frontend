@@ -115,18 +115,17 @@ Le template est un fichier texte simple qui peut contenir des balises Handlebars
 ### Exemple Complet
 
 ```handlebars
-Compte rendu de consultation Date :
-{{formatDate date_consultation}}
+Compte rendu de consultation par Dr {{chirurgienNom}} ({{chu}})
+Date : {{formatDate date_consultation}}
 
 Patient :
-{{maj nom}}
-{{maj prenom}}
-Né(e) le :
-{{formatDate date_naissance}}
+{{maj nom}} {{maj prenom}}
+Né(e) le : {{formatDate dateNaissance}} (IPP: {{ipp}})
 
-{{#ifEgal sexe "homme"}}Il{{else}}Elle{{/ifEgal}}
-se présente pour :
-{{motif_consultation}}. Antécédents :
+{{#ifEgal sexe "homme"}}Il{{else}}Elle{{/ifEgal}} se présente pour :
+{{motif_consultation}}. 
+
+Antécédents :
 {{#if antecedents}}
   {{join antecedents ", "}}
 {{else}}
@@ -135,9 +134,7 @@ se présente pour :
 
 Examen clinique :
 {{#ifEgal ouverture_buccale "limitee"}}
-  Ouverture buccale limitée à
-  {{ouverture_mm}}
-  mm.
+  Ouverture buccale limitée à {{ouverture_mm}} mm.
 {{else}}
   Ouverture buccale normale.
 {{/ifEgal}}
@@ -146,8 +143,25 @@ Conclusion :
 {{conclusion}}
 ```
 
+## Variables Automatiques Disponibles
+
+Certaines variables sont automatiquement injectées dans le template à partir des informations du patient et du médecin connecté :
+
+### Patient
+- `{{nom}}` : Nom du patient
+- `{{prenom}}` : Prénom du patient
+- `{{dateNaissance}}` : Date de naissance (format YYYY-MM-DD)
+- `{{ipp}}` : Identifiant Permanent du Patient (IPP)
+- `{{sexe}}` : Sexe du patient
+
+### Chirurgien / Médecin
+- `{{chirurgienNom}}` : Nom du médecin connecté
+- `{{chirurgienPrenom}}` : Prénom du médecin connecté
+- `{{chu}}` : Nom du CHU de rattachement
+
 ## Utilisation des Données du Formulaire
 
 Les noms de variables utilisés dans le template (ex: `{{nom}}`, `{{sexe}}`) doivent correspondre exactement à la propriété `name` définie dans le fichier JSON du formulaire.
 
 Pour les champs imbriqués (comme dans `RevealRadio`), les données sont accessibles directement au niveau racine si le formulaire est plat, ou selon la structure de votre objet de données.
+

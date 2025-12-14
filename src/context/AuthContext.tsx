@@ -13,6 +13,7 @@ interface User {
   prenom: string;
   role: UserRole;
   chuId?: string | null;
+  chu?: string;
 }
 
 interface AuthContextType {
