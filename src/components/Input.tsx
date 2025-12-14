@@ -1,9 +1,9 @@
-import React from "react";
+import { type FC, type ChangeEvent, type ReactNode } from "react";
 
 interface InputProps {
   label?: string;
   value?: string | number | null;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   type?: string;
   placeholder?: string;
   className?: string;
@@ -14,11 +14,11 @@ interface InputProps {
   disabled?: boolean;
   error?: string;
   helperText?: string;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   size?: "xs" | "sm" | "md" | "lg";
 }
 
-const Input: React.FC<InputProps> = ({
+const Input: FC<InputProps> = ({
   label,
   value,
   onChange,
@@ -35,7 +35,7 @@ const Input: React.FC<InputProps> = ({
   icon,
   size = "md",
 }) => {
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (disabled) return;
 
     if (onChange) {

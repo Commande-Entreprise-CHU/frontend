@@ -1,4 +1,4 @@
-import React from "react";
+import { type FC, type ElementType } from "react";
 import { Link } from "react-router-dom";
 import { UserPlus, Search, ArrowRight, LayoutDashboard, Users, FileText } from "lucide-react";
 import PageHeader from "../components/PageHeader";
@@ -6,7 +6,7 @@ import Card from "../components/Card";
 import PatientCard from "../components/PatientCard";
 import { useStats, useMyRecentPatients } from "../hooks/statsHooks";
 
-const Home: React.FC = () => {
+const Home: FC = () => {
   const { data: stats, isLoading: loadingStats } = useStats();
   const { data: recentPatients, isLoading: loadingRecent } = useMyRecentPatients();
 
@@ -21,7 +21,7 @@ const Home: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Nouveau Patient Card */}
-        <Link to="/patient/new" className="group h-full">
+        <Link to="/patient/new" className="group h-full no-underline">
           <Card 
             className="h-full hover:shadow-lg transition-all duration-200 border-base-300 hover:border-primary/50 group-hover:-translate-y-1 block"
             bodyClassName="p-6 h-full flex flex-col"
@@ -40,7 +40,7 @@ const Home: React.FC = () => {
         </Link>
 
         {/* Consultation Card */}
-        <Link to="/search" className="group h-full">
+        <Link to="/search" className="group h-full no-underline">
           <Card 
             className="h-full hover:shadow-lg transition-all duration-200 border-base-300 hover:border-secondary/50 group-hover:-translate-y-1 block"
             bodyClassName="p-6 h-full flex flex-col"
@@ -120,7 +120,7 @@ const Home: React.FC = () => {
 interface StatsCardProps {
   title: string;
   value: number;
-  icon: React.ElementType;
+  icon: ElementType;
   color: "primary" | "secondary" | "accent" | "info" | "success" | "warning" | "error";
   loading?: boolean;
 }

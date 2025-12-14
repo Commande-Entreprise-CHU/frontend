@@ -1,4 +1,4 @@
-import React from "react";
+import { type FC } from "react";
 import Modal from "./Modal";
 import Button from "./Button";
 
@@ -14,7 +14,7 @@ interface ConfirmationModalProps {
   isLoading?: boolean;
 }
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+const ConfirmationModal: FC<ConfirmationModalProps> = ({
   isOpen,
   onClose,
   onConfirm,

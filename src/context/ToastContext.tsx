@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
-import type { ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, type FC, type ReactNode } from "react";
 
 export type ToastType = "success" | "error" | "warning" | "info";
 
@@ -29,7 +28,7 @@ interface ToastProviderProps {
   children: ReactNode;
 }
 
-export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
+export const ToastProvider: FC<ToastProviderProps> = ({ children }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const showToast = useCallback((message: string, type: ToastType = "info") => {

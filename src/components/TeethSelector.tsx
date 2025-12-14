@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect, type FC } from "react";
 import B1 from "./teeth/B1";
 import B2 from "./teeth/B2";
 import B3 from "./teeth/B3";
@@ -43,7 +43,7 @@ interface TeethSelectorProps {
   disabled?: boolean;
 }
 
-const TeethSelector: React.FC<TeethSelectorProps> = ({
+const TeethSelector: FC<TeethSelectorProps> = ({
   name,
   label,
   options = DEFAULT_OPTIONS,

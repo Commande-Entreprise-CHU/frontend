@@ -1,8 +1,8 @@
-import React from "react";
+import { type ReactNode } from "react";
 
 interface Column<T> {
   header: string;
-  accessor: keyof T | ((item: T) => React.ReactNode);
+  accessor: keyof T | ((item: T) => ReactNode);
   className?: string;
 }
 
@@ -56,7 +56,7 @@ function Table<T>({
                 <td key={index} className={col.className}>
                   {typeof col.accessor === "function"
                     ? col.accessor(item)
-                    : (item[col.accessor] as React.ReactNode)}
+                    : (item[col.accessor] as ReactNode)}
                 </td>
               ))}
             </tr>

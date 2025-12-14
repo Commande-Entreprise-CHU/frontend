@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect, type FC } from "react";
 import type { ReactNode } from "react";
 import type { ToothState } from "../types/teethTypes";
 import type { ToothOption } from "./TeethSelector";
@@ -16,7 +16,7 @@ interface ToothDropdownProps {
   disabled?: boolean;
 }
 
-const ToothDropdown: React.FC<ToothDropdownProps> = ({
+const ToothDropdown: FC<ToothDropdownProps> = ({
   position = "",
   align = "",
   className = "",

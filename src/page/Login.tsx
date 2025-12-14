@@ -4,10 +4,7 @@ import { AxiosError } from "axios";
 import { useAuth } from "../context/AuthContext";
 import { useLogin } from "../hooks/useAuthQueries";
 
-interface ApiErrorResponse {
-  success: false;
-  message: string;
-}
+import type { ApiErrorResponse } from "../types/api";
 
 const Login: FC = () => {
   const [email, setEmail] = useState("");

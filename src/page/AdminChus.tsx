@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo, type FormEvent } from "react";
 import { Plus, Trash2, Edit, Building2 } from "lucide-react";
 import {
   useChus,
@@ -31,7 +31,7 @@ export default function AdminChus({ isSubComponent = false }: AdminChusProps) {
   const [editingChu, setEditingChu] = useState<Chu | null>(null);
   const [formData, setFormData] = useState({ name: "", city: "" });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
       if (editingChu) {

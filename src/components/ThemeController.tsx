@@ -1,12 +1,12 @@
-import React from "react";
+import { type FC, type ChangeEvent } from "react";
 import { Sun, Moon } from "lucide-react";
 
-const ThemeController: React.FC = () => {
+const ThemeController: FC = () => {
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const storedTheme = localStorage.getItem("theme");
   const isDarkMode = storedTheme ? storedTheme === "chu-dark" : prefersDark;
 
-  const handleThemeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleThemeChange = (e: ChangeEvent<HTMLInputElement>) => {
     const theme = e.target.checked ? "chu-dark" : "chu-light";
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);

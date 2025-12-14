@@ -1,11 +1,11 @@
-import React from "react";
+import { type FC, type ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 
 interface PageHeaderProps {
   icon: LucideIcon;
   title: string;
   subtitle?: string;
-  actions?: React.ReactNode;
+  actions?: ReactNode;
   iconColorClass?: string;
 }
 
@@ -22,7 +22,7 @@ interface PageHeaderProps {
  * />
  * ```
  */
-const PageHeader: React.FC<PageHeaderProps> = ({
+const PageHeader: FC<PageHeaderProps> = ({
   icon: Icon,
   title,
   subtitle,

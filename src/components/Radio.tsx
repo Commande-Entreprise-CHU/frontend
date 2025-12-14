@@ -1,4 +1,4 @@
-import React from "react";
+import { type FC, type ChangeEvent } from "react";
 
 interface RadioProps {
   label: string;
@@ -19,7 +19,7 @@ interface RadioProps {
   error?: string;
 }
 
-const Radio: React.FC<RadioProps> = ({
+const Radio: FC<RadioProps> = ({
   label,
   options,
   setFormData,
@@ -30,7 +30,7 @@ const Radio: React.FC<RadioProps> = ({
   disabled = false,
   error,
 }) => {
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (disabled) return;
     const val = e.target.value;
 

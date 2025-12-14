@@ -1,17 +1,17 @@
-import React from "react";
+import { type FC, type ReactNode, type HTMLAttributes } from "react";
 
 interface CardProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
-  title?: React.ReactNode;
-  children: React.ReactNode;
-  actions?: React.ReactNode;
+  extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
+  title?: ReactNode;
+  children: ReactNode;
+  actions?: ReactNode;
   className?: string;
   bodyClassName?: string;
   compact?: boolean;
   bordered?: boolean;
 }
 
-const Card: React.FC<CardProps> = ({
+const Card: FC<CardProps> = ({
   title,
   children,
   actions,

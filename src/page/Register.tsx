@@ -22,10 +22,7 @@ interface ValidationErrors {
   chuId?: string[];
 }
 
-interface ApiErrorResponse {
-  success: false;
-  message: string;
-}
+import type { ApiErrorResponse } from "../types/api";
 
 const PASSWORD_RULES = [
   { regex: /.{12,}/, message: "Au moins 12 caractères" },

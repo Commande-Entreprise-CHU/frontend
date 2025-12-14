@@ -1,4 +1,4 @@
-import React from "react";
+import { type FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { Hash, User, FileText } from "lucide-react";
 import Card from "./Card";
@@ -22,7 +22,7 @@ export interface PatientCardProps {
   showSexe?: boolean;
 }
 
-const PatientCard: React.FC<PatientCardProps> = ({
+const PatientCard: FC<PatientCardProps> = ({
   id,
   name,
   prenom,

@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState, type FC, type ChangeEvent } from "react";
 
 interface RangeProps {
   steps: string[];
@@ -12,7 +12,7 @@ interface RangeProps {
   disabled?: boolean;
 }
 
-const Range: React.FC<RangeProps> = ({
+const Range: FC<RangeProps> = ({
   steps,
   setFormData,
   onChange,
@@ -23,7 +23,7 @@ const Range: React.FC<RangeProps> = ({
   value = 0,
   disabled = false,
 }) => {
-  const [sliderValue, setSliderValue] = React.useState(value);
+  const [sliderValue, setSliderValue] = useState(value);
 
   const stepSize = useMemo(() => {
     return steps.length > 1
@@ -58,7 +58,7 @@ const Range: React.FC<RangeProps> = ({
     }
   }, [value, initialValue, steps, stepSize]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (disabled) return;
 
     const numValue = Number(event.target.value);

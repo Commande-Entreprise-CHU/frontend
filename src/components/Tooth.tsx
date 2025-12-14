@@ -1,11 +1,11 @@
-import React from "react";
+import { type FC, type ComponentType } from "react";
 import ToothDropdown from "./ToothDropdown";
 import type { ToothState } from "../types/teethTypes";
 import type { ToothOption } from "./TeethSelector";
 
 interface ToothProps {
   toothId: string;
-  ToothComponent: React.ComponentType<{ className?: string }>;
+  ToothComponent: ComponentType<{ className?: string }>;
   currentState: ToothState;
   onStateChange: (toothId: string, state: ToothState) => void;
   mirrored?: boolean;
@@ -13,7 +13,7 @@ interface ToothProps {
   colorMap: Record<string, string>;
 }
 
-const Tooth: React.FC<ToothProps> = ({
+const Tooth: FC<ToothProps> = ({
   toothId,
   ToothComponent,
   currentState,

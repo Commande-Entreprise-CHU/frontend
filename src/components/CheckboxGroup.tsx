@@ -1,4 +1,4 @@
-import React from "react";
+import { type FC } from "react";
 import Checkbox from "./Checkbox";
 
 interface CheckboxOption {
@@ -19,7 +19,7 @@ interface CheckboxGroupProps {
   error?: string;
 }
 
-const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
+const CheckboxGroup: FC<CheckboxGroupProps> = ({
   name,
   label,
   options,

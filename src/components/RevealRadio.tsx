@@ -1,4 +1,4 @@
-import React from "react";
+import { type FC, type ReactNode } from "react";
 import Radio from "./Radio";
 import type { FormOption, AnyFormField } from "../types";
 
@@ -9,7 +9,7 @@ interface RevealRadioProps {
   value?: string | number;
   onChange: (value: string | number) => void;
   setFormData?: (name: string, value: any) => void;
-  renderField?: (field: AnyFormField) => React.ReactNode;
+  renderField?: (field: AnyFormField) => ReactNode;
   disabled?: boolean;
   className?: string;
   required?: boolean;
@@ -17,7 +17,7 @@ interface RevealRadioProps {
   error?: string;
 }
 
-const RevealRadio: React.FC<RevealRadioProps> = ({
+const RevealRadio: FC<RevealRadioProps> = ({
   name,
   label,
   options,

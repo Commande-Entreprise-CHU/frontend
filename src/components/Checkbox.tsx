@@ -1,4 +1,4 @@
-import React from "react";
+import { type FC, type ChangeEvent } from "react";
 
 interface CheckboxProps {
   label: string;
@@ -11,7 +11,7 @@ interface CheckboxProps {
   error?: string;
 }
 
-const Checkbox: React.FC<CheckboxProps> = ({
+const Checkbox: FC<CheckboxProps> = ({
   label,
   name,
   setFormData,
@@ -21,7 +21,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   disabled = false,
   error,
 }) => {
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (disabled) return;
 
     const { checked } = e.target;

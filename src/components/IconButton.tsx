@@ -1,9 +1,9 @@
-import React from "react";
+import { type FC, type ButtonHTMLAttributes } from "react";
 import Button from "./Button";
 import type { LucideIcon } from "lucide-react";
 
 interface IconButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon: LucideIcon;
   tooltip?: string;
   tooltipPosition?: "top" | "bottom" | "left" | "right";
@@ -23,7 +23,7 @@ interface IconButtonProps
   colorClass?: string; // e.g. "text-primary", "text-error"
 }
 
-const IconButton: React.FC<IconButtonProps> = ({
+const IconButton: FC<IconButtonProps> = ({
   icon: Icon,
   tooltip,
   tooltipPosition = "top",

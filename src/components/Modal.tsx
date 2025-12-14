@@ -1,16 +1,16 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef, type FC, type ReactNode, type SyntheticEvent } from "react";
 import { X } from "lucide-react";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
-  children: React.ReactNode;
-  actions?: React.ReactNode;
+  children: ReactNode;
+  actions?: ReactNode;
   size?: "sm" | "md" | "lg" | "xl";
 }
 
-const Modal: React.FC<ModalProps> = ({
+const Modal: FC<ModalProps> = ({
   isOpen,
   onClose,
   title,
@@ -30,7 +30,7 @@ const Modal: React.FC<ModalProps> = ({
 
   // Handle ESC key manually if needed, but <dialog> handles it by default.
   // However, we want to sync the state.
-  const handleCancel = (e: React.SyntheticEvent<HTMLDialogElement, Event>) => {
+  const handleCancel = (e: SyntheticEvent<HTMLDialogElement, Event>) => {
     e.preventDefault(); // Prevent default close to handle it via props
     onClose();
   };

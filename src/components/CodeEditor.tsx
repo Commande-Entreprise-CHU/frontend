@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, type FC, type CSSProperties, type ChangeEvent } from "react";
 import Prism from "prismjs";
 
 interface CodeEditorProps {
@@ -7,10 +7,10 @@ interface CodeEditorProps {
   language: string;
   placeholder?: string;
   className?: string;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 }
 
-const CodeEditor: React.FC<CodeEditorProps> = ({
+const CodeEditor: FC<CodeEditorProps> = ({
   value,
   onChange,
   language,
@@ -48,7 +48,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const preRef = useRef<HTMLPreElement>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     onChange(e.target.value);
   };
 
@@ -66,7 +66,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     : Prism.util.encode(value || "");
 
   // Common styles for alignment
-  const commonStyle: React.CSSProperties = {
+  const commonStyle: CSSProperties = {
     margin: 0,
     padding: "10px",
     border: 0,

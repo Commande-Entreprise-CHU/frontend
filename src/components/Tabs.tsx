@@ -1,4 +1,4 @@
-import React from "react";
+import { type FC } from "react";
 import {type LucideIcon } from "lucide-react";
 
 export interface TabItem {
@@ -16,7 +16,7 @@ interface TabsProps {
   className?: string;
 }
 
-const Tabs: React.FC<TabsProps> = ({
+const Tabs: FC<TabsProps> = ({
   tabs,
   activeTab,
   onChange,

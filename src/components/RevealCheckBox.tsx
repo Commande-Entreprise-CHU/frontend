@@ -1,4 +1,4 @@
-import React from "react";
+import { type FC, type ReactNode } from "react";
 import Checkbox from "./Checkbox";
 import type { AnyFormField } from "../types";
 
@@ -8,13 +8,13 @@ interface RevealCheckBoxProps {
   checked?: boolean;
   onChange: (checked: boolean) => void;
   subFields?: AnyFormField[];
-  renderField?: (field: AnyFormField) => React.ReactNode;
+  renderField?: (field: AnyFormField) => ReactNode;
   disabled?: boolean;
   className?: string;
   error?: string;
 }
 
-const RevealCheckBox: React.FC<RevealCheckBoxProps> = ({
+const RevealCheckBox: FC<RevealCheckBoxProps> = ({
   name,
   label,
   checked = false,

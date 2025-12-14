@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo, type FC } from "react";
 import type { TeethData } from "../types/teethTypes";
 import type { ToothOption } from "./TeethSelector";
 
@@ -8,7 +8,7 @@ interface TeethSummaryProps {
   label?: string;
 }
 
-const TeethSummary: React.FC<TeethSummaryProps> = ({
+const TeethSummary: FC<TeethSummaryProps> = ({
   teethData,
   options,
   label = "Résumé du schéma dentaire",

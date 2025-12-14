@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo, type FC } from "react";
 import { Users, Building2, Shield } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import AdminUsers from "./AdminUsers";
@@ -6,7 +6,7 @@ import AdminChus from "./AdminChus";
 import Tabs from "../components/Tabs";
 import { useAuth } from "../context/AuthContext";
 
-const AdminDashboard: React.FC = () => {
+const AdminDashboard: FC = () => {
   const { isMasterAdmin } = useAuth();
   const [activeTab, setActiveTab] = useState<"users" | "chus">("users");
 

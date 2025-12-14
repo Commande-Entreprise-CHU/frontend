@@ -1,4 +1,4 @@
-import React from "react";
+import { type FC, type SelectHTMLAttributes } from "react";
 
 interface Option {
   value: string | number;
@@ -7,7 +7,7 @@ interface Option {
 
 interface SelectProps
   extends Omit<
-    React.SelectHTMLAttributes<HTMLSelectElement>,
+    SelectHTMLAttributes<HTMLSelectElement>,
     "onChange" | "size"
   > {
   label?: string;
@@ -21,7 +21,7 @@ interface SelectProps
   placeholder?: string;
 }
 
-const Select: React.FC<SelectProps> = ({
+const Select: FC<SelectProps> = ({
   label,
   options,
   value,

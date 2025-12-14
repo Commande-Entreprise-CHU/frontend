@@ -1,6 +1,6 @@
-import React from "react";
+import { type FC, type ButtonHTMLAttributes, type ElementType } from "react";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?:
     | "primary"
     | "secondary"
@@ -15,12 +15,12 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: "lg" | "md" | "sm" | "xs";
   loading?: boolean;
   fullWidth?: boolean;
-  startIcon?: React.ElementType;
-  endIcon?: React.ElementType;
-  icon?: React.ElementType;
+  startIcon?: ElementType;
+  endIcon?: ElementType;
+  icon?: ElementType;
 }
 
-const Button: React.FC<ButtonProps> = ({
+const Button: FC<ButtonProps> = ({
   children,
   className = "",
   variant = "primary",

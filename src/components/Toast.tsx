@@ -1,8 +1,8 @@
-import React from "react";
+import { type FC, type ElementType } from "react";
 import { X, CheckCircle, AlertCircle, AlertTriangle, Info } from "lucide-react";
 import { useToast, type ToastType } from "../context/ToastContext";
 
-const iconMap: Record<ToastType, React.ElementType> = {
+const iconMap: Record<ToastType, ElementType> = {
   success: CheckCircle,
   error: AlertCircle,
   warning: AlertTriangle,
@@ -20,7 +20,7 @@ const alertClassMap: Record<ToastType, string> = {
  * Toast - Renders toast notifications from the ToastContext.
  * Place this component once at the root level (e.g., in App.tsx).
  */
-const Toast: React.FC = () => {
+const Toast: FC = () => {
   const { toasts, removeToast } = useToast();
 
   if (toasts.length === 0) return null;
