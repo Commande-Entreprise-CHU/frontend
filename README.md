@@ -9,6 +9,29 @@ Voici le frontend pour le commande entreprise CHU
 - `npm install` pour installer les dépendances
 - `npm run dev` pour lancer le projet en mode développement
 
+## Déploiement
+
+### Construction pour la production
+
+Pour créer une version de production optimisée :
+
+```bash
+npm run build
+```
+
+Cela va générer les fichiers statiques dans le dossier `dist/`. Ces fichiers peuvent être hébergés sur n'importe quel serveur web statique (nginx, Apache, etc.).
+
+### Déploiement sur Vercel
+
+Le projet est configuré pour être déployé facilement sur **Vercel**. 
+Un fichier `vercel.json` est présent à la racine pour la configuration.
+
+Pour déployer, vous pouvez connecter votre dépôt GitHub à Vercel ou utiliser la CLI Vercel :
+
+```bash
+vercel
+```
+
 ## UI
 
 - Utilisation de la bibliothèque DaisyUI pour les composants UI
