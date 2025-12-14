@@ -8,6 +8,7 @@ import {
   setActiveTemplate,
   getActiveTemplateByType,
   deleteTemplateVersion,
+  deleteConsultationType,
   type ConsultationType,
   type Template,
 } from "../endpoints/templateEndpoints";
@@ -101,6 +102,16 @@ export const useDeleteTemplateVersion = () => {
     mutationFn: deleteTemplateVersion,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["templates"] });
+    },
+  });
+};
+
+export const useDeleteConsultationType = () => {
+  const queryClient = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: deleteConsultationType,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["consultationTypes"] });
     },
   });
 };

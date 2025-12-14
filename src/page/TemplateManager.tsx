@@ -30,6 +30,7 @@ import {
   useCreateTemplateVersion,
   useSetActiveTemplate,
   useDeleteTemplateVersion,
+  useDeleteConsultationType,
 } from "../hooks/templateHooks";
 import { useToast } from "../context/ToastContext";
 import type { ConsultationType } from "../endpoints/templateEndpoints";
@@ -286,6 +287,25 @@ export default function TemplateManager() {
     });
   };
 
+  const [typeToDelete, setTypeToDelete] = useState<ConsultationType | null>(null);
+  const { mutate: deleteType } = useDeleteConsultationType();
+
+  const handleConfirmDeleteType = async () => {
+    if (!typeToDelete) return;
+    deleteType(typeToDelete.id, {
+      onSuccess: () => {
+        setTypeToDelete(null);
+        if (selectedType?.id === typeToDelete.id) {
+          setSelectedType(null);
+        }
+        showToast("Type de consultation supprimé", "success");
+      },
+      onError: () => {
+        showToast("Erreur lors de la suppression", "error");
+      },
+    });
+  };
+
   const { mutate: createTemplate } = useCreateTemplateVersion();
   const { showToast } = useToast();
 
@@ -377,7 +397,7 @@ export default function TemplateManager() {
   }, [parsedStructure, previewFormData, newTemplateStr]);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-6 w-full">
       <PageHeader
         icon={FileCode}
         title="Gestion des Modèles"
@@ -436,7 +456,7 @@ export default function TemplateManager() {
         {/* Left Column: Types */}
         <Card
           title="Types de Consultation"
-          className="h-fit lg:col-span-1 border-base-300"
+          className="h-fit lg:col-span-1 border-base-300 min-w-0"
           bodyClassName="p-4"
         >
           {typesLoading ? (
@@ -488,19 +508,20 @@ export default function TemplateManager() {
                     </div>
                   ) : (
                     <div
-                      className={`flex justify-between items-center rounded-lg px-3 py-2 transition-all ${
+                      className={`flex justify-between items-center rounded-lg px-3 py-2 transition-all w-full max-w-full ${
                         selectedType?.id === type.id
                           ? "bg-primary text-primary-content shadow-md"
                           : "hover:bg-base-300"
                       }`}
                     >
                       <a
-                        className="flex-1 truncate cursor-pointer font-medium"
+                        className="flex-1 min-w-0 whitespace-normal break-words cursor-pointer font-medium pr-2"
                         onClick={() => setSelectedType(type)}
+                        title={type.name}
                       >
                         {type.name}
                       </a>
-                      <div className="flex gap-1 items-center">
+                      <div className="flex gap-1 items-center shrink-0">
                         <IconButton
                           icon={Edit}
                           size="xs"
@@ -552,6 +573,21 @@ export default function TemplateManager() {
                             }}
                           />
                         </div>
+                        <IconButton
+                          icon={Trash2}
+                          size="xs"
+                          variant="ghost"
+                          iconSize={14}
+                          className={
+                            selectedType?.id === type.id
+                              ? "text-primary-content hover:bg-white/20"
+                              : "text-error hover:bg-error/10"
+                          }
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setTypeToDelete(type);
+                          }}
+                        />
                       </div>
                     </div>
                   )}
@@ -964,6 +1000,34 @@ export default function TemplateManager() {
           )}
         </div>
       </div>
+      {/* Confirmation Modal */}
+      {typeToDelete && (
+        <div className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg text-error flex items-center gap-2">
+              <AlertTriangle />
+              Supprimer ce type?
+            </h3>
+            <p className="py-4">
+              Êtes-vous sûr de vouloir supprimer le type de consultation{" "}
+              <strong>"{typeToDelete.name}"</strong> ?
+              <br />
+              <span className="text-sm opacity-70">
+                Cette action ne supprimera pas les données historiques mais masquera
+                ce type pour les nouveaux patients.
+              </span>
+            </p>
+            <div className="modal-action">
+              <Button variant="ghost" onClick={() => setTypeToDelete(null)}>
+                Annuler
+              </Button>
+              <Button variant="error" onClick={handleConfirmDeleteType}>
+                Confirmer la suppression
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -97,3 +97,7 @@ export const deleteTemplateVersion = async (
 ): Promise<void> => {
   await api.delete(`/api/templates/${templateId}`);
 };
+
+export const deleteConsultationType = async (id: string): Promise<void> => {
+  await api.delete(`/api/templates/types/${id}`);
+};

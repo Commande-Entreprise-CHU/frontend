@@ -1,8 +1,32 @@
 import api from "../utils/api";
+import type { UserRole } from "../context/AuthContext";
+
+// User type matching backend UserPayload
+export interface User {
+  id: string;
+  email: string;
+  nom: string;
+  prenom: string;
+  role: UserRole;
+  chuId?: string | null;
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface RegisterData {
+  email: string;
+  password: string;
+  nom: string;
+  prenom: string;
+  chuId: string;
+}
 
 export interface LoginResponse {
   success: boolean;
-  user: any;
+  user: User;
   message?: string;
 }
 
@@ -11,14 +35,14 @@ export interface RegisterResponse {
   message: string;
 }
 
-export const login = async (credentials: any): Promise<LoginResponse> => {
+export const login = async (credentials: LoginCredentials): Promise<LoginResponse> => {
   const { data } = await api.post("/api/auth/login", credentials);
   return data;
 };
 
 export interface MeResponse {
   success: boolean;
-  user?: any;
+  user?: User;
 }
 
 export const me = async (): Promise<MeResponse> => {
@@ -35,7 +59,7 @@ export const logout = async (): Promise<{ success: boolean }> => {
   return data;
 };
 
-export const register = async (userData: any): Promise<RegisterResponse> => {
+export const register = async (userData: RegisterData): Promise<RegisterResponse> => {
   const { data } = await api.post("/api/auth/register", userData);
   return data;
 };
