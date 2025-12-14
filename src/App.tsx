@@ -10,6 +10,7 @@ import GenericForm from "./page/forms/GenericForm";
 import Login from "./page/Login";
 import Register from "./page/Register";
 import AdminDashboard from "./page/AdminDashboard";
+import NotFound from "./page/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
@@ -99,6 +100,7 @@ function App() {
                   }
                 />
               </Route>
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
         </Router>
