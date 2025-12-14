@@ -17,9 +17,9 @@ import H7 from "./teeth/H7";
 import H8 from "./teeth/H8";
 
 import Tooth from "./Tooth";
+import type { TeethData } from "../../types/teethTypes";
+import { TOOTH_IDS } from "../../types/teethTypes";
 import TeethSummary from "./TeethSummary";
-import type { TeethData } from "../types/teethTypes";
-import { TOOTH_IDS } from "../types/teethTypes";
 
 export interface ToothOption {
   value: string;

@@ -9,7 +9,7 @@ import {
 import { useChus } from "../hooks/useChus";
 import Table from "../components/Table";
 import Card from "../components/Card";
-import Select from "../components/Select";
+import Select from "../components/form/Select";
 import Button from "../components/Button";
 import PageHeader from "../components/PageHeader";
 import { useToast } from "../context/ToastContext";

@@ -1,6 +1,7 @@
+
 import { type FC, type ReactNode } from "react";
 import Radio from "./Radio";
-import type { FormOption, AnyFormField } from "../types";
+import type { AnyFormField, FormOption } from "../../types";
 
 interface RevealRadioProps {
   name: string;

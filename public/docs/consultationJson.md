@@ -96,7 +96,7 @@ Tous les types de champs partagent ces propriétés :
 
 | Propriété  | Type    | Requis | Description                                                                                          |
 | ---------- | ------- | ------ | ---------------------------------------------------------------------------------------------------- |
-| `type`     | string  | Oui    | Le type de champ (Input, Radio, Range, RevealRadio, RevealCheckBox, Select, Checkbox, TeethSelector) |
+| `type`     | string  | Oui    | Le type de champ (Input, Radio, Range, ContinuousRange, RevealRadio, RevealCheckBox, Select, Checkbox, TeethSelector) |
 | `label`    | string  | Oui    | Libellé d'affichage pour le champ                                                                    |
 | `name`     | string  | Oui    | Identifiant unique du champ (utilisé dans les données du formulaire)                                 |
 | `required` | boolean | Non    | Si le champ est obligatoire (défaut: false)                                                          |
@@ -185,6 +185,8 @@ Affiche un ensemble d'options mutuellement exclusives. Une seule option peut êt
 | `value`   | string/number/boolean | Oui    | La valeur stockée quand cette option est sélectionnée |
 | `label`   | string                | Oui    | Texte d'affichage de l'option                         |
 | `default` | boolean               | Non    | Si cette option est sélectionnée par défaut           |
+| `image`   | string                | Non    | URL d'une image à afficher                            |
+| `svg`     | string                | Non    | Contenu SVG brut à afficher                           |
 
 #### Exemple
 
@@ -223,14 +225,56 @@ Affiche une case à cocher simple (vrai/faux).
 | `name`     | string  | Oui    | Identifiant unique du champ      |
 | `required` | boolean | Non    | Si la case doit être cochée      |
 | `default`  | boolean | Non    | Si la case est cochée par défaut |
+| `image`    | string  | Non    | URL d'une image à afficher       |
+| `svg`      | string  | Non    | Contenu SVG brut à afficher      |
 
 #### Exemple
 
 ```json
 {
   "type": "Checkbox",
-  "label": "ATCD chir orthognathique",
-  "name": "atcd_chir_ortho"
+  "label": "Accord",
+  "name": "accord_signe",
+  "svg": "<svg>...</svg>"
+}
+```
+
+---
+
+### 10. Champ CheckboxGroup
+
+Affiche un groupe de cases à cocher pour une sélection multiple.
+
+#### Propriétés
+
+| Propriété  | Type    | Requis | Description                      |
+| ---------- | ------- | ------ | -------------------------------- |
+| `type`     | string  | Oui    | Doit être `"CheckboxGroup"`      |
+| `label`    | string  | Non    | Libellé du groupe                |
+| `name`     | string  | Oui    | Identifiant unique du groupe     |
+| `options`  | array   | Oui    | Tableau d'objets option          |
+| `required` | boolean | Non    | Si au moins un choix est requis  |
+
+#### Objet Option (pour CheckboxGroup)
+
+| Propriété | Type   | Requis | Description                   |
+| --------- | ------ | ------ | ----------------------------- |
+| `value`   | string | Oui    | La valeur de l'option         |
+| `label`   | string | Oui    | Libellé de l'option           |
+| `image`   | string | Non    | URL d'une image à afficher    |
+| `svg`     | string | Non    | Contenu SVG brut à afficher   |
+
+#### Exemple
+
+```json
+{
+  "type": "CheckboxGroup",
+  "label": "Symptômes",
+  "name": "symptomes",
+  "options": [
+    { "value": "fievre", "label": "Fièvre" },
+    { "value": "toux", "label": "Toux" }
+  ]
 }
 ```
 
@@ -286,6 +330,8 @@ Un champ radio spécial qui révèle des champs supplémentaires en fonction de 
 | `label`   | string  | Oui    | Texte d'affichage de l'option                                              |
 | `default` | boolean | Non    | Si cette option est sélectionnée par défaut                                |
 | `fields`  | array   | Non    | Tableau de champs imbriqués à afficher quand cette option est sélectionnée |
+| `image`   | string  | Non    | URL d'une image à afficher                                                 |
+| `svg`     | string  | Non    | Contenu SVG brut à afficher                                                |
 
 #### Exemple
 
@@ -368,6 +414,41 @@ Un menu déroulant pour sélectionner une option unique dans une liste.
 | `options`     | array   | Oui    | Tableau d'objets option                   |
 | `placeholder` | string  | Non    | Texte d'indication dans le menu déroulant |
 | `required`    | boolean | Non    | Si une sélection est obligatoire          |
+
+---
+
+### 9. Champ ContinuousRange
+
+Un curseur continu permettant de sélectionner une valeur numérique précise entre un minimum et un maximum, avec un pas défini.
+
+#### Propriétés
+
+| Propriété  | Type    | Requis | Description                          |
+| ---------- | ------- | ------ | ------------------------------------ |
+| `type`     | string  | Oui    | Doit être `"ContinuousRange"`        |
+| `label`    | string  | Oui    | Libellé d'affichage                  |
+| `name`     | string  | Oui    | Identifiant unique du champ          |
+| `min`      | number  | Non    | Valeur minimale (défaut: 0)          |
+| `max`      | number  | Non    | Valeur maximale (défaut: 100)        |
+| `step`     | number  | Non    | Pas d'incrémentation (défaut: 1)     |
+| `unit`     | string  | Non    | Unité affichée après la valeur       |
+| `default`  | number  | Non    | Valeur initiale par défaut           |
+| `required` | boolean | Non    | Si une valeur est obligatoire        |
+
+#### Exemple
+
+```json
+{
+  "type": "ContinuousRange",
+  "label": "Température",
+  "name": "temperature",
+  "min": 35,
+  "max": 42,
+  "step": 0.1,
+  "unit": "°C",
+  "default": 37
+}
+```
 
 ---
 

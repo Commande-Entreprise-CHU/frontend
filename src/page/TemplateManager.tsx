@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
-import DynamicForm from "../components/DynamicForm";
+import DynamicForm from "../components/form/DynamicForm";
 import Button from "../components/Button";
-import Input from "../components/Input";
+import Input from "../components/form/Input";
 import Card from "../components/Card";
 import IconButton from "../components/IconButton";
 import PageHeader from "../components/PageHeader";

@@ -1,6 +1,6 @@
 import { useRef, useEffect, type FC } from "react";
 import type { ReactNode } from "react";
-import type { ToothState } from "../types/teethTypes";
+import type { ToothState } from "../../types/teethTypes";
 import type { ToothOption } from "./TeethSelector";
 
 interface ToothDropdownProps {

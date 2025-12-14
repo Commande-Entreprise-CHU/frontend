@@ -1,6 +1,6 @@
 import { type FC, type ReactNode } from "react";
 import Checkbox from "./Checkbox";
-import type { AnyFormField } from "../types";
+import type { AnyFormField } from "../../types";
 
 interface RevealCheckBoxProps {
   name: string;

@@ -1,6 +1,6 @@
 import { type FC, type ComponentType } from "react";
 import ToothDropdown from "./ToothDropdown";
-import type { ToothState } from "../types/teethTypes";
+import type { ToothState } from "../../types/teethTypes";
 import type { ToothOption } from "./TeethSelector";
 
 interface ToothProps {

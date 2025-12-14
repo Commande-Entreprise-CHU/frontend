@@ -10,7 +10,7 @@ import { type Chu } from "../endpoints/chuEndpoints";
 import Table from "../components/Table";
 import Card from "../components/Card";
 import Modal from "../components/Modal";
-import Input from "../components/Input";
+import Input from "../components/form/Input";
 import Button from "../components/Button";
 import IconButton from "../components/IconButton";
 import PageHeader from "../components/PageHeader";

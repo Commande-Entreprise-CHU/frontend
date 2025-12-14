@@ -7,10 +7,11 @@ import RevealRadio from "./RevealRadio";
 import RevealCheckBox from "./RevealCheckBox";
 import Checkbox from "./Checkbox";
 import CheckboxGroup from "./CheckboxGroup";
+import ContinuousRange from "./ContinuousRange";
 import TeethSelector from "./TeethSelector";
-import Button from "./Button";
-import type { AnyFormField, FormConfig } from "../types";
-import { createTxt } from "../utils/textLogic/createTxt";
+import Button from "../Button";
+import type { AnyFormField, FormConfig } from "../../types";
+import { createTxt } from "../../utils/textLogic/createTxt";
 
 interface DynamicFormProps {
   config: FormConfig;
@@ -69,6 +70,10 @@ const DynamicForm = ({
           if ((field as any).default === true) {
             data[field.name] = true;
           }
+        } else if (field.type === "ContinuousRange") {
+           if ((field as any).default !== undefined) {
+             data[field.name] = (field as any).default;
+           }
         }
       });
     };
@@ -252,6 +257,8 @@ const DynamicForm = ({
             checked={!!formData[field.name]}
             onChange={(checked) => handleFieldChange(field.name, checked)}
             error={errorMessage}
+            image={(field as any).image}
+            svg={(field as any).svg}
           />
         );
       case "CheckboxGroup":
@@ -277,6 +284,22 @@ const DynamicForm = ({
             steps={(field as any).steps || []}
             value={formData[field.name]}
             onChange={(val) => handleFieldChange(field.name, val)}
+          />
+        );
+      case "ContinuousRange":
+        return (
+          <ContinuousRange
+            key={field.name}
+            {...commonProps}
+            name={field.name}
+            label={field.label}
+            min={(field as any).min}
+            max={(field as any).max}
+            step={(field as any).step}
+            unit={(field as any).unit}
+            value={formData[field.name]}
+            onChange={(val) => handleFieldChange(field.name, val)}
+            required={field.required}
           />
         );
       case "RevealRadio":

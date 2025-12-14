@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Input from "../components/Input";
-import Radio from "../components/Radio";
+import Input from "../components/form/Input";
+import Radio from "../components/form/Radio";
 import Card from "../components/Card";
 import Button from "../components/Button";
 import PageHeader from "../components/PageHeader";

@@ -66,8 +66,8 @@ export const useCreateTemplateVersion = () => {
     Error,
     { typeId: string; version: string; structure: any; template: string }
   >({
-    mutationFn: ({ typeId, structure, template }) =>
-      createTemplateVersion(typeId, structure, template),
+    mutationFn: ({ typeId, version, structure, template }) =>
+      createTemplateVersion(typeId, version, structure, template),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: ["templates", data.consultationTypeId],

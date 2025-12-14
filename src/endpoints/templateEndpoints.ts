@@ -64,10 +64,12 @@ export const getTemplatesByType = async (
 
 export const createTemplateVersion = async (
   typeId: string,
+  version: string,
   structure: any,
   template: string
 ): Promise<Template> => {
   const { data } = await api.post(`/api/templates/types/${typeId}/templates`, {
+    version,
     structure,
     template,
   });

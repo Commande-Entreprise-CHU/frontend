@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState, type FC, type ChangeEvent } from "react";
+import { useEffect, useState, type FC, type ChangeEvent } from "react";
 
 interface RangeProps {
   steps: string[];
@@ -20,51 +20,42 @@ const Range: FC<RangeProps> = ({
   label,
   required = false,
   initialValue,
-  value = 0,
+  value,
   disabled = false,
 }) => {
-  const [sliderValue, setSliderValue] = useState(value);
+  // Use index as the internal slider value (0 to steps.length - 1)
+  const [sliderIndex, setSliderIndex] = useState(0);
 
-  const stepSize = useMemo(() => {
-    return steps.length > 1
-      ? Math.floor((100 / (steps.length - 1)) * 1000) / 1000
-      : 100;
-  }, [steps.length]);
-
-  const valueToStep = useMemo(() => {
-    const valuetostep: Record<number, string> = {};
-    for (let i = 0; i < steps.length; i++) {
-      valuetostep[i * stepSize] = steps[i];
-    }
-    return valuetostep;
-  }, [steps, stepSize]);
-
+  // Sync internal state with external value prop
   useEffect(() => {
-    if (value !== undefined) {
-      if (typeof value === "string") {
-        const index = steps.indexOf(value);
-        if (index !== -1) {
-          setSliderValue(index * stepSize);
-        }
-      } else {
-        setSliderValue(Number(value));
-      }
-    } else if (initialValue) {
-      const index = steps.indexOf(initialValue);
-      if (index !== -1) {
-        const sliderPos = index * stepSize;
-        setSliderValue(sliderPos);
-      }
+    let targetValue = value !== undefined ? value : initialValue;
+    
+    // Handle case where value might be 0 (number) which is falsy but valid
+    if (targetValue === undefined || targetValue === "") {
+        setSliderIndex(0); 
+        return;
     }
-  }, [value, initialValue, steps, stepSize]);
+
+    const strValue = String(targetValue);
+    const index = steps.indexOf(strValue);
+    
+    if (index !== -1) {
+      setSliderIndex(index);
+    } else {
+        // Fallback: try to match by converting step to string in case steps are numbers
+        const indexAlt = steps.findIndex(s => String(s) === strValue);
+        if (indexAlt !== -1) setSliderIndex(indexAlt);
+    }
+  }, [value, initialValue, steps]);
+
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (disabled) return;
 
-    const numValue = Number(event.target.value);
-    setSliderValue(numValue);
+    const newIndex = Number(event.target.value);
+    setSliderIndex(newIndex);
 
-    const stepValue = valueToStep[numValue] || steps[steps.length - 1];
+    const stepValue = steps[newIndex];
 
     if (onChange) {
       onChange(stepValue);
@@ -86,7 +77,7 @@ const Range: FC<RangeProps> = ({
           {required && <span className="text-error ml-1">*</span>}
         </span>
         <span className="label-text-alt font-bold text-primary">
-          {valueToStep[Number(sliderValue)] || steps[0]}
+          {steps[sliderIndex]}
         </span>
       </label>
 
@@ -95,13 +86,13 @@ const Range: FC<RangeProps> = ({
           type="range"
           name={name}
           min={0}
-          max={100}
-          value={sliderValue}
+          max={steps.length - 1}
+          value={sliderIndex}
           onChange={handleChange}
           className={`range w-full range-primary range-sm ${
             disabled ? "opacity-50 cursor-not-allowed" : ""
           }`}
-          step={stepSize}
+          step={1}
           disabled={disabled}
         />
         <div className="relative w-full h-8 mt-2 text-xs text-base-content/50">

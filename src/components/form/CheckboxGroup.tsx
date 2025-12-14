@@ -4,6 +4,8 @@ import Checkbox from "./Checkbox";
 interface CheckboxOption {
   value: string;
   label: string;
+  image?: string;
+  svg?: string;
 }
 
 interface CheckboxGroupProps {
@@ -64,6 +66,8 @@ const CheckboxGroup: FC<CheckboxGroupProps> = ({
             checked={value.includes(option.value)}
             onChange={(checked) => handleChange(option.value, checked)}
             disabled={disabled}
+            image={option.image}
+            svg={option.svg}
           />
         ))}
       </div>

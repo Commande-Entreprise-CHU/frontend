@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import DynamicForm from "../../components/DynamicForm";
+import DynamicForm from "../../components/form/DynamicForm";
 import PageHeader from "../../components/PageHeader";
 import { FileText } from "lucide-react";
 import { usePatient, useUpdatePatientSection } from "../../hooks/patientHooks";
@@ -34,6 +34,7 @@ export default function GenericForm({
     error: templateError,
   } = useActiveTemplateByType(slug || "");
   const updateSectionMutation = useUpdatePatientSection();
+  const { showToast } = useToast();
 
   const [config, setConfig] = useState<FormConfig | null>(null);
   const [templateString, setTemplateString] = useState<string>("");
@@ -79,7 +80,7 @@ export default function GenericForm({
     sexe: patient.sexe,
   };
 
-  const { showToast } = useToast();
+
 
   const handleSubmit = (formValues: any) => {
     if (!id || !consultationTypeId) return;

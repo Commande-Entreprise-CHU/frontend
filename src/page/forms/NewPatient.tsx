@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import DynamicForm from "../../components/DynamicForm";
+import DynamicForm from "../../components/form/DynamicForm";
 import PatientJson from "../../utils/json/Patient.json" with { type: "json" };
 import { useCreatePatient } from "../../hooks/patientHooks";
 import { UserPlus } from "lucide-react";

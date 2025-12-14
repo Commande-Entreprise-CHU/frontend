@@ -1,5 +1,6 @@
+
 import { useMemo, type FC } from "react";
-import type { TeethData } from "../types/teethTypes";
+import { type TeethData } from "../../types/teethTypes";
 import type { ToothOption } from "./TeethSelector";
 
 interface TeethSummaryProps {
