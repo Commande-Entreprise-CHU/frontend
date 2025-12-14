@@ -12,6 +12,7 @@ import TeethSelector from "./TeethSelector";
 import Button from "../Button";
 import type { AnyFormField, FormConfig } from "../../types";
 import { createTxt } from "../../utils/textLogic/createTxt";
+import { useToast } from "../../context/ToastContext";
 
 interface DynamicFormProps {
   config: FormConfig;
@@ -34,6 +35,7 @@ const DynamicForm = ({
   showTextGeneration = true,
   submitButtonText = "Sauvegarder",
 }: DynamicFormProps) => {
+  const { showToast } = useToast();
   const [formData, setFormData] = useState<Record<string, any>>(() => {
     const data: Record<string, any> = {};
 
@@ -124,15 +126,7 @@ const DynamicForm = ({
     }
   }, [formData, templateString, showTextGeneration, config]);
 
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(generatedText);
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy text: ", err);
-    }
-  };
+
 
   const validateFields = useCallback((sections: any[], data: any): string[] => {
     let missing: string[] = [];
@@ -185,6 +179,35 @@ const DynamicForm = ({
       setMissingFields(missing);
     }
   }, [formData, config, validateFields, hasAttemptedSubmit]);
+
+  const handleCopy = async () => {
+    const missing = validateFields(config.sections || [], formData);
+    
+    if (missing.length > 0) {
+      setMissingFields(missing);
+      setHasAttemptedSubmit(true);
+      
+      showToast("Veuillez remplir les champs manquants avant de copier le texte.", "error");
+
+      // Scroll to first missing field
+      const firstMissing = document.getElementsByName(missing[0])[0];
+      if (firstMissing) {
+        firstMissing.scrollIntoView({ behavior: "smooth", block: "center" });
+        firstMissing.focus();
+      }
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(generatedText);
+      setIsCopied(true);
+      showToast("Texte copié dans le presse-papier !", "success");
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+      showToast("Erreur lors de la copie du texte.", "error");
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
