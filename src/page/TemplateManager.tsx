@@ -1,6 +1,27 @@
 import { useState, useMemo, useEffect } from "react";
-import DynamicForm from "../components/DynamicForm";
-import { Edit, Trash2 } from "lucide-react";
+import DynamicForm from "../components/form/DynamicForm";
+import Button from "../components/Button";
+import Input from "../components/form/Input";
+import Card from "../components/Card";
+import IconButton from "../components/IconButton";
+import PageHeader from "../components/PageHeader";
+import {
+  Edit,
+  Trash2,
+  Plus,
+  Save,
+  X,
+  ArrowUp,
+  ArrowDown,
+  FileJson,
+  FileCode,
+  FileText,
+  CheckCircle2,
+  AlertTriangle,
+  Check,
+  AlertCircle,
+  Download,
+} from "lucide-react";
 import {
   useConsultationTypes,
   useTemplatesByType,
@@ -9,8 +30,29 @@ import {
   useCreateTemplateVersion,
   useSetActiveTemplate,
   useDeleteTemplateVersion,
+  useDeleteConsultationType,
 } from "../hooks/templateHooks";
+import { useToast } from "../context/ToastContext";
 import type { ConsultationType } from "../endpoints/templateEndpoints";
+import { createTxt } from "../utils/textLogic/createTxt";
+
+import CodeEditor from "../components/CodeEditor";
+import "prismjs/components/prism-markup";
+import "prismjs/components/prism-markup-templating";
+import "prismjs/components/prism-json";
+import "prismjs/components/prism-handlebars";
+import "prismjs/themes/prism-tomorrow.css";
+
+const getNextVersion = (currentVersion: string) => {
+  if (!currentVersion) return "1";
+  const parts = currentVersion.split(".");
+  const last = parseInt(parts[parts.length - 1]);
+  if (!isNaN(last)) {
+    parts[parts.length - 1] = (last + 1).toString();
+    return parts.join(".");
+  }
+  return currentVersion + ".1";
+};
 
 // Helper to extract fields from JSON structure
 const extractFieldsFromJson = (json: any): string[] => {
@@ -87,6 +129,7 @@ const extractVarsFromTemplate = (template: string): string[] => {
 };
 
 export default function TemplateManager() {
+  const [showDocs, setShowDocs] = useState(true);
   const [selectedType, setSelectedType] = useState<ConsultationType | null>(
     null
   );
@@ -125,6 +168,8 @@ export default function TemplateManager() {
     "structure"
   );
   const [showPreview, setShowPreview] = useState(false);
+  const [previewFormData, setPreviewFormData] = useState<any>({});
+  const [showTemplatePreview, setShowTemplatePreview] = useState(false);
 
   const sortedTypes = useMemo(() => {
     if (!types) return [];
@@ -135,15 +180,27 @@ export default function TemplateManager() {
   useEffect(() => {
     if (templates) {
       const activeTemplate = templates.find((t) => t.isActive);
+
+      // Calculate next version based on the latest template (templates are sorted by createdAt desc)
+      const latestVersion = templates.length > 0 ? templates[0].version : "0";
+      const nextVersion = getNextVersion(latestVersion);
+
       if (activeTemplate) {
-        setNewVersion(activeTemplate.version);
+        setNewVersion(nextVersion);
         setNewStructure(JSON.stringify(activeTemplate.structure, null, 2));
         setNewTemplateStr(activeTemplate.template);
         setSelectedTemplateId(activeTemplate.id);
       } else {
-        setNewVersion("");
-        setNewStructure("");
-        setNewTemplateStr("");
+        // No active template
+        if (templates.length > 0) {
+          setNewVersion(nextVersion);
+          setNewStructure(JSON.stringify(templates[0].structure, null, 2));
+          setNewTemplateStr(templates[0].template);
+        } else {
+          setNewVersion("1");
+          setNewStructure("");
+          setNewTemplateStr("");
+        }
         setSelectedTemplateId(null);
       }
     }
@@ -230,7 +287,27 @@ export default function TemplateManager() {
     });
   };
 
+  const [typeToDelete, setTypeToDelete] = useState<ConsultationType | null>(null);
+  const { mutate: deleteType } = useDeleteConsultationType();
+
+  const handleConfirmDeleteType = async () => {
+    if (!typeToDelete) return;
+    deleteType(typeToDelete.id, {
+      onSuccess: () => {
+        setTypeToDelete(null);
+        if (selectedType?.id === typeToDelete.id) {
+          setSelectedType(null);
+        }
+        showToast("Type de consultation supprimé", "success");
+      },
+      onError: () => {
+        showToast("Erreur lors de la suppression", "error");
+      },
+    });
+  };
+
   const { mutate: createTemplate } = useCreateTemplateVersion();
+  const { showToast } = useToast();
 
   const handleCreateTemplate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -240,7 +317,7 @@ export default function TemplateManager() {
     try {
       structureJson = JSON.parse(newStructure);
     } catch (e) {
-      alert("Invalid JSON structure");
+      showToast("Structure JSON invalide", "error");
       return;
     }
 
@@ -256,7 +333,7 @@ export default function TemplateManager() {
           setNewVersion("");
           setNewStructure("");
           setNewTemplateStr("");
-          alert("Version créée avec succès !");
+          showToast("Version créée avec succès !", "success");
         },
       }
     );
@@ -291,8 +368,19 @@ export default function TemplateManager() {
     const missingInTemplate = jsonFields.filter(
       (f) => !templateVars.includes(f)
     );
+    const AUTOMATIC_VARS = [
+      "nom",
+      "prenom",
+      "dateNaissance",
+      "ipp",
+      "sexe",
+      "chirurgienNom",
+      "chirurgienPrenom",
+      "chu",
+    ];
+
     const missingInStructure = templateVars.filter(
-      (v) => !jsonFields.includes(v)
+      (v) => !jsonFields.includes(v) && !AUTOMATIC_VARS.includes(v)
     );
 
     return { missingInTemplate, missingInStructure };
@@ -306,435 +394,651 @@ export default function TemplateManager() {
     }
   }, [newStructure]);
 
-  return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">
-        Gestion des Modèles de Consultation
-      </h1>
+  const templatePreviewText = useMemo(() => {
+    if (!parsedStructure || !newTemplateStr) return "";
+    try {
+      return createTxt({
+        config: parsedStructure,
+        formData: previewFormData,
+        template: newTemplateStr,
+      });
+    } catch (e) {
+      return "Erreur lors de la génération du texte : " + (e as any).message;
+    }
+  }, [parsedStructure, previewFormData, newTemplateStr]);
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+  return (
+    <div className="p-4 w-full">
+      <PageHeader
+        icon={FileCode}
+        title="Gestion des Modèles"
+        subtitle="Créez et modifiez les types de consultation et leurs versions"
+      />
+
+      <div className="bg-base-100 border border-base-300 rounded-xl mb-4 overflow-hidden">
+        <div
+          className="p-4 bg-base-200/50 flex items-center justify-between cursor-pointer hover:bg-base-200 transition-colors"
+          onClick={() => setShowDocs(!showDocs)}
+        >
+          <div className="flex items-center gap-2 font-medium">
+            <FileText className="w-5 h-5 text-primary" />
+            <span>Documentation & Aide</span>
+          </div>
+          {showDocs ? <ArrowUp size={18} /> : <ArrowDown size={18} />}
+        </div>
+
+        {showDocs && (
+          <div className="p-3 border-t border-base-300 text-sm">
+            <p className="mb-2 text-base-content/80">
+              Voici 3 documents utiles pour comprendre comment créer des modèles
+              (à lire ou à envoyer à une IA pour générer les modèles) :
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <a
+                href="/docs/consultationData.md"
+                download
+                className="btn btn-outline btn-sm gap-2 normal-case"
+              >
+                <Download size={16} />
+                Données de Consultation
+              </a>
+              <a
+                href="/docs/consultationJson.md"
+                download
+                className="btn btn-outline btn-sm gap-2 normal-case"
+              >
+                <Download size={16} />
+                Structure JSON
+              </a>
+              <a
+                href="/docs/consultationTemplate.md"
+                download
+                className="btn btn-outline btn-sm gap-2 normal-case"
+              >
+                <Download size={16} />
+                Template Handlebars
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
         {/* Left Column: Types */}
-        <div className="card bg-base-100 shadow border border-base-300 h-fit lg:col-span-1">
-          <div className="card-body p-4">
-            <h2 className="card-title text-lg">Types de Consultation</h2>
-            {typesLoading ? (
-              <p>Chargement...</p>
-            ) : typesError ? (
-              <p className="text-error">Erreur: {typesError.message}</p>
-            ) : (
-              <ul className="menu bg-base-200 w-full rounded-box p-2">
-                {sortedTypes.map((type, index) => (
-                  <li key={type.id} className="mb-1">
-                    {editingTypeId === type.id ? (
-                      <div className="flex flex-col gap-2 p-2 bg-base-100 border rounded">
-                        <input
-                          className="input input-xs input-bordered w-full"
-                          value={editTypeName}
-                          onChange={(e) => setEditTypeName(e.target.value)}
-                        />
-                        <input
-                          className="input input-xs input-bordered w-full"
-                          value={editTypeSlug}
-                          onChange={(e) => setEditTypeSlug(e.target.value)}
-                        />
-                        <div className="flex gap-2 justify-end">
-                          <button
-                            className="btn btn-xs btn-success"
-                            onClick={handleSaveEditType}
-                          >
-                            OK
-                          </button>
-                          <button
-                            className="btn btn-xs btn-ghost"
-                            onClick={() => setEditingTypeId(null)}
-                          >
-                            X
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div
-                        className={`flex justify-between items-center rounded px-2 py-1 ${
-                          selectedType?.id === type.id
-                            ? "bg-primary text-primary-content"
-                            : "hover:bg-base-300"
-                        }`}
-                      >
-                        <a
-                          className="flex-1 truncate cursor-pointer font-medium"
-                          onClick={() => setSelectedType(type)}
+        <Card
+          title="Types de Consultation"
+          className="h-fit lg:col-span-1 border-base-300 min-w-0"
+          bodyClassName="p-4"
+        >
+          {typesLoading ? (
+            <div className="flex justify-center py-4">
+              <span className="loading loading-spinner loading-md text-primary"></span>
+            </div>
+          ) : typesError ? (
+            <div className="alert alert-error text-sm p-2">
+              <span>Erreur: {typesError.message}</span>
+            </div>
+          ) : (
+            <ul className="menu bg-base-200/50 w-full rounded-xl p-2 gap-1">
+              {sortedTypes.map((type, index) => (
+                <li key={type.id}>
+                  {editingTypeId === type.id ? (
+                    <div className="flex flex-col gap-2 p-3 bg-base-100 border border-primary/20 rounded-lg shadow-sm">
+                      <Input
+                        name="editTypeName"
+                        value={editTypeName}
+                        onChange={(e) => setEditTypeName(e.target.value)}
+                        placeholder="Nom"
+                        className="w-full"
+                      />
+                      <Input
+                        name="editTypeSlug"
+                        value={editTypeSlug}
+                        onChange={(e) => setEditTypeSlug(e.target.value)}
+                        placeholder="Slug"
+                        className="w-full"
+                      />
+                      <div className="flex gap-2 justify-end w-full">
+                        <Button
+                          variant="ghost"
+                          size="xs"
+                          onClick={() => setEditingTypeId(null)}
+                          icon={X}
                         >
-                          {type.name}
-                        </a>
-                        <div className="flex gap-1">
-                          <button
-                            className={`btn btn-xs btn-ghost px-1 ${
+                          Annuler
+                        </Button>
+                        <Button
+                          variant="success"
+                          size="xs"
+                          onClick={handleSaveEditType}
+                          icon={Save}
+                        >
+                          OK
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      className={`flex justify-between items-center rounded-lg px-3 py-2 transition-all w-full max-w-full ${
+                        selectedType?.id === type.id
+                          ? "bg-primary text-primary-content shadow-md"
+                          : "hover:bg-base-300"
+                      }`}
+                    >
+                      <a
+                        className="flex-1 min-w-0 whitespace-normal break-words cursor-pointer font-medium pr-2"
+                        onClick={() => setSelectedType(type)}
+                        title={type.name}
+                      >
+                        {type.name}
+                      </a>
+                      <div className="flex gap-1 items-center shrink-0">
+                        <IconButton
+                          icon={Edit}
+                          size="xs"
+                          variant="ghost"
+                          iconSize={14}
+                          className={
+                            selectedType?.id === type.id
+                              ? "text-primary-content hover:bg-primary-focus"
+                              : ""
+                          }
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingTypeId(type.id);
+                            setEditTypeName(type.name);
+                            setEditTypeSlug(type.slug);
+                          }}
+                        />
+                        <div className="flex flex-col gap-0.5">
+                          <IconButton
+                            icon={ArrowUp}
+                            variant="ghost"
+                            size="xs"
+                            iconSize={12}
+                            disabled={index === 0}
+                            className={
                               selectedType?.id === type.id
                                 ? "text-primary-content hover:bg-primary-focus"
                                 : ""
-                            }`}
+                            }
                             onClick={(e) => {
                               e.stopPropagation();
-                              setEditingTypeId(type.id);
-                              setEditTypeName(type.name);
-                              setEditTypeSlug(type.slug);
+                              handleMoveType(index, "up");
                             }}
-                          >
-                            <Edit size={14} />
-                          </button>
-                          <div className="flex flex-col">
-                            <button
-                              className={`btn btn-[10px] min-h-0 h-4 btn-ghost px-0 leading-none ${
-                                selectedType?.id === type.id
-                                  ? "text-primary-content hover:bg-primary-focus"
-                                  : ""
-                              }`}
-                              disabled={index === 0}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleMoveType(index, "up");
-                              }}
-                            >
-                              ▲
-                            </button>
-                            <button
-                              className={`btn btn-[10px] min-h-0 h-4 btn-ghost px-0 leading-none ${
-                                selectedType?.id === type.id
-                                  ? "text-primary-content hover:bg-primary-focus"
-                                  : ""
-                              }`}
-                              disabled={index === sortedTypes.length - 1}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleMoveType(index, "down");
-                              }}
-                            >
-                              ▼
-                            </button>
-                          </div>
+                          />
+                          <IconButton
+                            icon={ArrowDown}
+                            variant="ghost"
+                            size="xs"
+                            iconSize={12}
+                            disabled={index === sortedTypes.length - 1}
+                            className={
+                              selectedType?.id === type.id
+                                ? "text-primary-content hover:bg-primary-focus"
+                                : ""
+                            }
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleMoveType(index, "down");
+                            }}
+                          />
                         </div>
+                        <IconButton
+                          icon={Trash2}
+                          size="xs"
+                          variant="ghost"
+                          iconSize={14}
+                          className={
+                            selectedType?.id === type.id
+                              ? "text-primary-content hover:bg-white/20"
+                              : "text-error hover:bg-error/10"
+                          }
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setTypeToDelete(type);
+                          }}
+                        />
                       </div>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
 
-            <div className="divider my-2">Nouveau Type</div>
-            <form onSubmit={handleCreateType} className="space-y-2">
-              <input
-                type="text"
-                placeholder="Nom (ex: Première Consult)"
-                className="input input-bordered w-full input-sm"
-                value={newTypeName}
-                onChange={(e) => setNewTypeName(e.target.value)}
-                required
-              />
-              <input
-                type="text"
-                placeholder="Slug (ex: pre-consult)"
-                className="input input-bordered w-full input-sm"
-                value={newTypeSlug}
-                onChange={(e) => setNewTypeSlug(e.target.value)}
-                required
-              />
-              <button type="submit" className="btn btn-primary btn-sm w-full">
-                Ajouter
-              </button>
-            </form>
+          <div className="divider my-4 text-xs font-medium text-base-content/50">
+            NOUVEAU TYPE
           </div>
-        </div>
+          <form onSubmit={handleCreateType} className="space-y-3">
+            <Input
+              name="newTypeName"
+              placeholder="Nom (ex: Première Consult)"
+              value={newTypeName}
+              onChange={(e) => setNewTypeName(e.target.value)}
+              required
+            />
+            <Input
+              name="newTypeSlug"
+              placeholder="Slug (ex: pre-consult)"
+              value={newTypeSlug}
+              onChange={(e) => setNewTypeSlug(e.target.value)}
+              required
+            />
+            <Button
+              type="submit"
+              variant="primary"
+              size="sm"
+              className="w-full"
+              icon={Plus}
+            >
+              Ajouter
+            </Button>
+          </form>
+        </Card>
 
         {/* Right Column: Templates */}
-        <div className="lg:col-span-3 space-y-6">
+        <div className="lg:col-span-3 space-y-4">
           {selectedType ? (
             <>
               {/* Existing Versions List */}
-              <div className="card bg-base-100 shadow border border-base-300">
-                <div className="card-body p-4">
-                  <h2 className="card-title text-lg">
+              <Card
+                title={
+                  <div className="flex items-center gap-2">
+                    <FileJson className="w-5 h-5 text-primary" />
                     Versions pour "{selectedType.name}"
-                  </h2>
-
-                  <div className="overflow-x-auto">
-                    <table className="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Version</th>
-                          <th>Date</th>
-                          <th>Statut</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {templatesLoading ? (
-                          <tr>
-                            <td colSpan={4} className="text-center">
-                              Chargement...
-                            </td>
-                          </tr>
-                        ) : templatesError ? (
-                          <tr>
-                            <td colSpan={4} className="text-center text-error">
-                              Erreur: {templatesError.message}
-                            </td>
-                          </tr>
-                        ) : templates && templates.length > 0 ? (
-                          templates.map((tmpl) => (
-                            <tr
-                              key={tmpl.id}
-                              className={`${
-                                tmpl.isActive ? "bg-base-200" : ""
-                              } ${
-                                selectedTemplateId === tmpl.id
-                                  ? "border-l-4 border-primary bg-base-200"
-                                  : ""
-                              }`}
-                            >
-                              <td className="font-bold">
-                                {tmpl.version}
-                                {selectedTemplateId === tmpl.id && (
-                                  <span className="ml-2 text-xs text-primary">
-                                    (Édition)
-                                  </span>
-                                )}
-                              </td>
-                              <td>
-                                {new Date(tmpl.createdAt).toLocaleDateString()}
-                              </td>
-                              <td>
-                                {tmpl.isActive ? (
-                                  <span className="badge badge-success badge-sm">
-                                    Actif
-                                  </span>
-                                ) : (
-                                  <span className="badge badge-ghost badge-sm">
-                                    Inactif
-                                  </span>
-                                )}
-                              </td>
-                              <td>
-                                {!tmpl.isActive && (
-                                  <button
-                                    className="btn btn-xs btn-outline btn-primary"
-                                    onClick={() => handleActivate(tmpl.id)}
-                                  >
-                                    Activer
-                                  </button>
-                                )}
-                                <button
-                                  className="btn btn-xs btn-outline btn-secondary ml-2"
-                                  onClick={() => {
-                                    setNewVersion(tmpl.version); // Keep same version string to edit easily
-                                    setNewStructure(
-                                      JSON.stringify(tmpl.structure, null, 2)
-                                    );
-                                    setNewTemplateStr(tmpl.template);
-                                    setSelectedTemplateId(tmpl.id);
-                                  }}
-                                >
-                                  Editer
-                                </button>
-                                <button
-                                  className="btn btn-xs btn-outline btn-error ml-2"
-                                  onClick={() => handleDeleteTemplate(tmpl.id)}
-                                >
-                                  <Trash2 size={14} />
-                                </button>
-                              </td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td
-                              colSpan={4}
-                              className="text-center text-gray-500"
-                            >
-                              Aucune version trouvée
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
                   </div>
-                </div>
-              </div>
-
-              {/* New Version Editor */}
-              <div className="card bg-base-100 shadow border border-base-300">
-                <div className="card-body p-4">
-                  <h2 className="card-title text-lg mb-4">
-                    Éditeur de Version
-                  </h2>
-
-                  <div className="form-control mb-4">
-                    <label className="label">
-                      <span className="label-text font-bold">
-                        Numéro de Version
-                      </span>
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="ex: 1.3"
-                      className="input input-bordered w-full max-w-xs"
-                      value={newVersion}
-                      onChange={(e) => setNewVersion(e.target.value)}
-                    />
-                  </div>
-
-                  {/* Tabs */}
-                  <div role="tablist" className="tabs tabs-lifted mb-4">
-                    <a
-                      role="tab"
-                      className={`tab ${
-                        activeTab === "structure" ? "tab-active" : ""
-                      }`}
-                      onClick={() => setActiveTab("structure")}
-                    >
-                      Structure JSON
-                    </a>
-                    <a
-                      role="tab"
-                      className={`tab ${
-                        activeTab === "template" ? "tab-active" : ""
-                      }`}
-                      onClick={() => setActiveTab("template")}
-                    >
-                      Template Handlebars
-                    </a>
-                  </div>
-
-                  {/* Tab Content */}
-                  <div className="bg-base-100 border-base-300 rounded-b-box border p-4 min-h-[400px]">
-                    {/* Structure Tab */}
-                    {activeTab === "structure" && (
-                      <div className="space-y-4">
-                        <div className="flex justify-end">
-                          <label className="label cursor-pointer gap-2">
-                            <span className="label-text">Mode Aperçu</span>
-                            <input
-                              type="checkbox"
-                              className="toggle toggle-primary"
-                              checked={showPreview}
-                              onChange={(e) => setShowPreview(e.target.checked)}
-                            />
-                          </label>
-                        </div>
-
-                        {showPreview ? (
-                          <div className="border rounded p-4 bg-gray-50 min-h-[300px]">
-                            {parsedStructure ? (
-                              <DynamicForm
-                                config={parsedStructure}
-                                readOnly={true}
-                                showTextGeneration={false}
-                                submitButtonText="Aperçu (Bouton)"
-                              />
+                }
+                bodyClassName="p-6"
+              >
+                <div className="space-y-3">
+                  {templatesLoading ? (
+                    <div className="flex justify-center py-8">
+                      <span className="loading loading-spinner loading-md text-primary"></span>
+                    </div>
+                  ) : templatesError ? (
+                    <div className="alert alert-error text-sm">
+                      <AlertCircle size={16} />
+                      <span>Erreur: {templatesError.message}</span>
+                    </div>
+                  ) : templates && templates.length > 0 ? (
+                    templates.map((tmpl) => (
+                      <div
+                        key={tmpl.id}
+                        className={`group flex items-center justify-between p-4 rounded-xl border transition-all duration-200 ${
+                          tmpl.isActive
+                            ? "bg-base-100 border-primary/30 shadow-sm"
+                            : "bg-base-100 border-base-200 hover:border-base-300"
+                        } ${
+                          selectedTemplateId === tmpl.id
+                            ? "ring-2 ring-primary ring-offset-2"
+                            : ""
+                        }`}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div
+                            className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                              tmpl.isActive
+                                ? "bg-primary/10 text-primary"
+                                : "bg-base-200 text-base-content/50"
+                            }`}
+                          >
+                            {tmpl.isActive ? (
+                              <CheckCircle2 size={20} />
                             ) : (
-                              <div className="text-error">JSON invalide</div>
+                              <FileCode size={20} />
                             )}
                           </div>
-                        ) : (
-                          <textarea
-                            className="textarea textarea-bordered w-full h-[400px] font-mono text-xs"
-                            placeholder='{"metadata": ...}'
-                            value={newStructure}
-                            onChange={(e) => setNewStructure(e.target.value)}
-                          ></textarea>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Template Tab */}
-                    {activeTab === "template" && (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-full">
-                        <div className="md:col-span-2">
-                          <textarea
-                            className="textarea textarea-bordered w-full h-[400px] font-mono text-xs"
-                            placeholder="{{#if ...}}"
-                            value={newTemplateStr}
-                            onChange={(e) => setNewTemplateStr(e.target.value)}
-                          ></textarea>
-                        </div>
-                        <div className="md:col-span-1 bg-base-200 p-3 rounded text-sm overflow-y-auto max-h-[400px]">
-                          <h3 className="font-bold mb-2">Validation</h3>
-                          {validationResult ? (
-                            <div className="space-y-4">
-                              <div>
-                                <div className="font-semibold text-warning mb-1">
-                                  Manquant dans le Template (
-                                  {validationResult.missingInTemplate.length})
-                                </div>
-                                {validationResult.missingInTemplate.length >
-                                0 ? (
-                                  <ul className="list-disc list-inside text-xs text-base-content/70">
-                                    {validationResult.missingInTemplate.map(
-                                      (f) => (
-                                        <li key={f}>{f}</li>
-                                      )
-                                    )}
-                                  </ul>
-                                ) : (
-                                  <div className="text-success text-xs">
-                                    Tout est utilisé !
-                                  </div>
-                                )}
-                              </div>
-
-                              <div className="divider my-1"></div>
-
-                              <div>
-                                <div className="font-semibold text-error mb-1">
-                                  Inconnu dans la Structure (
-                                  {validationResult.missingInStructure.length})
-                                </div>
-                                {validationResult.missingInStructure.length >
-                                0 ? (
-                                  <ul className="list-disc list-inside text-xs text-base-content/70">
-                                    {validationResult.missingInStructure.map(
-                                      (v) => (
-                                        <li key={v}>{v}</li>
-                                      )
-                                    )}
-                                  </ul>
-                                ) : (
-                                  <div className="text-success text-xs">
-                                    Aucune variable inconnue !
-                                  </div>
-                                )}
-                              </div>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-base">
+                                v{tmpl.version}
+                              </span>
+                              {tmpl.isActive && (
+                                <span className="badge badge-primary badge-sm">
+                                  Actif
+                                </span>
+                              )}
+                              {selectedTemplateId === tmpl.id && (
+                                <span className="badge badge-ghost badge-sm animate-pulse">
+                                  Édition
+                                </span>
+                              )}
                             </div>
+                            <div className="text-xs text-base-content/60 mt-0.5">
+                              Créé le{" "}
+                              {new Date(tmpl.createdAt).toLocaleDateString()}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                          {!tmpl.isActive && (
+                            <IconButton
+                              icon={Check}
+                              tooltip="Activer cette version"
+                              tooltipPosition="left"
+                              variant="ghost"
+                              size="sm"
+                              colorClass="text-success hover:bg-success/10"
+                              onClick={() => handleActivate(tmpl.id)}
+                            />
+                          )}
+                          <IconButton
+                            icon={Edit}
+                            tooltip="Éditer / Voir"
+                            tooltipPosition="left"
+                            variant="ghost"
+                            size="sm"
+                            colorClass="text-primary hover:bg-primary/10"
+                            onClick={() => {
+                              setNewVersion(tmpl.version);
+                              setNewStructure(
+                                JSON.stringify(tmpl.structure, null, 2)
+                              );
+                              setNewTemplateStr(tmpl.template);
+                              setSelectedTemplateId(tmpl.id);
+                            }}
+                          />
+                          <IconButton
+                            icon={Trash2}
+                            tooltip="Supprimer"
+                            tooltipPosition="left"
+                            variant="ghost"
+                            size="sm"
+                            colorClass="text-error hover:bg-error/10"
+                            onClick={() => handleDeleteTemplate(tmpl.id)}
+                          />
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-12 bg-base-200/30 rounded-xl border border-dashed border-base-300">
+                      <FileJson className="w-12 h-12 text-base-content/20 mx-auto mb-3" />
+                      <p className="text-base-content/50 font-medium">
+                        Aucune version trouvée pour ce type.
+                      </p>
+                      <p className="text-xs text-base-content/40 mt-1">
+                        Créez une nouvelle version ci-dessous.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </Card>
+
+              {/* New Version Editor */}
+              <Card
+                title="Éditeur de Version"
+                className="border-base-300"
+                bodyClassName="p-4"
+              >
+                <div className="form-control mb-6">
+                  <label className="label">
+                    <span className="label-text font-medium">
+                      Numéro de Version
+                    </span>
+                  </label>
+                  <Input
+                    name="version"
+                    type="text"
+                    placeholder="ex: 1.3"
+                    value={newVersion}
+                    onChange={(e) => setNewVersion(e.target.value)}
+                    className="w-full max-w-xs"
+                  />
+                </div>
+
+                {/* Tabs */}
+                <div className="tabs tabs-boxed bg-base-200/50 p-1 gap-1 mb-4">
+                  <a
+                    role="tab"
+                    className={`tab tab-lg h-12 px-6 rounded-lg transition-all duration-200 gap-2 ${
+                      activeTab === "structure"
+                        ? "tab-active bg-base-100 shadow-sm text-primary font-bold border border-base-200"
+                        : "hover:bg-base-200"
+                    }`}
+                    onClick={() => setActiveTab("structure")}
+                  >
+                    <FileJson className="w-4 h-4" />
+                    Structure JSON
+                  </a>
+                  <a
+                    role="tab"
+                    className={`tab tab-lg h-12 px-6 rounded-lg transition-all duration-200 gap-2 ${
+                      activeTab === "template"
+                        ? "tab-active bg-base-100 shadow-sm text-primary font-bold border border-base-200"
+                        : "hover:bg-base-200"
+                    }`}
+                    onClick={() => setActiveTab("template")}
+                  >
+                    <FileText className="w-4 h-4" />
+                    Template Handlebars
+                  </a>
+                </div>
+
+                {/* Tab Content */}
+                <div className="bg-base-100 border-base-300 rounded-xl border p-6 min-h-[500px]">
+                  {/* Structure Tab */}
+                  {activeTab === "structure" && (
+                    <div className="space-y-4">
+                      <div className="flex justify-end">
+                        <label className="label cursor-pointer gap-2 select-none">
+                          <span className="label-text font-medium">
+                            Mode Aperçu
+                          </span>
+                          <input
+                            type="checkbox"
+                            className="toggle toggle-primary toggle-sm"
+                            checked={showPreview}
+                            onChange={(e) => setShowPreview(e.target.checked)}
+                          />
+                        </label>
+                      </div>
+
+                      {showPreview ? (
+                        <div className="border border-base-300 rounded-lg p-6 bg-base-50 min-h-[400px] shadow-inner">
+                          {parsedStructure ? (
+                            <DynamicForm
+                              config={parsedStructure}
+                              readOnly={false}
+                              showTextGeneration={false}
+                              submitButtonText="Aperçu (Bouton)"
+                              onChange={(data) => setPreviewFormData(data)}
+                            />
                           ) : (
-                            <div className="text-base-content/50 italic">
-                              Ajoutez une structure JSON valide pour voir
-                              l'analyse.
+                            <div className="alert alert-error">
+                              <AlertCircle className="w-5 h-5" />
+                              <span>JSON invalide</span>
                             </div>
                           )}
                         </div>
-                      </div>
-                    )}
-                  </div>
+                      ) : (
+                        <div className="border rounded-lg overflow-hidden border-base-300 h-[500px] overflow-y-auto bg-base-100">
+                          <CodeEditor
+                            value={newStructure}
+                            onChange={(code) => setNewStructure(code)}
+                            language="json"
+                            style={{
+                              fontFamily: '"Fira code", "Fira Mono", monospace',
+                              fontSize: 14,
+                            }}
+                            className="min-h-full"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
 
-                  <div className="mt-4 flex justify-end">
-                    <button
-                      className="btn btn-primary"
-                      onClick={handleCreateTemplate}
-                      disabled={!newVersion || !newStructure || !newTemplateStr}
-                    >
-                      Enregistrer la version {newVersion}
-                    </button>
-                  </div>
+                  {/* Template Tab */}
+                  {activeTab === "template" && (
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
+                      <div className="lg:col-span-2">
+                        <div className="flex justify-end mb-2">
+                          <label className="label cursor-pointer gap-2 select-none">
+                            <span className="label-text font-medium">
+                              Aperçu Texte
+                            </span>
+                            <input
+                              type="checkbox"
+                              className="toggle toggle-primary toggle-sm"
+                              checked={showTemplatePreview}
+                              onChange={(e) =>
+                                setShowTemplatePreview(e.target.checked)
+                              }
+                            />
+                          </label>
+                        </div>
+                        <div className="border rounded-lg overflow-hidden border-base-300 h-[500px] overflow-y-auto bg-base-100">
+                          {showTemplatePreview ? (
+                            <div className="p-4 whitespace-pre-wrap font-mono text-sm">
+                              {templatePreviewText || (
+                                <span className="text-base-content/40 italic">
+                                  Aucun texte généré. Remplissez le formulaire
+                                  dans l'onglet "Structure JSON" pour voir un
+                                  aperçu.
+                                </span>
+                              )}
+                            </div>
+                          ) : (
+                            <CodeEditor
+                              value={newTemplateStr}
+                              onChange={(code) => setNewTemplateStr(code)}
+                              language="plaintext"
+                              style={{
+                                fontFamily:
+                                  '"Fira code", "Fira Mono", monospace',
+                                fontSize: 14,
+                              }}
+                              className="min-h-full"
+                            />
+                          )}
+                        </div>
+                      </div>
+                      <div className="lg:col-span-1 bg-base-200/50 p-4 rounded-lg border border-base-200 overflow-y-auto max-h-[500px]">
+                        <h3 className="font-bold mb-4 flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-success" />
+                          Validation
+                        </h3>
+                        {validationResult ? (
+                          <div className="space-y-6">
+                            <div>
+                              <div className="font-semibold text-warning mb-2 text-sm flex items-center gap-2">
+                                <AlertTriangle className="w-4 h-4" />
+                                Manquant dans le Template (
+                                {validationResult.missingInTemplate.length})
+                              </div>
+                              {validationResult.missingInTemplate.length > 0 ? (
+                                <ul className="menu menu-xs bg-base-100 rounded-box p-2 border border-base-200">
+                                  {validationResult.missingInTemplate.map(
+                                    (f) => (
+                                      <li key={f}>
+                                        <span className="text-base-content/70">
+                                          {f}
+                                        </span>
+                                      </li>
+                                    )
+                                  )}
+                                </ul>
+                              ) : (
+                                <div className="text-xs text-success flex items-center gap-1 pl-6">
+                                  <Check className="w-3 h-3" /> Aucun champ
+                                  manquant
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="divider my-1"></div>
+
+                            <div>
+                              <div className="font-semibold text-warning mb-2 text-sm flex items-center gap-2">
+                                <AlertTriangle className="w-4 h-4" />
+                                Manquant dans la Structure (
+                                {validationResult.missingInStructure.length})
+                              </div>
+                              {validationResult.missingInStructure.length >
+                              0 ? (
+                                <ul className="menu menu-xs bg-base-100 rounded-box p-2 border border-base-200">
+                                  {validationResult.missingInStructure.map(
+                                    (v) => (
+                                      <li key={v}>
+                                        <span className="text-base-content/70">
+                                          {v}
+                                        </span>
+                                      </li>
+                                    )
+                                  )}
+                                </ul>
+                              ) : (
+                                <div className="text-xs text-success flex items-center gap-1 pl-6">
+                                  <Check className="w-3 h-3" /> Aucun champ
+                                  manquant
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-sm text-base-content/50 italic text-center py-8">
+                            Modifiez la structure ou le template pour voir la
+                            validation.
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
+
+                <div className="flex justify-end pt-6 border-t border-base-200 mt-6">
+                  <Button
+                    variant="primary"
+                    onClick={handleCreateTemplate}
+                    disabled={!newVersion || !newStructure || !newTemplateStr}
+                    icon={Save}
+                    className="min-w-[150px]"
+                  >
+                    Enregistrer la version
+                  </Button>
+                </div>
+              </Card>
             </>
           ) : (
-            <div className="alert alert-info">
-              Sélectionnez un type de consultation à gauche pour voir et gérer
-              ses modèles.
+            <div className="alert alert-info shadow-sm">
+              <AlertCircle className="w-5 h-5" />
+              <span>
+                Sélectionnez un type de consultation pour voir et gérer les
+                versions.
+              </span>
             </div>
           )}
         </div>
       </div>
+      {/* Confirmation Modal */}
+      {typeToDelete && (
+        <div className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg text-error flex items-center gap-2">
+              <AlertTriangle />
+              Supprimer ce type?
+            </h3>
+            <p className="py-4">
+              Êtes-vous sûr de vouloir supprimer le type de consultation{" "}
+              <strong>"{typeToDelete.name}"</strong> ?
+              <br />
+              <span className="text-sm opacity-70">
+                Cette action ne supprimera pas les données historiques mais masquera
+                ce type pour les nouveaux patients.
+              </span>
+            </p>
+            <div className="modal-action">
+              <Button variant="ghost" onClick={() => setTypeToDelete(null)}>
+                Annuler
+              </Button>
+              <Button variant="error" onClick={handleConfirmDeleteType}>
+                Confirmer la suppression
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

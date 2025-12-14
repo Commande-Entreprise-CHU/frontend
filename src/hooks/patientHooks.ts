@@ -4,10 +4,13 @@ import {
   searchPatients,
   createPatient,
   updateSection,
+  updatePatientCore,
+  deletePatient as deletePatientEndpoint,
   type Patient,
+  type CreatePatientResult,
 } from "../endpoints/patientEndpoints";
 
-export type { Patient };
+export type { Patient, CreatePatientResult };
 
 // --- Hooks ---
 
@@ -19,10 +22,15 @@ export const usePatient = (id: string) => {
   });
 };
 
-export const useSearchPatients = (query: string) => {
+export const useSearchPatients = (params: {
+  name?: string;
+  sexe?: string;
+  ipp?: string;
+  q?: string;
+}) => {
   return useQuery({
-    queryKey: ["patients", "search", query],
-    queryFn: () => searchPatients(query),
+    queryKey: ["patients", "search", params],
+    queryFn: () => searchPatients(params),
   });
 };
 
@@ -42,6 +50,28 @@ export const useUpdatePatientSection = () => {
     mutationFn: updateSection,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["patient", data.id] });
+    },
+  });
+};
+
+export const useUpdatePatientCore = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<Patient> }) =>
+      updatePatientCore(id, data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["patient", data.id] });
+      queryClient.invalidateQueries({ queryKey: ["patients"] });
+    },
+  });
+};
+
+export const useDeletePatient = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deletePatientEndpoint,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["patients"] });
     },
   });
 };

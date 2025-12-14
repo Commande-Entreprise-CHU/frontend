@@ -1,5 +1,6 @@
-import React, { useMemo } from "react";
-import type { TeethData } from "../types/teethTypes";
+
+import { useMemo, type FC } from "react";
+import { type TeethData } from "../../types/teethTypes";
 import type { ToothOption } from "./TeethSelector";
 
 interface TeethSummaryProps {
@@ -8,7 +9,7 @@ interface TeethSummaryProps {
   label?: string;
 }
 
-const TeethSummary: React.FC<TeethSummaryProps> = ({
+const TeethSummary: FC<TeethSummaryProps> = ({
   teethData,
   options,
   label = "Résumé du schéma dentaire",
@@ -33,7 +34,7 @@ const TeethSummary: React.FC<TeethSummaryProps> = ({
 
   // Filter out empty states and find the corresponding option
   const nonEmptyStates = options.filter(
-    (opt) => summary[opt.value]?.length > 0 && opt.value !== "saine"
+    (opt) => summary[opt.value]?.length > 0 && opt.value !== "Normal"
   );
 
   if (nonEmptyStates.length === 0) {

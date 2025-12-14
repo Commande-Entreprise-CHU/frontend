@@ -1,151 +1,182 @@
 import { useState } from "react";
-import Input from "../components/Input";
-import { Search } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import Input from "../components/form/Input";
+import Radio from "../components/form/Radio";
+import Card from "../components/Card";
+import Button from "../components/Button";
+import PageHeader from "../components/PageHeader";
+import PatientCard from "../components/PatientCard";
+import { Search, User, Hash, Clock } from "lucide-react";
 import { useSearchPatients } from "../hooks/patientHooks";
-import { formatDate } from "../utils/date";
+import { useMyRecentPatients } from "../hooks/statsHooks";
 
 function SearchPatient() {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     sexe: "",
     ipp: "",
     motifConsultation: "",
   });
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchParams, setSearchParams] = useState<{
+    name?: string;
+    sexe?: string;
+    ipp?: string;
+  }>({});
 
-  const {
-    data: resultados = [],
-    isLoading: loading,
-    error,
-  } = useSearchPatients(searchQuery);
+  const { data: resultados = [], isLoading: loading } =
+    useSearchPatients(searchParams);
+  const { data: recentPatients = [], isLoading: loadingRecent } =
+    useMyRecentPatients();
 
-  const handleInputChange = (data: { name: string; value: string | null }) => {
+  const handleInputChange = (data: {
+    name: string;
+    value: string | number | boolean | null;
+  }) => {
     setFormData((prev) => ({ ...prev, [data.name]: data.value }));
   };
 
   const handleBuscar = () => {
-    const query =
-      `${formData.name} ${formData.sexe} ${formData.ipp} ${formData.motifConsultation}`.trim();
-    if (!query) {
-      alert("Veuillez entrer quelque chose pour rechercher.");
-      return;
-    }
-    setSearchQuery(query);
+    setSearchParams({
+      name: formData.name,
+      sexe: formData.sexe,
+      ipp: formData.ipp,
+    });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") handleBuscar();
   };
 
+  const hasSearch = Object.values(searchParams).some((v) => !!v);
+
   return (
-    <div className="flex flex-col items-center p-8 bg-base-100 min-h-screen">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-primary">
-          Recherche de Patient
-        </h1>
-        <p className="text-sm opacity-70 mt-1">
-          Entrez le nom, le sexe, l'IPP ou le motif de consultation pour
-          rechercher.
-        </p>
-      </div>
-
-      <div
-        onKeyDown={handleKeyDown}
-        className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full max-w-4xl bg-base-200 p-5 rounded-lg shadow-sm"
-      >
-        <Input
-          label="Nom"
-          name="name"
-          placeholder="Ex: Jean"
-          value={formData.name}
-          setFormData={handleInputChange}
+    <div className="min-h-[calc(100vh-4rem)] p-6 md:p-12">
+      <div className="w-full mx-auto space-y-8">
+        {/* Header */}
+        <PageHeader
+          icon={Search}
+          title="Recherche de Patient"
+          subtitle="Retrouvez un dossier patient en utilisant les filtres ci-dessous"
         />
 
-        <Input
-          label="Sexe"
-          name="sexe"
-          placeholder="Ex: Femme"
-          value={formData.sexe}
-          setFormData={handleInputChange}
-        />
-
-        <Input
-          label="IPP"
-          name="ipp"
-          placeholder="Ex: 1234567"
-          value={formData.ipp}
-          setFormData={handleInputChange}
-        />
-
-        <Input
-          label="Motif de Consultation"
-          name="motifConsultation"
-          placeholder="Ex: Esthétique"
-          value={formData.motifConsultation}
-          setFormData={handleInputChange}
-        />
-      </div>
-
-      <div className="mt-5">
-        <button
-          onClick={handleBuscar}
-          className="btn btn-primary btn-md flex items-center gap-2"
-          disabled={loading}
+        {/* Search Form */}
+        <Card
+          className="shadow-lg"
+          bodyClassName="p-6 md:p-8"
+          actions={
+            <Button
+              variant="primary"
+              onClick={handleBuscar}
+              loading={loading}
+              startIcon={Search}
+              className="w-full md:w-auto"
+            >
+              Rechercher
+            </Button>
+          }
         >
-          <Search size={18} />
-          {loading ? "Recherche..." : "Rechercher"}
-        </button>
-      </div>
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+            onKeyDown={handleKeyDown}
+          >
+            <Input
+              label="Nom"
+              name="name"
+              placeholder="Ex: Jean"
+              value={formData.name}
+              setFormData={handleInputChange}
+              icon={<User size={18} />}
+            />
 
-      <div className="mt-8 w-full max-w-6xl">
-        {error ? (
-          <div className="text-center text-error font-semibold">
-            Erreur lors de la recherche.
-          </div>
-        ) : loading ? (
-          <div className="text-center text-primary font-semibold">
-            Chargement des résultats...
-          </div>
-        ) : resultados.length > 0 ? (
-          <div className="space-y-3">
-            {resultados.map((item, index) => (
-              <div
-                key={index}
-                className="flex flex-col md:flex-row justify-between items-start md:items-center bg-base-200 border border-base-300 rounded-lg px-6 py-3 shadow-sm hover:bg-primary hover:text-white cursor-pointer transition-all duration-200"
-                onClick={() => {
-                  navigate(`/patient/${item.id}`);
-                }}
-              >
-                <div className="flex flex-col md:flex-row gap-4 w-full justify-between">
-                  <div className="text-primary font-semibold text-lg">
-                    {item.name || "—"} {item.prenom || ""}
-                  </div>
+            <Radio
+              label="Sexe"
+              name="sexe"
+              value={formData.sexe}
+              setFormData={handleInputChange}
+              options={[
+                { label: "Tous", value: "" },
+                { label: "Homme", value: "homme" },
+                { label: "Femme", value: "femme" },
+              ]}
+            />
 
-                  <div className="text-sm opacity-80 flex flex-wrap gap-x-6 gap-y-1">
-                    <p>
-                      <strong>IPP:</strong> {item.ipp || "—"}
-                    </p>
-                    <p>
-                      <strong>Sexe:</strong> {item.sexe || "—"}
-                    </p>
-                    <p>
-                      <strong>Date de naissance:</strong>{" "}
-                      {formatDate(item.dob) || "—"}
-                    </p>
-                    {/* <p>
-                      <strong>Motif de consultation:</strong>{" "}
-                      {item.consultations?.["pre-consult"]?.motifConsultation ||
-                        "—"}
-                    </p> */}
-                  </div>
+            <Input
+              label="IPP"
+              name="ipp"
+              placeholder="Ex: 1234567"
+              value={formData.ipp}
+              setFormData={handleInputChange}
+              icon={<Hash size={18} />}
+            />
+          </div>
+        </Card>
+
+        {/* Results Section */}
+        {hasSearch && (
+          <div className="space-y-4 animate-fade-in">
+            <h2 className="text-xl font-semibold px-2">
+              Résultats ({resultados.length})
+            </h2>
+
+            <div className="grid grid-cols-1 gap-4">
+            {resultados.map((patient: any) => (
+                <PatientCard
+                  key={patient.id}
+                  id={patient.id}
+                  name={patient.name}
+                  prenom={patient.prenom}
+                  ipp={patient.ipp}
+                  sexe={patient.sexe}
+                  dob={patient.dob}
+                />
+              ))}
+
+              {resultados.length === 0 && !loading && (
+                <div className="text-center py-12 text-base-content/50 bg-base-100 rounded-xl border border-dashed border-base-300">
+                  <Search size={48} className="mx-auto mb-4 opacity-20" />
+                  <p>Aucun patient trouvé pour cette recherche.</p>
                 </div>
-              </div>
-            ))}
+              )}
+            </div>
           </div>
-        ) : (
-          <p className="opacity-70 text-center mt-6">Aucun résultat trouvé.</p>
+        )}
+
+        {/* Recent Patients Section - shown when no search performed */}
+        {!hasSearch && (
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold px-2 flex items-center gap-2">
+              <Clock size={20} className="text-primary" />
+              Patients Récents
+            </h2>
+
+            {loadingRecent ? (
+              <div className="flex justify-center p-8">
+                <span className="loading loading-spinner text-primary"></span>
+              </div>
+            ) : recentPatients.length > 0 ? (
+              <div className="grid grid-cols-1 gap-4">
+                {recentPatients.map((patient) => (
+                  <PatientCard
+                    key={patient.id}
+                    id={patient.id}
+                    name={patient.name}
+                    prenom={patient.prenom}
+                    ipp={patient.ipp}
+                    dob={patient.date}
+                    showSexe={false}
+                    badge={{
+                      label: patient.action === "created" ? "Créé" : "Consulté",
+                      variant: patient.action === "created" ? "success" : "info",
+                    }}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 text-base-content/50 bg-base-100 rounded-xl border border-dashed border-base-300">
+                <Clock size={48} className="mx-auto mb-4 opacity-20" />
+                <p>Aucun patient récent.</p>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>

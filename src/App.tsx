@@ -1,4 +1,5 @@
 import Navbar from "./components/Navbar";
+import Toast from "./components/Toast";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./page/home";
 import DossierPatient from "./page/DossierPatient";
@@ -6,25 +7,105 @@ import NewPatient from "./page/forms/NewPatient";
 import SearchPatient from "./page/SearchPatient";
 import TemplateManager from "./page/TemplateManager";
 import GenericForm from "./page/forms/GenericForm";
+import Login from "./page/Login";
+import Register from "./page/Register";
+import AdminDashboard from "./page/AdminDashboard";
+import NotFound from "./page/NotFound";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext";
+import { ToastProvider } from "./context/ToastContext";
 
 function App() {
   return (
-    <Router>
-      <div className="bg-base-100 prose max-w-full w-full min-h-screen">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/search" element={<SearchPatient />} />
-          <Route path="/templates" element={<TemplateManager />} />
+    <AuthProvider>
+      <ToastProvider>
+        <Router>
+          <div className="bg-base-100 prose max-w-full w-full min-h-screen">
+            <Toast />
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
 
-          <Route path="/patient/new" element={<NewPatient />} />
-          {/* Dossier del paciente */}
+              {/* Standard authenticated routes - all roles */}
+              <Route element={<ProtectedRoute />}>
+                <Route
+                  path="/"
+                  element={
+                    <>
+                      <Navbar />
+                      <Home />
+                    </>
+                  }
+                />
+                <Route
+                  path="/search"
+                  element={
+                    <>
+                      <Navbar />
+                      <SearchPatient />
+                    </>
+                  }
+                />
+                <Route
+                  path="/patient/new"
+                  element={
+                    <>
+                      <Navbar />
+                      <NewPatient />
+                    </>
+                  }
+                />
+                <Route
+                  path="/patient/:id"
+                  element={
+                    <>
+                      <Navbar />
+                      <DossierPatient />
+                    </>
+                  }
+                />
+                <Route
+                  path="/patient/:id/form/:slug"
+                  element={
+                    <>
+                      <Navbar />
+                      <GenericForm />
+                    </>
+                  }
+                />
+              </Route>
 
-          <Route path="/patient/:id" element={<DossierPatient />} />
-          <Route path="/patient/:id/form/:slug" element={<GenericForm />} />
-        </Routes>
-      </div>
-    </Router>
+              {/* Master Admin only routes */}
+              <Route element={<ProtectedRoute allowedRoles={["master_admin"]} />}>
+                <Route
+                  path="/templates"
+                  element={
+                    <>
+                      <Navbar />
+                      <TemplateManager />
+                    </>
+                  }
+                />
+              </Route>
+
+              {/* Admin routes - Master Admin and CHU Admin */}
+              <Route element={<ProtectedRoute requireAdmin />}>
+                <Route
+                  path="/admin"
+                  element={
+                    <>
+                      <Navbar />
+                      <AdminDashboard />
+                    </>
+                  }
+                />
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
+        </Router>
+      </ToastProvider>
+    </AuthProvider>
   );
 }
 

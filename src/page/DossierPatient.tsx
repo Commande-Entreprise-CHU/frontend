@@ -1,12 +1,26 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { usePatient } from "../hooks/patientHooks";
+import Tabs from "../components/Tabs";
+import { useNavigate, useParams } from "react-router-dom";
+import { usePatient, useDeletePatient } from "../hooks/patientHooks";
 import { useConsultationTypes } from "../hooks/templateHooks";
+import { useToast } from "../context/ToastContext";
 import GenericForm from "./forms/GenericForm";
+import Card from "../components/Card";
+import PageHeader from "../components/PageHeader";
+import Button from "../components/Button";
+import ConfirmationModal from "../components/ConfirmationModal";
+import EditPatientModal from "../components/EditPatientModal";
 import { formatDate } from "../utils/date";
+import { User, Calendar, Activity, AlertCircle, Trash2, FileText, Pencil } from "lucide-react";
 
 export default function DossierPatient() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { showToast } = useToast();
+  const { mutate: deletePatient, isPending: isDeleting } = useDeletePatient();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
   const {
     data: patient,
     isLoading: loadingPatient,
@@ -14,23 +28,47 @@ export default function DossierPatient() {
   } = usePatient(id || "");
   const { data: consultationTypes, isLoading: loadingTypes } =
     useConsultationTypes();
-
+  
   const [activeTabSlug, setActiveTabSlug] = useState<string | null>(null);
+
+  const handleDelete = () => {
+    if (id) {
+      deletePatient(id, {
+        onSuccess: () => {
+          showToast("Patient archivé avec succès", "success");
+          setIsDeleteModalOpen(false);
+          navigate("/");
+        },
+        onError: () => {
+          showToast("Erreur lors de l'archivage du patient", "error");
+          setIsDeleteModalOpen(false);
+        },
+      });
+    }
+  };
 
   // Set default active tab once types are loaded
   useEffect(() => {
     if (consultationTypes && consultationTypes.length > 0 && !activeTabSlug) {
       setActiveTabSlug(consultationTypes[0].slug);
     }
-  }, [consultationTypes]);
+  }, [consultationTypes, activeTabSlug]);
 
   if (loadingPatient || loadingTypes)
-    return <p className="text-center mt-10">Chargement...</p>;
+    return (
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
+      </div>
+    );
+
   if (error || !patient)
     return (
-      <p className="text-center mt-10 text-error">
-        Erreur lors du chargement du patient.
-      </p>
+      <div className="flex flex-col items-center justify-center min-h-[50vh] text-error gap-4">
+        <AlertCircle size={48} />
+        <p className="text-lg font-medium">
+          Erreur lors du chargement du patient.
+        </p>
+      </div>
     );
 
   // Sort types by order
@@ -50,93 +88,131 @@ export default function DossierPatient() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto py-6">
-      <h1 className="text-3xl font-bold text-primary text-center mb-6">
-        Dossier Patient – {patient.name} {patient.prenom}
-      </h1>
-
-      <div className="w-full bg-base-200 rounded-lg py-3 px-6 shadow-sm mb-4">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-y-1 gap-x-6 text-[15px] leading-tight">
-          <p>
-            <strong>Nom:</strong> {patient.name}
-          </p>
-          <p>
-            <strong>Prénom:</strong> {patient.prenom}
-          </p>
-          <p>
-            <strong>IPP:</strong> {patient.ipp || "—"}
-          </p>
-          <p>
-            <strong>Sexe:</strong> {patient.sexe}
-          </p>
-          <p>
-            <strong>Date de naissance:</strong> {formatDate(patient.dob)}
-          </p>
-        </div>
-      </div>
-
-      <div className="flex gap-3 mb-6 overflow-x-auto pb-2">
-        {sortedTypes.map((type, index) => {
-          const isActive = activeTabSlug === type.slug;
-          const completed = isCompleted(type.slug);
-          const allowed = canOpen(index);
-
-          return (
-            <button
-              key={type.id}
-              onClick={() => allowed && setActiveTabSlug(type.slug)}
-              className={`
-                relative flex-1 min-w-[150px] text-center py-3 rounded-xl font-semibold transition-all
-                ${
-                  isActive
-                    ? "bg-primary text-primary-content scale-[1.05] shadow-lg"
-                    : ""
-                }
-                ${!isActive && completed ? "bg-primary/20 text-primary" : ""}
-                ${
-                  !isActive && !completed && allowed
-                    ? "bg-primary/10 text-primary"
-                    : ""
-                }
-                ${
-                  !allowed
-                    ? "bg-base-200 text-base-content cursor-not-allowed"
-                    : ""
-                }
-              `}
+    <div className="w-full mx-auto py-4 px-4 space-y-4">
+      {/* Header Section */}
+      <PageHeader
+        icon={User}
+        title={`${patient.name} ${patient.prenom}`}
+        subtitle="Dossier Patient"
+        actions={
+          <div className="flex items-center gap-3">
+            <div className="badge badge-primary badge-lg p-4 font-mono">
+              IPP: {patient.ipp || "—"}
+            </div>
+            <Button
+              variant="ghost"
+              onClick={() => setIsEditModalOpen(true)}
+              className="btn-sm"
             >
-              {type.name}
+              <Pencil size={16} className="mr-2" />
+              Modifier
+            </Button>
+            <Button 
+              variant="error" 
+              onClick={() => setIsDeleteModalOpen(true)}
+              className="btn-sm"
+            >
+              <Trash2 size={16} className="mr-2" />
+              Archiver
+            </Button>
+          </div>
+        }
+      />
+      
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDelete}
+        title="Archiver le patient"
+        message="Êtes-vous sûr de vouloir archiver ce patient ? Cette action supprimera l'accès au dossier mais les données seront conservées."
+        confirmText="Archiver"
+        variant="danger"
+        isLoading={isDeleting}
+      />
 
-              <span
-                className={`
-                  absolute -top-1 -right-1 badge badge-xs
-                  ${
-                    completed
-                      ? "badge-primary"
-                      : allowed
-                      ? "badge-outline"
-                      : "badge-neutral"
-                  }
-                `}
-              >
-                {completed ? "✓" : allowed ? "○" : "—"}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      {activeTabSlug && id && (
-        <div key={activeTabSlug}>
-          <GenericForm
-            patientId={id}
-            formSlug={activeTabSlug}
-            onSuccess={() => {
-              // Refresh patient data is handled by react-query invalidation in GenericForm
-            }}
-          />
-        </div>
+      {patient && (
+        <EditPatientModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          patient={patient}
+        />
       )}
+
+      {/* Patient Info Card */}
+      <Card
+        title={
+          <span className="text-sm uppercase tracking-wider text-base-content/50">
+            Informations Administratives
+          </span>
+        }
+        className="shadow-md"
+        bodyClassName="p-4"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-lg text-primary">
+              <User size={20} />
+            </div>
+            <div>
+              <p className="text-xs text-base-content/50">Sexe</p>
+              <p className="font-medium">{patient.sexe}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-secondary/10 rounded-lg text-secondary">
+              <Calendar size={20} />
+            </div>
+            <div>
+              <p className="text-xs text-base-content/50">Date de naissance</p>
+              <p className="font-medium">{formatDate(patient.dob)}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-accent/10 rounded-lg text-accent">
+              <Activity size={20} />
+            </div>
+            <div>
+              <p className="text-xs text-base-content/50">Statut</p>
+              <p className="font-medium">Actif</p>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* Consultations Tabs */}
+      <div className="space-y-4">
+        <Tabs
+          activeTab={activeTabSlug || ""}
+          onChange={(slug) => {
+             const type = sortedTypes.find(t => t.slug === slug);
+             if (type) {
+                const index = sortedTypes.indexOf(type);
+                if (canOpen(index)) {
+                  setActiveTabSlug(slug);
+                }
+             }
+          }}
+          tabs={sortedTypes.map((type, index) => ({
+            id: type.slug,
+            label: type.name,
+            icon: type.slug === "prescription" ? FileText : undefined,
+            disabled: !canOpen(index),
+            completed: isCompleted(type.slug),
+          }))}
+        />
+
+        {/* Active Tab Content */}
+        <Card className="min-h-[300px] rounded-2xl" bodyClassName="p-4">
+          {activeTabSlug && (
+            <GenericForm
+              key={activeTabSlug}
+              patientId={id || ""}
+              formSlug={activeTabSlug}
+              hideHeader={true}
+            />
+          )}
+        </Card>
+      </div>
     </div>
   );
 }

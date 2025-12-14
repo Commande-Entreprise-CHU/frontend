@@ -1,20 +1,26 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import DynamicForm from "../../components/DynamicForm";
+import DynamicForm from "../../components/form/DynamicForm";
+import PageHeader from "../../components/PageHeader";
+import { FileText } from "lucide-react";
 import { usePatient, useUpdatePatientSection } from "../../hooks/patientHooks";
 import { useActiveTemplateByType } from "../../hooks/templateHooks";
+import { useToast } from "../../context/ToastContext";
+import { useAuth } from "../../context/AuthContext";
 import type { FormConfig } from "../../types";
 
 interface GenericFormProps {
   patientId?: string;
   formSlug?: string;
   onSuccess?: () => void;
+  hideHeader?: boolean;
 }
 
 export default function GenericForm({
   patientId: propId,
   formSlug: propSlug,
   onSuccess,
+  hideHeader = false,
 }: GenericFormProps = {}) {
   const params = useParams();
   const navigate = useNavigate();
@@ -29,6 +35,8 @@ export default function GenericForm({
     error: templateError,
   } = useActiveTemplateByType(slug || "");
   const updateSectionMutation = useUpdatePatientSection();
+  const { showToast } = useToast();
+  const { user } = useAuth();
 
   const [config, setConfig] = useState<FormConfig | null>(null);
   const [templateString, setTemplateString] = useState<string>("");
@@ -38,7 +46,30 @@ export default function GenericForm({
 
   useEffect(() => {
     if (activeTemplate) {
-      setConfig(activeTemplate.structure);
+      const baseConfig = activeTemplate.structure;
+      
+      // Inject mandatory Administrative Data section at the start
+      const adminSection = {
+        title: "DONNEES ADMINISTRATIVES",
+        fields: [
+          {
+            name: "dateConsultation",
+            type: "Input",
+            label: "Date de consultation",
+            default: "now",
+            required: true,
+            inputType: "date",
+          },
+        ],
+      };
+
+      // Create a new config object to avoid mutating the original
+      const enhancedConfig = {
+        ...baseConfig,
+        sections: [adminSection, ...(baseConfig.sections || [])],
+      };
+
+      setConfig(enhancedConfig);
       setTemplateString(activeTemplate.template);
       setConsultationTypeId(activeTemplate.consultationTypeId);
     }
@@ -67,12 +98,18 @@ export default function GenericForm({
   const initialData = {
     ...existingData,
     // Always inject patient demographics
-    name: patient.name,
+    nom: patient.name,
     prenom: patient.prenom,
-    dob: patient.dob,
+    dateNaissance: patient.dob,
     ipp: patient.ipp,
     sexe: patient.sexe,
+    // Inject surgeon info
+    chirurgienNom: user?.nom || "",
+    chirurgienPrenom: user?.prenom || "",
+    chu: user?.chu || "",
   };
+
+
 
   const handleSubmit = (formValues: any) => {
     if (!id || !consultationTypeId) return;
@@ -85,7 +122,7 @@ export default function GenericForm({
       },
       {
         onSuccess: () => {
-          alert("Consultation enregistrée avec succès !");
+          showToast("Consultation enregistrée avec succès !", "success");
           if (onSuccess) {
             onSuccess();
           } else {
@@ -94,15 +131,21 @@ export default function GenericForm({
           }
         },
         onError: () => {
-          alert("Erreur lors de l’enregistrement des données.");
+          showToast("Erreur lors de l’enregistrement des données.", "error");
         },
       }
     );
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-6">
-      <h1 className="text-2xl font-bold mb-4 text-center">Consultation</h1>
+    <div className="w-full py-6 px-4">
+      {!hideHeader && (
+        <PageHeader
+          icon={FileText}
+          title="Consultation"
+          subtitle={slug ? `Type: ${slug}` : "Détails de la consultation"}
+        />
+      )}
       <DynamicForm
         config={config}
         templateString={templateString}

@@ -1,8 +1,10 @@
 export interface FormOption {
-  value: string | number;
+  value: string | number | boolean;
   label: string;
   default?: boolean;
   fields?: AnyFormField[];
+  image?: string;
+  svg?: string;
 }
 
 export interface FormField {
@@ -10,6 +12,7 @@ export interface FormField {
     | "Input"
     | "Radio"
     | "Range"
+    | "ContinuousRange"
     | "RevealRadio"
     | "Select"
     | "Checkbox"
@@ -41,6 +44,15 @@ export interface CheckboxGroupField extends FormField {
 export interface RangeField extends FormField {
   type: "Range";
   steps: string[];
+}
+
+export interface ContinuousRangeField extends FormField {
+  type: "ContinuousRange";
+  min: number;
+  max: number;
+  step: number;
+  unit?: string;
+  default?: number;
 }
 
 export interface RevealRadioField extends FormField {
@@ -76,6 +88,7 @@ export type AnyFormField =
   | InputField
   | RadioField
   | RangeField
+  | ContinuousRangeField
   | RevealRadioField
   | SelectField
   | CheckboxField

@@ -8,6 +8,7 @@ import {
   setActiveTemplate,
   getActiveTemplateByType,
   deleteTemplateVersion,
+  deleteConsultationType,
   type ConsultationType,
   type Template,
 } from "../endpoints/templateEndpoints";
@@ -43,7 +44,7 @@ export const useUpdateConsultationType = () => {
     Error,
     { id: string; name: string; slug: string; order?: number }
   >({
-    mutationFn: updateConsultationType,
+    mutationFn: ({ id, ...updates }) => updateConsultationType(id, updates),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["consultationTypes"] });
     },
@@ -65,7 +66,8 @@ export const useCreateTemplateVersion = () => {
     Error,
     { typeId: string; version: string; structure: any; template: string }
   >({
-    mutationFn: createTemplateVersion,
+    mutationFn: ({ typeId, version, structure, template }) =>
+      createTemplateVersion(typeId, version, structure, template),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: ["templates", data.consultationTypeId],
@@ -87,7 +89,7 @@ export const useSetActiveTemplate = () => {
 };
 
 export const useActiveTemplateByType = (slug: string) => {
-  return useQuery<Template, Error>({
+  return useQuery<Template | null, Error>({
     queryKey: ["activeTemplate", slug],
     queryFn: () => getActiveTemplateByType(slug),
     enabled: !!slug,
@@ -100,6 +102,16 @@ export const useDeleteTemplateVersion = () => {
     mutationFn: deleteTemplateVersion,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["templates"] });
+    },
+  });
+};
+
+export const useDeleteConsultationType = () => {
+  const queryClient = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: deleteConsultationType,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["consultationTypes"] });
     },
   });
 };
