@@ -10,6 +10,7 @@ import GenericForm from "./page/forms/GenericForm";
 import Login from "./page/Login";
 import Register from "./page/Register";
 import AdminDashboard from "./page/AdminDashboard";
+import DocumentationViewer from "./page/DocumentationViewer";
 import NotFound from "./page/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
@@ -96,6 +97,15 @@ function App() {
                     <>
                       <Navbar />
                       <AdminDashboard />
+                    </>
+                  }
+                />
+                 <Route
+                  path="/admin/docs/:fileName"
+                  element={
+                    <>
+                      <Navbar />
+                      <DocumentationViewer />
                     </>
                   }
                 />

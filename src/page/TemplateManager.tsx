@@ -20,8 +20,10 @@ import {
   AlertTriangle,
   Check,
   AlertCircle,
+  Eye,
   Download,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import {
   useConsultationTypes,
   useTemplatesByType,
@@ -433,31 +435,70 @@ export default function TemplateManager() {
               Voici 3 documents utiles pour comprendre comment créer des modèles
               (à lire ou à envoyer à une IA pour générer les modèles) :
             </p>
-            <div className="flex flex-wrap gap-3">
-              <a
-                href="/docs/consultationData.md"
-                download
-                className="btn btn-outline btn-sm gap-2 normal-case"
-              >
-                <Download size={16} />
-                Données de Consultation
-              </a>
-              <a
-                href="/docs/consultationJson.md"
-                download
-                className="btn btn-outline btn-sm gap-2 normal-case"
-              >
-                <Download size={16} />
-                Structure JSON
-              </a>
-              <a
-                href="/docs/consultationTemplate.md"
-                download
-                className="btn btn-outline btn-sm gap-2 normal-case"
-              >
-                <Download size={16} />
-                Template Handlebars
-              </a>
+            <div className="flex flex-wrap gap-4">
+              {/* Doc 1 */}
+              <div className="flex items-center gap-1 bg-base-100 border border-base-300 rounded-lg p-1 pr-3">
+                <Link
+                  to="/admin/docs/consultationData.md"
+                  className="btn btn-ghost btn-sm btn-square text-primary"
+                  title="Lire la documentation"
+                >
+                  <Eye size={18} />
+                </Link>
+                <a
+                  href="/docs/consultationData.md"
+                  download
+                  className="btn btn-ghost btn-sm btn-square text-base-content/70"
+                  title="Télécharger"
+                >
+                  <Download size={18} />
+                </a>
+                <span className="text-sm font-medium ml-1">
+                  Données de Consultation
+                </span>
+              </div>
+
+              {/* Doc 2 */}
+              <div className="flex items-center gap-1 bg-base-100 border border-base-300 rounded-lg p-1 pr-3">
+                <Link
+                  to="/admin/docs/consultationJson.md"
+                  className="btn btn-ghost btn-sm btn-square text-primary"
+                  title="Lire la documentation"
+                >
+                  <Eye size={18} />
+                </Link>
+                <a
+                  href="/docs/consultationJson.md"
+                  download
+                  className="btn btn-ghost btn-sm btn-square text-base-content/70"
+                  title="Télécharger"
+                >
+                  <Download size={18} />
+                </a>
+                <span className="text-sm font-medium ml-1">Structure JSON</span>
+              </div>
+
+              {/* Doc 3 */}
+              <div className="flex items-center gap-1 bg-base-100 border border-base-300 rounded-lg p-1 pr-3">
+                <Link
+                  to="/admin/docs/consultationTemplate.md"
+                  className="btn btn-ghost btn-sm btn-square text-primary"
+                  title="Lire la documentation"
+                >
+                  <Eye size={18} />
+                </Link>
+                <a
+                  href="/docs/consultationTemplate.md"
+                  download
+                  className="btn btn-ghost btn-sm btn-square text-base-content/70"
+                  title="Télécharger"
+                >
+                  <Download size={18} />
+                </a>
+                <span className="text-sm font-medium ml-1">
+                  Template Handlebars
+                </span>
+              </div>
             </div>
           </div>
         )}
