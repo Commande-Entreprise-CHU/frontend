@@ -101,25 +101,9 @@ function registerHelpers() {
     "wrap",
     function (value: any, prefix: string, suffix: string) {
       if (!value) return "";
-    return prefix + value + suffix;
+      return prefix + value + suffix;
     }
   );
-
-  // Get length of array or string
-  Handlebars.registerHelper("len", function (value: any) {
-    if (Array.isArray(value) || typeof value === "string") {
-      return value.length;
-    }
-    return 0;
-  });
-
-  // Get object property dynamically
-  Handlebars.registerHelper("get", function (obj: any, prop: string) {
-    if (obj && typeof obj === "object" && prop) {
-      return obj[prop];
-    }
-    return undefined;
-  });
 
   // Math operations
   Handlebars.registerHelper("add", function (a: number, b: number) {
@@ -135,28 +119,6 @@ function registerHelpers() {
     "ifContains",
     function (this: any, str: any, search: string, options: any) {
       if (str && typeof str === "string" && str.includes(search)) {
-        return options.fn(this);
-      }
-      return options.inverse(this);
-    }
-  );
-
-  // Check if value is in array/list
-  Handlebars.registerHelper(
-    "ifIn",
-    function (this: any, elem: any, list: any, options: any) {
-      if (list && (Array.isArray(list) ? list.includes(elem) : list.indexOf(elem) > -1)) {
-        return options.fn(this);
-      }
-      return options.inverse(this);
-    }
-  );
-
-  // Check if value is NOT in array/list
-  Handlebars.registerHelper(
-    "ifNotIn",
-    function (this: any, elem: any, list: any, options: any) {
-      if (!list || (!Array.isArray(list) && list.indexOf(elem) === -1) || (Array.isArray(list) && !list.includes(elem))) {
         return options.fn(this);
       }
       return options.inverse(this);
