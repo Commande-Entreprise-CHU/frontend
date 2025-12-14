@@ -92,7 +92,7 @@ Les sections organisent les champs du formulaire en groupes logiques. Chaque sec
 
 ## Types de Champs
 
-Il y a 8 types de champs différents disponibles. Chaque type de champ a des propriétés spécifiques.
+Il y a 10 types de champs différents disponibles. Chaque type de champ a des propriétés spécifiques.
 
 ### Propriétés Communes pour Tous les Champs
 
@@ -100,7 +100,7 @@ Tous les types de champs partagent ces propriétés :
 
 | Propriété  | Type    | Requis | Description                                                                                          |
 | ---------- | ------- | ------ | ---------------------------------------------------------------------------------------------------- |
-| `type`     | string  | Oui    | Le type de champ (Input, Radio, Range, ContinuousRange, RevealRadio, RevealCheckBox, Select, Checkbox, TeethSelector) |
+| `type`     | string  | Oui    | Le type de champ (Input, Select, Radio, RevealRadio, Checkbox, CheckboxGroup, RevealCheckBox, Range, ContinuousRange, TeethSelector) |
 | `label`    | string  | Oui    | Libellé d'affichage pour le champ                                                                    |
 | `name`     | string  | Oui    | Identifiant unique du champ (utilisé dans les données du formulaire)                                 |
 | `required` | boolean | Non    | Si le champ est obligatoire (défaut: false)                                                          |
@@ -168,7 +168,24 @@ Un champ input pour du texte, des nombres, des emails, des dates, etc.
 
 ---
 
-### 2. Champ Radio
+### 2. Champ Select
+
+Un menu déroulant pour sélectionner une option unique dans une liste.
+
+#### Propriétés
+
+| Propriété     | Type    | Requis | Description                               |
+| ------------- | ------- | ------ | ----------------------------------------- |
+| `type`        | string  | Oui    | Doit être `"Select"`                      |
+| `label`       | string  | Oui    | Libellé d'affichage                       |
+| `name`        | string  | Oui    | Identifiant unique du champ               |
+| `options`     | array   | Oui    | Tableau d'objets option                   |
+| `placeholder` | string  | Non    | Texte d'indication dans le menu déroulant |
+| `required`    | boolean | Non    | Si une sélection est obligatoire          |
+
+---
+
+### 3. Champ Radio
 
 Affiche un ensemble d'options mutuellement exclusives. Une seule option peut être sélectionnée à la fois.
 
@@ -216,103 +233,7 @@ Affiche un ensemble d'options mutuellement exclusives. Une seule option peut êt
 
 ---
 
-### 3. Champ Checkbox
-
-Affiche une case à cocher simple (vrai/faux).
-
-#### Propriétés
-
-| Propriété  | Type    | Requis | Description                      |
-| ---------- | ------- | ------ | -------------------------------- |
-| `type`     | string  | Oui    | Doit être `"Checkbox"`           |
-| `label`    | string  | Oui    | Libellé d'affichage              |
-| `name`     | string  | Oui    | Identifiant unique du champ      |
-| `required` | boolean | Non    | Si la case doit être cochée      |
-| `default`  | boolean | Non    | Si la case est cochée par défaut |
-| `image`    | string  | Non    | URL d'une image à afficher       |
-| `svg`      | string  | Non    | Contenu SVG brut à afficher      |
-
-#### Exemple
-
-```json
-{
-  "type": "Checkbox",
-  "label": "Accord",
-  "name": "accord_signe",
-  "svg": "<svg>...</svg>"
-}
-```
-
----
-
-### 10. Champ CheckboxGroup
-
-Affiche un groupe de cases à cocher pour une sélection multiple.
-
-#### Propriétés
-
-| Propriété  | Type    | Requis | Description                      |
-| ---------- | ------- | ------ | -------------------------------- |
-| `type`     | string  | Oui    | Doit être `"CheckboxGroup"`      |
-| `label`    | string  | Non    | Libellé du groupe                |
-| `name`     | string  | Oui    | Identifiant unique du groupe     |
-| `options`  | array   | Oui    | Tableau d'objets option          |
-| `required` | boolean | Non    | Si au moins un choix est requis  |
-
-#### Objet Option (pour CheckboxGroup)
-
-| Propriété | Type   | Requis | Description                   |
-| --------- | ------ | ------ | ----------------------------- |
-| `value`   | string | Oui    | La valeur de l'option         |
-| `label`   | string | Oui    | Libellé de l'option           |
-| `image`   | string | Non    | URL d'une image à afficher    |
-| `svg`     | string | Non    | Contenu SVG brut à afficher   |
-
-#### Exemple
-
-```json
-{
-  "type": "CheckboxGroup",
-  "label": "Symptômes",
-  "name": "symptomes",
-  "options": [
-    { "value": "fievre", "label": "Fièvre" },
-    { "value": "toux", "label": "Toux" }
-  ]
-}
-```
-
----
-
-### 4. Champ Range
-
-Un champ basé sur un curseur où les utilisateurs sélectionnent parmi des étapes prédéfinies.
-
-#### Propriétés
-
-| Propriété  | Type    | Requis | Description                             |
-| ---------- | ------- | ------ | --------------------------------------- |
-| `type`     | string  | Oui    | Doit être `"Range"`                     |
-| `label`    | string  | Oui    | Libellé d'affichage                     |
-| `name`     | string  | Oui    | Identifiant unique du champ             |
-| `steps`    | array   | Oui    | Tableau de valeurs (nombres ou chaînes) |
-| `required` | boolean | Non    | Si une sélection est obligatoire        |
-
-#### Exemple
-
-```json
-{
-  "type": "Range",
-  "label": "Douleur",
-  "name": "douleurRange",
-  "steps": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-  "required": true
-}
-```
-
----
-
-### 5. Champ RevealRadio (Champs Conditionnels)
+### 4. Champ RevealRadio (Champs Conditionnels)
 
 Un champ radio spécial qui révèle des champs supplémentaires en fonction de l'option sélectionnée. Parfait pour la logique conditionnelle.
 
@@ -370,7 +291,75 @@ Un champ radio spécial qui révèle des champs supplémentaires en fonction de 
 
 ---
 
-### 6. Champ RevealCheckBox (Champs Conditionnels avec Checkboxes)
+### 5. Champ Checkbox
+
+Affiche une case à cocher simple (vrai/faux).
+
+#### Propriétés
+
+| Propriété  | Type    | Requis | Description                      |
+| ---------- | ------- | ------ | -------------------------------- |
+| `type`     | string  | Oui    | Doit être `"Checkbox"`           |
+| `label`    | string  | Oui    | Libellé d'affichage              |
+| `name`     | string  | Oui    | Identifiant unique du champ      |
+| `required` | boolean | Non    | Si la case doit être cochée      |
+| `default`  | boolean | Non    | Si la case est cochée par défaut |
+| `image`    | string  | Non    | URL d'une image à afficher       |
+| `svg`      | string  | Non    | Contenu SVG brut à afficher      |
+
+#### Exemple
+
+```json
+{
+  "type": "Checkbox",
+  "label": "Accord",
+  "name": "accord_signe",
+  "svg": "<svg>...</svg>"
+}
+```
+
+---
+
+### 6. Champ CheckboxGroup
+
+Affiche un groupe de cases à cocher pour une sélection multiple.
+
+#### Propriétés
+
+| Propriété  | Type    | Requis | Description                      |
+| ---------- | ------- | ------ | -------------------------------- |
+| `type`     | string  | Oui    | Doit être `"CheckboxGroup"`      |
+| `label`    | string  | Non    | Libellé du groupe                |
+| `name`     | string  | Oui    | Identifiant unique du groupe     |
+| `options`  | array   | Oui    | Tableau d'objets option          |
+| `required` | boolean | Non    | Si au moins un choix est requis  |
+
+#### Objet Option (pour CheckboxGroup)
+
+| Propriété | Type   | Requis | Description                   |
+| --------- | ------ | ------ | ----------------------------- |
+| `value`   | string | Oui    | La valeur de l'option         |
+| `label`   | string | Oui    | Libellé de l'option           |
+| `image`   | string | Non    | URL d'une image à afficher    |
+| `svg`     | string | Non    | Contenu SVG brut à afficher   |
+
+#### Exemple
+
+```json
+{
+  "type": "CheckboxGroup",
+  "label": "Symptômes",
+  "name": "symptomes",
+  "options": [
+    { "value": "fievre", "label": "Fièvre" },
+    { "value": "toux", "label": "Toux" }
+  ]
+}
+```
+
+---
+
+### 7. Champ RevealCheckBox (Champs Conditionnels avec Checkboxes)
 
 Un champ checkbox spécial qui révèle des champs supplémentaires quand la checkbox est cochée.
 
@@ -404,20 +393,31 @@ Un champ checkbox spécial qui révèle des champs supplémentaires quand la che
 
 ---
 
-### 7. Champ Select
+### 8. Champ Range
 
-Un menu déroulant pour sélectionner une option unique dans une liste.
+Un champ basé sur un curseur où les utilisateurs sélectionnent parmi des étapes prédéfinies.
 
 #### Propriétés
 
-| Propriété     | Type    | Requis | Description                               |
-| ------------- | ------- | ------ | ----------------------------------------- |
-| `type`        | string  | Oui    | Doit être `"Select"`                      |
-| `label`       | string  | Oui    | Libellé d'affichage                       |
-| `name`        | string  | Oui    | Identifiant unique du champ               |
-| `options`     | array   | Oui    | Tableau d'objets option                   |
-| `placeholder` | string  | Non    | Texte d'indication dans le menu déroulant |
-| `required`    | boolean | Non    | Si une sélection est obligatoire          |
+| Propriété  | Type    | Requis | Description                             |
+| ---------- | ------- | ------ | --------------------------------------- |
+| `type`     | string  | Oui    | Doit être `"Range"`                     |
+| `label`    | string  | Oui    | Libellé d'affichage                     |
+| `name`     | string  | Oui    | Identifiant unique du champ             |
+| `steps`    | array   | Oui    | Tableau de valeurs (nombres ou chaînes) |
+| `required` | boolean | Non    | Si une sélection est obligatoire        |
+
+#### Exemple
+
+```json
+{
+  "type": "Range",
+  "label": "Douleur",
+  "name": "douleurRange",
+  "steps": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  "required": true
+}
+```
 
 ---
 
@@ -456,7 +456,7 @@ Un curseur continu permettant de sélectionner une valeur numérique précise en
 
 ---
 
-### 8. Champ TeethSelector
+### 10. Champ TeethSelector
 
 Un sélecteur visuel de dents configurable.
 
