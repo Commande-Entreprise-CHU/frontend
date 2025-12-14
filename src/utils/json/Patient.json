@@ -1,0 +1,63 @@
+{
+  "metadata": {
+    "name": "Patient",
+    "description": "Création d'un nouveau patient"
+  },
+  "sections": [
+    {
+      "title": "Informations Patient",
+      "fields": [
+        {
+          "type": "Input",
+          "label": "Nom",
+          "name": "name",
+          "pdfName": "Nom",
+          "placeholder": "Nom",
+          "required": true
+        },
+        {
+          "type": "Input",
+          "label": "Prénom",
+          "name": "prenom",
+          "pdfName": "Prénom",
+          "placeholder": "Prénom",
+          "required": true
+        },
+        {
+          "type": "Input",
+          "label": "Date de naissance",
+          "name": "dob",
+          "pdfName": "Date de naissance",
+          "inputType": "date",
+          "required": true
+        },
+        {
+          "type": "Input",
+          "label": "IPP",
+          "name": "ipp",
+          "pdfName": "IPP",
+          "placeholder": "IPP",
+          "required": false
+        },
+        {
+          "type": "Radio",
+          "label": "Sexe",
+          "name": "sexe",
+          "pdfName": "Sexe",
+          "options": [
+            {
+              "value": "femme",
+              "label": "Femme"
+            },
+            {
+              "value": "homme",
+              "label": "Homme",
+              "default": true
+            }
+          ],
+          "required": true
+        }
+      ]
+    }
+  ]
+}
