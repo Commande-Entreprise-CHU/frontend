@@ -88,12 +88,12 @@ export default function DossierPatient() {
   };
 
   return (
-    <div className="w-full mx-auto py-8 px-4 space-y-8">
+    <div className="w-full mx-auto py-4 px-4 space-y-4">
       {/* Header Section */}
       <PageHeader
         icon={User}
         title={`${patient.name} ${patient.prenom}`}
-        subtitle="Dossier médical informatisé"
+        subtitle="Dossier Patient"
         actions={
           <div className="flex items-center gap-3">
             <div className="badge badge-primary badge-lg p-4 font-mono">
@@ -146,9 +146,9 @@ export default function DossierPatient() {
           </span>
         }
         className="shadow-md"
-        bodyClassName="p-6"
+        bodyClassName="p-4"
       >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-primary/10 rounded-lg text-primary">
               <User size={20} />
@@ -180,7 +180,7 @@ export default function DossierPatient() {
       </Card>
 
       {/* Consultations Tabs */}
-      <div className="space-y-6">
+      <div className="space-y-4">
         <Tabs
           activeTab={activeTabSlug || ""}
           onChange={(slug) => {
@@ -202,7 +202,7 @@ export default function DossierPatient() {
         />
 
         {/* Active Tab Content */}
-        <Card className="min-h-[400px] rounded-2xl" bodyClassName="p-6">
+        <Card className="min-h-[300px] rounded-2xl" bodyClassName="p-4">
           {activeTabSlug && (
             <GenericForm
               key={activeTabSlug}

@@ -26,14 +26,14 @@ const AdminDashboard: FC = () => {
     : "Gérez les utilisateurs de votre CHU";
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto p-4 space-y-4">
       <PageHeader
         icon={Shield}
         title="Administration"
         subtitle={subtitle}
       />
 
-      <div className="flex flex-col space-y-6">
+      <div className="flex flex-col space-y-4">
         {/* Only show tabs if there are multiple tabs */}
         {tabs.length > 1 && (
           <Tabs

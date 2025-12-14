@@ -397,14 +397,14 @@ export default function TemplateManager() {
   }, [parsedStructure, previewFormData, newTemplateStr]);
 
   return (
-    <div className="p-6 w-full">
+    <div className="p-4 w-full">
       <PageHeader
         icon={FileCode}
         title="Gestion des Modèles"
         subtitle="Créez et modifiez les types de consultation et leurs versions"
       />
 
-      <div className="bg-base-100 border border-base-300 rounded-xl mb-6 overflow-hidden">
+      <div className="bg-base-100 border border-base-300 rounded-xl mb-4 overflow-hidden">
         <div
           className="p-4 bg-base-200/50 flex items-center justify-between cursor-pointer hover:bg-base-200 transition-colors"
           onClick={() => setShowDocs(!showDocs)}
@@ -417,8 +417,8 @@ export default function TemplateManager() {
         </div>
 
         {showDocs && (
-          <div className="p-4 border-t border-base-300">
-            <p className="mb-4 text-base-content/80">
+          <div className="p-3 border-t border-base-300 text-sm">
+            <p className="mb-2 text-base-content/80">
               Voici 3 documents utiles pour comprendre comment créer des modèles
               (à lire ou à envoyer à une IA pour générer les modèles) :
             </p>
@@ -452,7 +452,7 @@ export default function TemplateManager() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
         {/* Left Column: Types */}
         <Card
           title="Types de Consultation"
@@ -627,7 +627,7 @@ export default function TemplateManager() {
         </Card>
 
         {/* Right Column: Templates */}
-        <div className="lg:col-span-3 space-y-6">
+        <div className="lg:col-span-3 space-y-4">
           {selectedType ? (
             <>
               {/* Existing Versions List */}
