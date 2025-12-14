@@ -46,7 +46,30 @@ export default function GenericForm({
 
   useEffect(() => {
     if (activeTemplate) {
-      setConfig(activeTemplate.structure);
+      const baseConfig = activeTemplate.structure;
+      
+      // Inject mandatory Administrative Data section at the start
+      const adminSection = {
+        title: "DONNEES ADMINISTRATIVES",
+        fields: [
+          {
+            name: "dateConsultation",
+            type: "Input",
+            label: "Date de consultation",
+            default: "now",
+            required: true,
+            inputType: "date",
+          },
+        ],
+      };
+
+      // Create a new config object to avoid mutating the original
+      const enhancedConfig = {
+        ...baseConfig,
+        sections: [adminSection, ...(baseConfig.sections || [])],
+      };
+
+      setConfig(enhancedConfig);
       setTemplateString(activeTemplate.template);
       setConsultationTypeId(activeTemplate.consultationTypeId);
     }

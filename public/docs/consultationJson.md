@@ -20,6 +20,10 @@ Chaque fichier JSON de formulaire de consultation suit cette structure racine :
 }
 ```
 
+> [!NOTE]
+> Une section "DONNEES ADMINISTRATIVES" contenant le champ `dateConsultation` est automatiquement ajoutée au début de chaque formulaire lors de l'exécution. Vous n'avez pas besoin de l'inclure dans votre définition JSON.
+
+
 ### Objet Metadata
 
 L'objet `metadata` contient des informations sur le formulaire :
