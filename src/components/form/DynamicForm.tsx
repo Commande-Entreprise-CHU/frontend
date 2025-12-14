@@ -202,6 +202,11 @@ const DynamicForm = ({
       await navigator.clipboard.writeText(generatedText);
       setIsCopied(true);
       showToast("Texte copié dans le presse-papier !", "success");
+      
+      if (onSubmit) {
+        onSubmit(formData);
+      }
+
       setTimeout(() => setIsCopied(false), 2000);
     } catch (err) {
       console.error("Failed to copy text: ", err);
